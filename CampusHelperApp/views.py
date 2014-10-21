@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.exceptions import ValidationError
+
+from CampusHelperApp import models
 
 import json
 
@@ -46,7 +49,18 @@ def newtask(request):
 	#
 
 def newuser(request):
-	#
+   try:
+      if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+         d = json.loads(bytes.decode(request.body))
+         u = models.newUser(d["username"], d["password"], d["email"], d["description"])
+         request.session["cookieID"] = u.cookieID
+      	return HttpResponse(json.dumps({"errcode" : SUCCESS}), content_type = "application/json")
+      else if request.method == "GET":
+      	#
+   except (ValueError, KeyError):
+      return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+   except ValidationError:
+   	return HttpResponse(json.dumps({"errcode" : FAILURE}), content_type = "application/json")
 
 def mytasks(request):
 	#

@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+
+import random
 
 STATE_CREATED = 1
 STATE_ACCEPTED = 2
@@ -9,6 +12,7 @@ class User(models.Model):
    password = models.CharField(max_length = None)
    email = models.EmailField(max_length = 254)
    description = models.CharField(max_length = None)
+   cookieID = models.BigIntegerField(default = random.randint(-(2 ** 63), (2 ** 63) - 1))
    # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
    def __str__(self):
@@ -53,13 +57,13 @@ class Task(models.Model):
    		self.state = STATE_ACCEPTED
    		self.acceptor = acceptor
    	else:
-   		raise ValueError("wrong state to be marked as accepted")
+   		raise ValidationError("wrong state to be marked as accepted")
 
    def markCompleted(self):
    	if self.state == STATE_ACCEPTED:
    		self.state = STATE_COMPLETED
    	else:
-   		raise ValueError("wrong state to be marked as completed")
+   		raise ValidationError("wrong state to be marked as completed")
 
    def setTitle(self, newTitle):
    	self.title = newTitle
