@@ -18,8 +18,5 @@ In order to push to Heroku:
 
 *** 
 In order to simulate Heroku locally: RUN
-	foreman start 
+	foreman start
 in the same directory as the Procfile
-
-
-

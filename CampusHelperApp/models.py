@@ -14,6 +14,33 @@ class User(models.Model):
    def __str__(self):
       return self.username
 
+   def createTask(self):
+   	#
+
+   def markTaskCompleted(self):
+   	#
+
+   def acceptTask(self):
+   	#
+
+   def postedTasks(self):
+   	#
+
+   def acceptedTasks(self):
+   	#
+
+   def setEmail(self, newEmail):
+   	#
+
+   def setPassword(self, newPass):
+   	#
+
+   def setDescription(self, newDesc):
+   	#
+
+def getUser(username):
+	#
+
 class Task(models.Model):
 	id = models.AutoField(primary_key = True)				# don't specify this yourself (?)
    title = models.CharField(max_length = None)
@@ -26,3 +53,21 @@ class Task(models.Model):
 
    def __str__(self):
       return self.title
+
+   def markAccepted(self):
+   	#
+
+   def markCompleted(self):
+   	#
+
+   def setTitle(self, newTitle):
+   	#
+
+   def setDescription(self, newDesc):
+   	#
+
+   def notify(self):
+   	#
+
+def getTask(taskID):
+	#
