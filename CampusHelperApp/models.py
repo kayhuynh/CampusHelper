@@ -38,9 +38,6 @@ class User(models.Model):
    def setDescription(self, newDesc):
    	#
 
-def getUser(username):
-	return User.objects.get(username__exact = username)
-
 class Task(models.Model):
 	id = models.AutoField(primary_key = True)				# don't specify this yourself (?)
    title = models.CharField(max_length = None)
@@ -68,6 +65,20 @@ class Task(models.Model):
 
    def notify(self):
    	self.notify = True
+
+
+def newUser(username, password, email, desc):
+   k = User(username = username, password = password, email = email, description = desc)
+   k.save()
+   return k
+
+def getUser(username):
+	return User.objects.get(username__exact = username)
+
+def newTask(creator, title, desc):
+	k = Task(creator = creator, title = title, description = desc)
+	k.save()
+	return k
 
 def getTask(taskID):
 	return Task.objects.get(id__exact = taskID)
