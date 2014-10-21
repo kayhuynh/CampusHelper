@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.exceptions import ValidationError
+<<<<<<< HEAD
 from CampusHelperApp import models
 from CampusHelperApp.models import User
 from CampusHelperApp.models import Task
@@ -8,6 +9,10 @@ from CampusHelperApp.models import Task
 #For now all POST method is implemented but still cookie has not been figured out. So please have a look. Please
 #inspect line 4-6 imports because it might cause problems. Ensure the validation error is properly used and handled
 #Call me 5104176797 if any question.
+=======
+
+from CampusHelperApp import models
+>>>>>>> 6b09a1f3f2a44a90c53dd65a339567511bda777d
 
 import json
 
@@ -164,6 +169,7 @@ def newtask(request):
 	#
 
 def newuser(request):
+<<<<<<< HEAD
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
         	Requestheader = json.loads(request.body)
@@ -187,6 +193,20 @@ def newuser(request):
     except (ValueError, KeyError):
         return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	#
+=======
+   try:
+      if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+         d = json.loads(bytes.decode(request.body))
+         u = models.newUser(d["username"], d["password"], d["email"], d["description"])
+         request.session["cookieID"] = u.cookieID
+      	return HttpResponse(json.dumps({"errcode" : SUCCESS}), content_type = "application/json")
+      else if request.method == "GET":
+      	#
+   except (ValueError, KeyError):
+      return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+   except ValidationError:
+   	return HttpResponse(json.dumps({"errcode" : FAILURE}), content_type = "application/json")
+>>>>>>> 6b09a1f3f2a44a90c53dd65a339567511bda777d
 
 def mytasks(request):
     try:

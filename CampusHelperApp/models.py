@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+
+import random
 
 STATE_CREATED = 1
 STATE_ACCEPTED = 2
@@ -9,22 +12,23 @@ class User(models.Model):
    password = models.CharField(max_length = None)
    email = models.EmailField(max_length = 254)
    description = models.CharField(max_length = None)
+   cookieID = models.BigIntegerField(default = random.randint(-(2 ** 63), (2 ** 63) - 1))
    # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
    def __str__(self):
-      return self.username
+      return "user: " + self.username
 
    def markTaskCompleted(self, taskID):
-   	#
+   	getTask(taskID).markCompleted()
 
    def acceptTask(self, taskID):
-   	#
+   	getTask(taskID).markAccepted(self)
 
    def postedTasks(self):
-   	return self.tasksCreated
+   	return map(self.tasksCreated, lambda x: x.id)
 
    def acceptedTasks(self):
-   	return self.tasksAccepted
+   	return map(self.tasksAccepted, lambda x: x.id)
 
    def setEmail(self, newEmail):
    	self.email = newEmail
@@ -33,26 +37,33 @@ class User(models.Model):
    	self.password = newPass
 
    def setDescription(self, newDesc):
-   	#
+   	self.description = newDesc
 
 class Task(models.Model):
 	id = models.AutoField(primary_key = True)				# don't specify this yourself (?)
    title = models.CharField(max_length = None)
    description = models.CharField(max_length = None)
    creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
-   acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT)
+   acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, null = True, default = None)
    timePosted = models.DateTimeField(auto_now_add = True)		# set the field to the time when it's created
    state = models.SmallIntegerField(default = STATE_CREATED)
    notify = models.BooleanField(default = False)		# 	iteration 1?
 
    def __str__(self):
-      return self.title
+      return "task: " + self.title
 
-   def markAccepted(self):
-   	self.state = STATE_ACCEPTED
+   def markAccepted(self, acceptor):
+   	if self.state == STATE_CREATED:
+   		self.state = STATE_ACCEPTED
+   		self.acceptor = acceptor
+   	else:
+   		raise ValidationError("wrong state to be marked as accepted")
 
    def markCompleted(self):
-   	self.state = STATE_COMPLETED
+   	if self.state == STATE_ACCEPTED:
+   		self.state = STATE_COMPLETED
+   	else:
+   		raise ValidationError("wrong state to be marked as completed")
 
    def setTitle(self, newTitle):
    	self.title = newTitle
