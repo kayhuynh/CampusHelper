@@ -1,6 +1,6 @@
 from django.db import models
 
-STATE_CREATED = 1			# in this file?
+STATE_CREATED = 1
 STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
@@ -9,7 +9,7 @@ class User(models.Model):
    password = models.CharField(max_length = None)
    email = models.EmailField(max_length = 254)
    description = models.CharField(max_length = None)
-   # users.tasksCreated, users.tasksAccepted from Task ForeignKeys
+   # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
    def __str__(self):
       return self.username
@@ -24,22 +24,22 @@ class User(models.Model):
    	#
 
    def postedTasks(self):
-   	#
+   	return self.tasksCreated
 
    def acceptedTasks(self):
-   	#
+   	return self.tasksAccepted
 
    def setEmail(self, newEmail):
-   	#
+   	self.email = newEmail
 
    def setPassword(self, newPass):
-   	#
+   	self.password = newPass
 
    def setDescription(self, newDesc):
    	#
 
 def getUser(username):
-	#
+	return User.objects.get(username__exact = username)
 
 class Task(models.Model):
 	id = models.AutoField(primary_key = True)				# don't specify this yourself (?)
@@ -55,19 +55,19 @@ class Task(models.Model):
       return self.title
 
    def markAccepted(self):
-   	#
+   	self.state = STATE_ACCEPTED
 
    def markCompleted(self):
-   	#
+   	self.state = STATE_COMPLETED
 
    def setTitle(self, newTitle):
-   	#
+   	self.title = newTitle
 
    def setDescription(self, newDesc):
-   	#
+   	self.description = newDesc
 
    def notify(self):
-   	#
+   	self.notify = True
 
 def getTask(taskID):
-	#
+	return Task.objects.get(id__exact = taskID)
