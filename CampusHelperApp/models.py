@@ -14,9 +14,6 @@ class User(models.Model):
    def __str__(self):
       return self.username
 
-   def createTask(self, title, desc):
-   	#
-
    def markTaskCompleted(self, taskID):
    	#
 
@@ -65,7 +62,6 @@ class Task(models.Model):
 
    def notify(self):
    	self.notify = True
-
 
 def newUser(username, password, email, desc):
    k = User(username = username, password = password, email = email, description = desc)
