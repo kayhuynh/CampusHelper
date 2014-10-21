@@ -14,13 +14,13 @@ class User(models.Model):
    def __str__(self):
       return self.username
 
-   def createTask(self):
+   def createTask(self, title, desc):
    	#
 
-   def markTaskCompleted(self):
+   def markTaskCompleted(self, taskID):
    	#
 
-   def acceptTask(self):
+   def acceptTask(self, taskID):
    	#
 
    def postedTasks(self):
