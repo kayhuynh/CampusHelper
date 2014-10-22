@@ -5,9 +5,7 @@ from django.db import IntegrityError
 
 from CampusHelperApp import models
 
-#For now all POST method is implemented but still cookie has not been figured out. So please have a look. Please
-#inspect line 4-6 imports because it might cause problems. Ensure the validation error is properly used and handled
-#Call me 5104176797 if any question.
+#Yifu 5104176797 if any question.
 
 import json
 
