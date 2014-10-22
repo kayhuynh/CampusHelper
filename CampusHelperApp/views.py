@@ -30,7 +30,6 @@ STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
 def root(request):
-<<<<<<< HEAD
    try:
       if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
         	requestHeader = json.loads(request.body)
@@ -170,7 +169,6 @@ def mytasks(request):
     	return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
    except (ValueError, KeyError):
       return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
-=======
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
