@@ -53,7 +53,7 @@
             <br>
             <div class="form-wrap" id="loginform">
                 <div class="form-group">
-                    <input type="email" id="email" placeholder="Email">
+                    <input type="text" id="username" placeholder="Username">
                 </div>
                 <div class="form-group">
                     <input type="password" id="password" placeholder="Password">
@@ -71,7 +71,7 @@
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
         function logInFn(){
-            var user = $('#email').val();
+            var user = $('#username').val();
             var pass = $('#password').val();
             $.ajax({
                 url: "/",
