@@ -141,7 +141,7 @@ def newtask(request):
         	u = models.getUserByCookieID(cookieID)
         	creator = u.username
         	task = models.newTask(creator, title, description)
-         return HttpResponse(json.dumps({errcode: SUCCESS, taskID: task.id}), content_type = "application/json", status = 200)
+         return HttpResponse(json.dumps({errcode: SUCCESS, taskID: task.taskID}), content_type = "application/json", status = 200)
       elif request.method == "GET":
       	#
       else:

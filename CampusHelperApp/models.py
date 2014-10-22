@@ -40,7 +40,7 @@ class User(models.Model):
    	self.description = newDesc
 
 class Task(models.Model):
-	id = models.AutoField(primary_key = True)				# don't specify this yourself (?)
+	taskID = models.AutoField(primary_key = True)				# don't specify this yourself (?)
    title = models.TextField(max_length = None)
    description = models.TextField(max_length = None)
    creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
@@ -91,4 +91,4 @@ def newTask(creator, title, desc):
 	return k
 
 def getTask(taskID):
-	return Task.objects.get(id__exact = taskID)
+	return Task.objects.get(taskID__exact = taskID)
