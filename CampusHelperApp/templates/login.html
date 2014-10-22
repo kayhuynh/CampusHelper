@@ -25,10 +25,10 @@
     <title>Welcome to Callaborate </title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/stylish-portfolio.css" rel="stylesheet">
+    <link href="{% static "css/stylish-portfolio.css" %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -50,21 +50,49 @@
     <header id="top" class="header">
         <div class="text-vertical-center">
             <h1>Login</h1>
-            <h3>Dedicated to Help students collaborate better.</h3>
             <br>
-            <a href="#about" class="btn btn-dark btn-lg">Sign Up</a>
-            <a href="#about" class="btn btn-dark btn-lg">Login</a>
-            <a href="#about" class="btn btn-dark btn-lg">How it works</a>
+            <div class="form-wrap" id="loginform">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password">
+                </div>
+            </div>
+            <button onclick="logInFn()" class="btn btn-primary">
+                Log In
+            </button>
         </div>
     </header>
 
    
 
     <!-- jQuery Version 1.11.0 -->
-    <script src="js/jquery-1.11.0.js"></script>
-
+    <script src="{% static "js/jquery-1.11.0.js" %}"></script>
+    <script>
+        function logInFn(){
+            var user = $('#email').val();
+            var pass = $('#password').val();
+            $.ajax({
+                url: "/",
+                type: 'POST',
+                contentType: "application/json",
+                data: '{ "username" : ' + '"' + user + '"' + ', "password" : ' + '"' + pass + '"' + '}' ,
+                success: function(response) {
+                    var errorCode = response.errcode;
+                    console.log(response);
+                    alert("error Code is: " + errorCode);
+                  },
+                error: function(response) {
+                    var errorCode = response.errcode;
+                    console.log(response);
+                    alert("FAILED. Error code: " + errorCode);
+                }
+            });
+        }
+    </script>
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
 
     <!-- Custom Theme JavaScript -->
 

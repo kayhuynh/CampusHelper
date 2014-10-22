@@ -22,7 +22,7 @@
     <link href="{% static "css/fonts.css" %}" rel="stylesheet">
     <link href="{% static "font-awesome-4.2.0/css/font-awesome.min.css" %}"  rel="stylesheet" type="text/css">
 
-    <title>Welcome to Callaborate </title>
+    <title></title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -46,27 +46,25 @@
 
 <body>
 
-    <!-- Header -->
+    <!-- Header --> 
     <header id="top" class="header">
         <div class="text-vertical-center">
             <h1>Signup For <font class="logo" color="00387a">CAL</font><font class="logo" color="ffb819">aborate</font>!</h1>
-            <h3>Dedicated to Help students collaborate better.</h3>
-            <br>
-            <a href="#about" class="btn btn-dark btn-lg">Sign Up</a>
-            <a href="#about" class="btn btn-dark btn-lg">Login</a>
-            <a href="#about" class="btn btn-dark btn-lg">How it works</a>
+            <div id='errMsg'> </div>
+            <form id="sign-up-form" method="post" action="">
+                <label> Username<input type='text' name='Username' id='userField'> </label> <br>
+                <label> Password <input type='password' name="Password" id='passwordField'> </label> <br>
+                <label>  Verify Password <input type='password' name="Enter Password Again" id="passwordVerify"> </label> <br>
+                <input type='submit' value='Sign Up' id='submit-but'>
+            </form>
         </div>
     </header>
-
-   
 
     <!-- jQuery Version 1.11.0 -->
     <script src="js/jquery-1.11.0.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-
-    <!-- Custom Theme JavaScript -->
 
 </body>
 
