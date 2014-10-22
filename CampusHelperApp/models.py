@@ -12,7 +12,7 @@ class User(models.Model):
 	password = models.TextField(max_length = None)
 	email = models.EmailField(max_length = 254)
 	description = models.TextField(max_length = None)
-	cookieID = models.BigIntegerField(default = random.randint(-(2 ** 63), (2 ** 63) - 1), unique = True)
+	cookieID = models.BigIntegerField(unique = True)
 	# self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
 	def __str__(self):
@@ -25,10 +25,10 @@ class User(models.Model):
 		getTask(taskID).markAccepted(self)
 
 	def postedTasks(self):
-		return map(self.tasksCreated, lambda x: x.taskID)
+		return map(lambda x: x.taskID, self.tasksCreated.all())
 
 	def acceptedTasks(self):
-		return map(self.tasksAccepted, lambda x: x.taskID)
+		return map(lambda x: x.taskID, self.tasksAccepted.all())
 
 	def setEmail(self, newEmail):
 		self.email = newEmail
@@ -75,7 +75,8 @@ class Task(models.Model):
 		self.notify = True
 
 def newUser(username, password, email, desc):
-	k = User(username = username, password = password, email = email, description = desc)
+	cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
+	k = User(username = username, password = password, email = email, description = desc, cookieID = cookieID)
 	k.save()
 	return k
 

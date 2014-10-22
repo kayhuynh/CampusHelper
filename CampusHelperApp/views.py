@@ -27,49 +27,39 @@ STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
 def root(request):
-    try:
-        if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            requestHeader = json.loads(request.body)
-            username = requestHeader["username"]
-            password = requestHeader["password"]
-            print username
-            print password
-            u = models.getUser(username)
-            if u.password != password:
-                return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-            else:
-                request.session["cookieID"] = u.cookieID
-                return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
-        elif request.method == "GET":
-            template = loader.get_template("index.html")
-            context = RequestContext(request)
-            return HttpResponse(template.render(context))
-        else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
-    except (ValidationError, ObjectDoesNotExist):
-        return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
-    except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
-
-def login(request):
-    try:
-      if request.method == "GET":
-        template = loader.get_template("login.html")
-        context = RequestContext(request)
-        return HttpResponse(template.render(context))
-    except (ValidationError):
-      return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-        #
-    except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
-
-def alltasks(request):
 	try:
-		if request.method == "GET":
-			return HttpResponse("all tasks get request")
+		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+			requestHeader = json.loads(request.body)
+			username = requestHeader["username"]
+			password = requestHeader["password"]
+			u = models.getUser(username)
+			if u.password != password:
+				return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+			request.session["cookieID"] = u.cookieID
+			return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
+		elif request.method == "GET":
+			template = loader.get_template("index.html")
+			context = RequestContext(request)
+			return HttpResponse(template.render(context))
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+	except (ValidationError, ObjectDoesNotExist):
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
+		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+
+def login(request):
+	if request.method == "GET":
+		template = loader.get_template("login.html")
+		context = RequestContext(request)
+		return HttpResponse(template.render(context))
+	else:
+		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+
+def alltasks(request):
+	if request.method == "GET":
+		return HttpResponse("all tasks get request")
+	else:
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def alltasksQuery(request, query):
@@ -85,8 +75,8 @@ def profile(request):
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
-			field = requestHeader("field")
-			newdata = requestHeader("newdata")
+			field = requestHeader["field"]
+			newdata = requestHeader["newdata"]
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
 			if field == USER_PASSWORD:
@@ -96,14 +86,14 @@ def profile(request):
 			elif field == USER_DESCRIPTION:
 				u.setDescription(newdata)
 			else:
-				return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
-			return HttpResponse(json.dumps({errcode: SUCCESS}), content_type = "application/json", status = 200)
+				return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+			return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
 		elif request.method == "GET":
 			return HttpResponse("get profile request")
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	except ValidationError:
-		return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
@@ -120,13 +110,13 @@ def taskQuery(request, taskID):
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
-			field = requestHeader("field")
-			newdata = requestHeader("newdata")
+			field = requestHeader["field"]
+			newdata = requestHeader["newdata"]
 			cur_task = models.getTask(taskID)
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
 			if u.username != cur_task.creator:
-				return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
+				return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 			if field == TASK_TITLE:
 				cur_task.setTitle(newdata)
 			elif field == TASK_DESCRIPTION:
@@ -137,16 +127,16 @@ def taskQuery(request, taskID):
 				elif newdata == STATE_COMPLETED:
 					cur_task.markCompleted()
 				else:
-					return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
+					return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 			else:
-				return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
-			return HttpResponse(json.dumps({errcode: SUCCESS}), content_type = "application/json", status = 200)
+				return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+			return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
 		elif request.method == "GET":
 			return HttpResponse("task Query get request")
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	except (ValidationError):
-		return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
@@ -154,19 +144,19 @@ def newtask(request):
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
-			title = requestHeader("title")
-			description = requestHeader("description")
+			title = requestHeader["title"]
+			description = requestHeader["description"]
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
 			creator = u.username
 			task = models.newTask(creator, title, description)
-			return HttpResponse(json.dumps({errcode: SUCCESS, taskID: task.taskID}), content_type = "application/json", status = 200)
+			return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json", status = 200)
 		elif request.method == "GET":
 			return HttpResponse("new task get request")
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	except (ValidationError):
-		return HttpResponse(json.dumps({errcode: FAILURE}), content_type = "application/json", status = 200)
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
@@ -192,7 +182,14 @@ def mytasks(request):
 	try:
 		if request.method == "GET":
 			return HttpResponse("mytasks get request")
+
+			u = models.getUserByCookieID(request.session["cookieID"])
+
+			#
+
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+	except ObjectDoesNotExist:
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)

@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 	url(r'^$', 'CampusHelperApp.views.root'),
 	# url(r'^frontend.css$',TemplateView.as_view(template_name='frontend.css'))
 	url(r'^alltasks$', 'CampusHelperApp.views.alltasks'),
-	url(r'^^alltasks?q=(?P<query>\w+)$', 'CampusHelperApp.views.alltasksQuery'),
+	url(r'^alltasks?q=(?P<query>\w+)$', 'CampusHelperApp.views.alltasksQuery'),
 	url(r'^profile$', 'CampusHelperApp.views.profile'),
 	url(r'^profile?q=(?P<helper>\w+)$', 'CampusHelperApp.views.profileQuery'),
 	url(r'^task$', 'CampusHelperApp.views.task'),
