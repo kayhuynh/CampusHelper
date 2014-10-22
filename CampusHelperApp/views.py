@@ -54,6 +54,8 @@ def login(request):
 			template = loader.get_template("login.html")
 			context = RequestContext(request)
 			return HttpResponse(template.render(context))
+		else:
+			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	except (ValidationError):
 		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
