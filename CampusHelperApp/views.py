@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.template import RequestContext, loader
+from django.template import RequestContext, loader, Context, Template
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import IntegrityError
@@ -72,30 +72,33 @@ def alltasksQuery(request, query):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def profile(request):
-	try:
-		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-			requestHeader = json.loads(request.body)
-			field = requestHeader["field"]
-			newdata = requestHeader["newdata"]
-			cookieID = request.session["cookieID"]
-			u = models.getUserByCookieID(cookieID)
-			if field == USER_PASSWORD:
-				u.setPassword(newdata)
-			if field == USER_EMAIL:
-				u.setEmail(newdata)
-			elif field == USER_DESCRIPTION:
-				u.setDescription(newdata)
-			else:
-				return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-			return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
-		elif request.method == "GET":
-			return HttpResponse("get profile request")
-		else:
-			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
-	except ValidationError:
-		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-	except (ValueError, KeyError):
-		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+    try:
+        """
+        if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+            requestHeader = json.loads(request.body)
+            field = requestHeader["field"]
+            newdata = requestHeader["newdata"]
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            if field == USER_PASSWORD:
+                u.setPassword(newdata)
+            if field == USER_EMAIL:
+                u.setEmail(newdata)
+            elif field == USER_DESCRIPTION:
+                u.setDescription(newdata)
+        """
+        if request.method == "GET":
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            template = loader.get_template("profile.html")
+            context = Context({"user" : u.username})
+            return HttpResponse(template.render(context))
+        else:
+            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+    except ValidationError:
+        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+    except (ValueError, KeyError):
+        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def profileQuery(request, helper):
 	try:
