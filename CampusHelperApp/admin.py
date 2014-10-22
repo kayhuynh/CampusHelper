@@ -1,6 +1,7 @@
 from django.contrib import admin
-from CampusHelperApp.models import User, Task
+from CampusHelperApp import models
 
 # Register your models here.
-admin.site.register(User)
-admin.site.register(Task)
+
+admin.site.register(models.User)
+admin.site.register(models.Task)
