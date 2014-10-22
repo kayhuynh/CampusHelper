@@ -30,8 +30,8 @@ def root(request):
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
-			username = requestHeader("username")
-			password = requestHeader("password")
+			username = requestHeader["username"]
+			password = requestHeader["password"]
 			u = models.getUser(username)
 			if u.password != password:
 				return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
@@ -75,8 +75,8 @@ def profile(request):
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
-			field = requestHeader("field")
-			newdata = requestHeader("newdata")
+			field = requestHeader["field"]
+			newdata = requestHeader["newdata"]
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
 			if field == USER_PASSWORD:
@@ -110,8 +110,8 @@ def taskQuery(request, taskID):
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
-			field = requestHeader("field")
-			newdata = requestHeader("newdata")
+			field = requestHeader["field"]
+			newdata = requestHeader["newdata"]
 			cur_task = models.getTask(taskID)
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
@@ -144,8 +144,8 @@ def newtask(request):
 	try:
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
-			title = requestHeader("title")
-			description = requestHeader("description")
+			title = requestHeader["title"]
+			description = requestHeader["description"]
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
 			creator = u.username
