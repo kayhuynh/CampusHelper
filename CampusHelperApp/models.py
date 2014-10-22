@@ -25,10 +25,10 @@ class User(models.Model):
 		getTask(taskID).markAccepted(self)
 
 	def postedTasks(self):
-		return map(self.tasksCreated, lambda x: x.id)
+		return map(self.tasksCreated, lambda x: x.taskID)
 
 	def acceptedTasks(self):
-		return map(self.tasksAccepted, lambda x: x.id)
+		return map(self.tasksAccepted, lambda x: x.taskID)
 
 	def setEmail(self, newEmail):
 		self.email = newEmail
