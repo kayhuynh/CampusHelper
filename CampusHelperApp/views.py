@@ -174,7 +174,7 @@ def newuser(request):
         else:
             return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
     except (ValidationError, IntegrityError):
-        return HttpResponse(json.dumps({"errcode" : FAILURE}), content_type = "application/json")
+        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json")
     except (ValueError, KeyError):
         return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
