@@ -166,7 +166,7 @@ def newuser(request):
             d = json.loads(bytes.decode(request.body))
             u = models.newUser(d["username"], d["password"], d["email"], d["description"])
             request.session["cookieID"] = u.cookieID
-            return HttpResponse(json.dumps({"errcode" : SUCCESS}), content_type = "application/json")
+            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET":
             template = loader.get_template("signup.html")
             context = RequestContext(request)
