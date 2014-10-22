@@ -8,11 +8,11 @@ STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
 class User(models.Model):
-   username = models.CharField(max_length = 100, primary_key = True)
-   password = models.CharField(max_length = 100)
+   username = models.TextField(max_length = None, primary_key = True)
+   password = models.TextField(max_length = None)
    email = models.EmailField(max_length = 254)
-   description = models.CharField(max_length = 500)
-   cookieID = models.BigIntegerField(default = random.randint(-(2 ** 63), (2 ** 63) - 1))
+   description = models.TextField(max_length = None)
+   cookieID = models.BigIntegerField(default = random.randint(-(2 ** 63), (2 ** 63) - 1), unique = True)
    # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
    def __str__(self):
@@ -40,9 +40,9 @@ class User(models.Model):
    	self.description = newDesc
 
 class Task(models.Model):
-   id = models.AutoField(primary_key = True)				# don't specify this yourself (?)
-   title = models.CharField(max_length = 100)
-   description = models.CharField(max_length = 500)
+	id = models.AutoField(primary_key = True)				# don't specify this yourself (?)
+   title = models.TextField(max_length = None)
+   description = models.TextField(max_length = None)
    creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
    acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, null = True, default = None)
    timePosted = models.DateTimeField(auto_now_add = True)		# set the field to the time when it's created
@@ -81,6 +81,9 @@ def newUser(username, password, email, desc):
 
 def getUser(username):
 	return User.objects.get(username__exact = username)
+
+def getUserByCookieID(cookieID):
+	return User.objects.get(cookieID__exact = cookieID)
 
 def newTask(creator, title, desc):
 	k = Task(creator = creator, title = title, description = desc)
