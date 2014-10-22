@@ -49,55 +49,10 @@
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h1>Login</h1>
+            <h1>Profile Page</h1>
             <br>
-            <div class="form-wrap" id="loginform">
-                <div class="form-group">
-                    <input type="text" id="username" placeholder="Username">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Password">
-                </div>
-            </div>
-            <button onclick="logInFn()" class="btn btn-primary">
-                Log In
-            </button>
+            <h2>Welcome, {{ user }}</h2>
         </div>
     </header>
-
-   
-
-    <!-- jQuery Version 1.11.0 -->
-    <script src="{% static "js/jquery-1.11.0.js" %}"></script>
-    <script>
-        function logInFn(){
-            var user = $('#username').val();
-            var pass = $('#password').val();
-            $.ajax({
-                url: "/",
-                type: 'POST',
-                contentType: "application/json",
-                data: '{ "username" : ' + '"' + user + '"' + ', "password" : ' + '"' + pass + '"' + '}' ,
-                success: function(response) {
-                    var errorCode = response.errcode;
-                    console.log(response);
-                    if(errorCode == 1){
-                        window.location.href = "/profile";
-                    };
-                  },
-                error: function(response) {
-                    var errorCode = response.errcode;
-                    console.log(response);
-                    alert("FAILED. Error code: " + errorCode);
-                }
-            });
-        }
-    </script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "js/bootstrap.min.js" %}"></script>
-
-    <!-- Custom Theme JavaScript -->
-
 </body>
-
 </html>
