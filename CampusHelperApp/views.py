@@ -172,7 +172,7 @@ def newuser(request):
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	except (ValidationError, IntegrityError):
-		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json")
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
@@ -181,9 +181,13 @@ def mytasks(request):
 		if request.method == "GET":
 			return HttpResponse("mytasks get request")
 
+			u = models.getUserByCookieID(request.session["cookieID"])
+
+			#
+
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	except ObjectDoesNotExist:
-		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json")
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
 	except (ValueError, KeyError):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
