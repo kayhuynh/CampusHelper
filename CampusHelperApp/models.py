@@ -32,12 +32,15 @@ class User(models.Model):
 
 	def setEmail(self, newEmail):
 		self.email = newEmail
+		self.save()
 
 	def setPassword(self, newPass):
 		self.password = newPass
+		self.save()
 
 	def setDescription(self, newDesc):
 		self.description = newDesc
+		self.save()
 
 class Task(models.Model):
 	taskID = models.AutoField(primary_key = True)				# don't specify this yourself (?)
@@ -56,23 +59,28 @@ class Task(models.Model):
 		if self.state == STATE_CREATED:
 			self.state = STATE_ACCEPTED
 			self.acceptor = acceptor
+			self.save()
 		else:
 			raise ValidationError("wrong state to be marked as accepted")
 
 	def markCompleted(self):
 		if self.state == STATE_ACCEPTED:
 			self.state = STATE_COMPLETED
+			self.save()
 		else:
 			raise ValidationError("wrong state to be marked as completed")
 
 	def setTitle(self, newTitle):
 		self.title = newTitle
+		self.save()
 
 	def setDescription(self, newDesc):
 		self.description = newDesc
+		self.save()
 
 	def notify(self):
 		self.notify = True
+		self.save()
 
 def newUser(username, password, email, desc):
 	cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
