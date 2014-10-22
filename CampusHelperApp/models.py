@@ -12,7 +12,7 @@ class User(models.Model):
    password = models.CharField(max_length = None)
    email = models.EmailField(max_length = 254)
    description = models.CharField(max_length = None)
-   cookieID = models.BigIntegerField(default = random.randint(-(2 ** 63), (2 ** 63) - 1))
+   cookieID = models.BigIntegerField(default = random.randint(-(2 ** 63), (2 ** 63) - 1), unique = True)
    # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
    def __str__(self):
@@ -81,6 +81,9 @@ def newUser(username, password, email, desc):
 
 def getUser(username):
 	return User.objects.get(username__exact = username)
+
+def getUserByCookieID(cookieID):
+	return User.objects.get(cookieID__exact = cookieID)
 
 def newTask(creator, title, desc):
 	k = Task(creator = creator, title = title, description = desc)
