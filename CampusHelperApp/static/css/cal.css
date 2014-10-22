@@ -1,0 +1,25 @@
+.bg-primary-cal{    
+    color: #fff;
+    background-color: #00B0DA;
+}
+
+.text-primary-cal{
+    color: #00B0DA;
+}
+
+#signup{
+    display:none;
+}
+
+.btn-primary-cal {
+    background-color: #00B0DA;
+}
+
+
+.container-tryitnow{
+    height: 100%;
+}
+
+.sm-link-bar > a{
+    padding-right: 10px; 
+}
