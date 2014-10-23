@@ -71,8 +71,6 @@ def alltasksQuery(request, query):
 
 def profile(request):
 	try:
-		# field referenced before assignment???
-		"""
 		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
 			requestHeader = json.loads(request.body)
 			field = requestHeader["field"]
@@ -85,7 +83,6 @@ def profile(request):
 				u.setEmail(newdata)
 			elif field == USER_DESCRIPTION:
 				u.setDescription(newdata)
-		"""
 		if request.method == "GET":
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
