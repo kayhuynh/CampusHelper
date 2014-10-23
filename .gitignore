@@ -1,4 +1,4 @@
-ompiled source #
+# Compiled source #
 ###################
 *.com
 *.class
@@ -8,7 +8,7 @@ ompiled source #
 *.so
 *.pyc
 
- 
+
 # Packages #
 ############
 # it's better to unpack these files and commit the raw source
@@ -21,13 +21,13 @@ ompiled source #
 *.rar
 *.tar
 *.zip
- 
+
 # Logs and databases #
 ######################
 *.log
 *.sql
 *.sqlite
- 
+
 # OS generated files #
 ######################
 .DS_Store
