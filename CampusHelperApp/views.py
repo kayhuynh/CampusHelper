@@ -144,24 +144,24 @@ def taskQuery(request, taskID):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def newtask(request):
-	try:
-		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-			requestHeader = json.loads(request.body)
-			title = requestHeader["title"]
-			description = requestHeader["description"]
-			cookieID = request.session["cookieID"]
-			u = models.getUserByCookieID(cookieID)
-			creator = u.username
-			task = models.newTask(creator, title, description)
-			return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json", status = 200)
-		elif request.method == "GET":
-			return HttpResponse("new task get request")
-		else:
-			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
-	except (ValidationError):
-		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-	except (ValueError, KeyError):
-		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+    try:
+        if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+            requestHeader = json.loads(request.body)
+            title = requestHeader["title"]
+            description = requestHeader["description"]
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            creator = u.username
+            task = models.newTask(u, title, description)
+            return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json", status = 200)
+        elif request.method == "GET":
+            return HttpResponse("new task get request")
+        else:
+            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+    except (ValidationError):
+        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+    except (ValueError, KeyError):
+        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def newuser(request):
     try:

@@ -48,11 +48,61 @@
 
     <!-- Header -->
     <header id="top" class="header">
-        <div class="text-vertical-center">
-            <h1>Profile Page</h1>
-            <br>
-            <h2>Welcome, {{ user }}</h2>
+        <h1 style="text-align:center;margin-left:4cm"><strong>Profile Page</strong></h1>
+        <br>
+        <h2 style="text-align:center;margin-left:4cm">Welcome, {{ user }}</h2>
+
+        <br>
+
+        <div style="text-align:center;">
+            <div class="form-wrap" id="loginform">
+                <h3>Add Task</h3>
+                <div class="form-group">
+                    <strong>Task Title</strong><input type="text" id="taskname" placeholder="Task Title">
+                </div>
+                <div class="form-group">
+                    <strong>Task Description</strong><input type="text" id="taskdesc" placeholder="Task Description">
+                </div>
+                <div>
+                    <button onclick="addTaskFn()" class="btn btn-primary">
+                    Add Task
+                    </button>
+                    <button onclick="location.href='/login'" class="btn btn-primary">
+                    Logout
+                    </button>
+                </div>
+            </div>
         </div>
+
     </header>
+    <script src="{% static "js/jquery-1.11.0.js" %}"></script>
+    <script>
+        function addTaskFn(){
+            var title = $('#taskname').val();
+            var desc = $('#taskdesc').val();
+            console.log(title);
+            console.log(desc);
+            $.ajax({
+                url: "/newtask",
+                type: 'POST',
+                contentType: "application/json",
+                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + desc + '"' + '}' ,
+                success: function(response) {
+                    var errorCode = response.errcode;
+                    var taskID = response.taskID;
+                    console.log(response);
+                    if(errorCode == 1){
+                        alert("Task successfully posted, task ID is: " + taskID);
+                    };
+                  },
+                error: function(response) {
+                    var errorCode = response.errcode;
+                    console.log(response);
+                    alert("FAILED. Error code: " + errorCode);
+                }
+            });
+        }
+    </script>
 </body>
+
 </html>
