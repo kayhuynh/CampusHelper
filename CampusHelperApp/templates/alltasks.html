@@ -48,17 +48,13 @@
 
     <!-- Header -->
     <header id="top" class="header">
-        <div class="text-vertical-center">
-            { % for task in allTasks % }
-                <div> 
-                    <h2> {{ task.taskID }} </h2> 
-                    <p> {{ task.description }} </p>
-                    <div>  
-                        Creator: {{ task.creator }} <br>
-                        Acceptor: {{ task.acceptor }}
-                    </div>
-                 </div> 
-            { % endfor % }
+        <h2 style="text-align:center">Here are all the tasks:</h2>
+        <div style="text-align:center">
+            {% for task in allTasks %}
+                <p><strong>{{ task.title }} </strong>: {{ task.description }} </p>
+                <p>Posted by: {{ task.creator }}</p>
+                <br>
+            {% endfor %}
         </div>
     </header>
 </body>

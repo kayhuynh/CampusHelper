@@ -56,13 +56,13 @@ def login(request):
 
 # Shows a list of all tasks globally 
 def alltasks(request):
-	if request.method == "GET":
-		template = loader.get_template('alltasks.html')
-		all_tasks = models.Task.objects.all()
-		context = Context({"allTasks": all_tasks})
-		return HttpResponse(template.render(context))
-	else:
-		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+    if request.method == "GET":
+        template = loader.get_template('alltasks.html')
+        all_tasks = models.Task.objects.all()
+        context = Context({"allTasks": all_tasks})
+        return HttpResponse(template.render(context))
+    else:
+        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def alltasksQuery(request, query):
 	try:
@@ -187,11 +187,7 @@ def mytasks(request):
 	try:
 		if request.method == "GET":
 			return HttpResponse("mytasks get request")
-
 			u = models.getUserByCookieID(request.session["cookieID"])
-
-			#
-
 		else:
 			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 	except ObjectDoesNotExist:
