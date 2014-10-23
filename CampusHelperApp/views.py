@@ -123,7 +123,7 @@ def taskQuery(request, taskID):
 				cur_task.setDescription(newdata)
 			elif field == TASK_STATE:
 				if newdata == STATE_ACCEPTED:
-					cur_task.markAccepted()
+					cur_task.markAccepted(u)
 				elif newdata == STATE_COMPLETED:
 					cur_task.markCompleted()
 				else:
@@ -148,8 +148,7 @@ def newtask(request):
 			description = requestHeader["description"]
 			cookieID = request.session["cookieID"]
 			u = models.getUserByCookieID(cookieID)
-			creator = u.username
-			task = models.newTask(creator, title, description)
+			task = models.newTask(u, title, description)
 			return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json", status = 200)
 		elif request.method == "GET":
 			return HttpResponse("new task get request")
