@@ -54,10 +54,13 @@ def login(request):
 	else:
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
+# Shows a list of all tasks globally 
 def alltasks(request):
 	if request.method == "GET":
-		tasks = models.Task.all()
-		return HttpResponse("all tasks get request")
+		template = loader.get_template('alltasks.html')
+		all_tasks = models.Task.objects.all()
+		context = Context({"allTasks": all_tasks})
+		return HttpResponse(template.render(context))
 	else:
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
