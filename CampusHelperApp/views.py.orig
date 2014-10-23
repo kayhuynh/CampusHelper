@@ -71,33 +71,31 @@ def alltasksQuery(request, query):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def profile(request):
-    try:
-        """
-        if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            requestHeader = json.loads(request.body)
-            field = requestHeader["field"]
-            newdata = requestHeader["newdata"]
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
-            if field == USER_PASSWORD:
-                u.setPassword(newdata)
-            if field == USER_EMAIL:
-                u.setEmail(newdata)
-            elif field == USER_DESCRIPTION:
-                u.setDescription(newdata)
-        """
-        if request.method == "GET":
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
-            template = loader.get_template("profile.html")
-            context = Context({"user" : u.username})
-            return HttpResponse(template.render(context))
-        else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
-    except ValidationError:
-        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-    except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+	try:
+		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+			requestHeader = json.loads(request.body)
+			field = requestHeader["field"]
+			newdata = requestHeader["newdata"]
+			cookieID = request.session["cookieID"]
+			u = models.getUserByCookieID(cookieID)
+			if field == USER_PASSWORD:
+				u.setPassword(newdata)
+			if field == USER_EMAIL:
+				u.setEmail(newdata)
+			elif field == USER_DESCRIPTION:
+				u.setDescription(newdata)
+		if request.method == "GET":
+			cookieID = request.session["cookieID"]
+			u = models.getUserByCookieID(cookieID)
+			template = loader.get_template("profile.html")
+			context = Context({"user": u.username})
+			return HttpResponse(template.render(context))
+		else:
+			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+	except ValidationError:
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+	except (ValueError, KeyError):
+		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def profileQuery(request, helper):
 	try:
@@ -143,6 +141,7 @@ def taskQuery(request, taskID):
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def newtask(request):
+<<<<<<< HEAD
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(request.body)
@@ -161,6 +160,25 @@ def newtask(request):
         return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
     except (ValueError, KeyError):
         return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+=======
+	try:
+		if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+			requestHeader = json.loads(request.body)
+			title = requestHeader["title"]
+			description = requestHeader["description"]
+			cookieID = request.session["cookieID"]
+			u = models.getUserByCookieID(cookieID)
+			task = models.newTask(u, title, description)
+			return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json", status = 200)
+		elif request.method == "GET":
+			return HttpResponse("new task get request")
+		else:
+			return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+	except (ValidationError):
+		return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+	except (ValueError, KeyError):
+		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+>>>>>>> ad2d06c083626753b180b60c2c2c284dc4bfe7dc
 
 def newuser(request):
 	 try:
