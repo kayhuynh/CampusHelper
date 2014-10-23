@@ -56,6 +56,7 @@ def login(request):
 
 def alltasks(request):
 	if request.method == "GET":
+		tasks = models.Task.all()
 		return HttpResponse("all tasks get request")
 	else:
 		return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
