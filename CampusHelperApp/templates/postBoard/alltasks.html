@@ -1,18 +1,53 @@
 {% extends 'postBoard/base.html' %}
 {% block body_title %} someone's list of tasks {% endblock %}
 
+<script>
+$(function() {
 
+      // Initially hide toggleable content
+    $("td[colspan=3]").find("p").hide();
+
+      // Click handler on entire table
+    $("table").click(function(event) {
+
+          // No bubbling up
+        event.stopPropagation();
+
+        var $target = $(event.target);
+
+          // Open and close the appropriate thing
+        if ( $target.closest("td").attr("colspan") > 1 ) {
+            $target.slideUp();
+        } else {
+            $target.closest("tr").next().find("p").slideToggle();
+        }                    
+    });
+});​
+</script>
 {% block content %} 
 <div class="containter">
-        <h2 style="text-align:center">Here are all the tasks posted:</h2>
-        <div style="text-align:center">
+        <div id="task_table">
+            <table border="0" cellpadding="10" width="100%">
+                <tr>
+                    <td>Task Name</td>
+                    <td>Task Description</td>
+                    <td>Posted By</td>
+                    <td></td>
+                </tr>
+
             {% for task in allTasks %}
-                <p><strong>{{ task.title }} </strong>: {{ task.description }} </p>
-                <p>Posted by: {{ task.creator }}</p>
-                <br>
+            <tr>
+                <td><p>{{ task.title }}</p></td>
+                <td><p>{{ task.description }}</p></td>
+                <td><p>{{ task.creator }}</p></td>
+                <td><a class="button" href=""><p>View Task<p></a></td>
+            </tr>
+            <tr>
+                <td colspan="3"><p>{{ task.description }}</p></td>
+            </tr>
             {% endfor %}
+            </table>
         </div>
 </div>
 
 {% endblock %}
-
