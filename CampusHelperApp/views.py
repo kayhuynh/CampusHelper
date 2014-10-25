@@ -57,7 +57,7 @@ def login(request):
 # Shows a list of all tasks globally 
 def alltasks(request):
     if request.method == "GET":
-        template = loader.get_template('postBoard/alltasks.html')
+        template = loader.get_template("postBoard/alltasks.html")
         all_tasks = models.Task.objects.all()
         context = Context({"allTasks": all_tasks})
         return HttpResponse(template.render(context))

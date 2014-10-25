@@ -84,6 +84,7 @@
                     if(errorCode == 1){
                         window.location.href = "/profile";
                     };
+                    alert("FAILED. Error code: " + errorCode);
                   },
                 error: function(response) {
                     var errorCode = response.errcode;
