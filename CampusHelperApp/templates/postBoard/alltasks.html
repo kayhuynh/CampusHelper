@@ -1,30 +1,6 @@
 {% extends 'postBoard/base.html' %}
 {% block body_title %} someone's list of tasks {% endblock %}
 
-<script>
-$(function() {
-
-      // Initially hide toggleable content
-    $("td[colspan=3]").find("p").hide();
-
-      // Click handler on entire table
-    $("table").click(function(event) {
-
-          // No bubbling up
-        event.stopPropagation();
-
-        var $target = $(event.target);
-
-          // Open and close the appropriate thing
-        if ( $target.closest("td").attr("colspan") > 1 ) {
-            $target.slideUp();
-        } else {
-            $target.closest("tr").next().find("p").slideToggle();
-        }                    
-    });
-});​
-</script>
-
 {% block content %} 
 <div class="containter">
         <div id="task_table">
@@ -51,4 +27,30 @@ $(function() {
         </div>
 </div>
 
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script>
+    $(function() {
+
+          // Initially hide toggleable content
+        $("td[colspan=3]").find("p").hide();
+
+          // Click handler on entire table
+        $("table").click(function(event) {
+
+              // No bubbling up
+            event.stopPropagation();
+
+            var $target = $(event.target);
+
+              // Open and close the appropriate thing
+            if ( $target.closest("td").attr("colspan") > 1 ) {
+                $target.slideUp();
+            } else {
+                $target.closest("tr").next().find("p").slideToggle();
+            }                    
+        });
+    });
+</script>
 {% endblock %}
+
+
