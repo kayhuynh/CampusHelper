@@ -57,9 +57,11 @@ def login(request):
 # Shows a list of all tasks globally 
 def alltasks(request):
     if request.method == "GET":
+    	cookieID = request.session["cookieID"]
+        user = models.getUserByCookieID(cookieID)
         template = loader.get_template('postBoard/alltasks.html')
         all_tasks = models.Task.objects.all()
-        context = Context({"allTasks": all_tasks})
+        context = Context({"allTasks": all_tasks, "user":user.username})
         return HttpResponse(template.render(context))
     else:
         return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)

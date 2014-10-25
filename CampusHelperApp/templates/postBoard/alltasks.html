@@ -1,7 +1,8 @@
 {% extends 'postBoard/base.html' %}
-{% block body_title %} someone's list of tasks {% endblock %}
+{% block body_title %} Welcome {{ user }} ! {% endblock %}
 
-{% block content %} 
+{% block content %}
+<a href="/profile" class="btn btn-info btn-large"><i class="icon-plus"></i> Post New Task</a>
 <div class="containter">
         <div id="task_table">
             <table border="0" cellpadding="10" width="100%">
