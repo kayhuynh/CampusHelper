@@ -1,5 +1,8 @@
 from django.test import TestCase
+from django.test import Client
 from CampusHelperApp.models import User, Task, newUser, newTask, STATE_CREATED, STATE_ACCEPTED, STATE_COMPLETED
+
+import json
 # Create your tests here.
 
 class UserTestCase(TestCase):
@@ -136,9 +139,9 @@ class FunctionalTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '{"errcode": 2}')
 
-    def test_alltasks(self):
+    """def test_alltasks(self):
         c = Client()
         response = c.get('/alltasks')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('Water' in response.content)
+        self.assertTrue('Water' in response.content)"""
 
