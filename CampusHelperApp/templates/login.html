@@ -83,8 +83,9 @@
                     console.log(response);
                     if(errorCode == 1){
                         window.location.href = "/alltasks";
-                    };
-                    alert("FAILED. Error code: " + errorCode);
+                    } else {
+                    	alert("FAILED. Error code: " + errorCode);
+                    }
                   },
                 error: function(response) {
                     var errorCode = response.errcode;
