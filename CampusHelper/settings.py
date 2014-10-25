@@ -59,8 +59,8 @@ WSGI_APPLICATION = 'CampusHelper.wsgi.application'
 
 DATABASES = {
 	'default': {
-	  'ENGINE': 'django.db.backends.sqlite3',
-	  'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+	    'ENGINE': 'django.db.backends.sqlite3',
+	    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 	}
 }
 
@@ -83,7 +83,6 @@ STATIC_URL = '/static/'
 
 ##### HEROKU
 
-"""
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
@@ -98,8 +97,8 @@ ALLOWED_HOSTS = ['*']
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
+STATIC_URL = '/CampusHelperApp/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-)"""
+)

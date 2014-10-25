@@ -103,4 +103,3 @@ class TaskTestCase(TestCase):
         deliver.notify()
         self.assertEqual(deliver.notify, True)
     
-# Create your tests here.
