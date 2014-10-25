@@ -17,6 +17,8 @@
     <!-- Custom CSS -->
     <link href="{% static "css/stylish-portfolio.css" %}" rel="stylesheet">
     <link href="{% static "css/cal.css" %}" rel="stylesheet">
+    <link href="{% static "css/postBoard.css" %}" rel="stylesheet">
+
 
     <!-- Custom Fonts -->
     <link href="{% static "css/fonts.css" %}" rel="stylesheet">
@@ -48,33 +50,39 @@
 
     <!-- Header -->
     <header id="top">
-        <h1 style="text-align:center;margin-left:4cm"><strong>Profile Page</strong></h1>
-        <br>
-        <h2 style="text-align:center;margin-left:4cm">Welcome, {{ user }}</h2>
-
-        <br>
-
-        <div style="text-align:center;">
-            <div class="form-wrap" id="loginform">
-                <h3>Add Task</h3>
-                <div class="form-group">
-                    <strong>Task Title</strong><input type="text" id="taskname" placeholder="Task Title">
-                </div>
-                <div class="form-group">
-                    <strong>Task Description</strong><input type="text" id="taskdesc" placeholder="Task Description">
-                </div>
-                <div>
-                    <button onclick="addTaskFn()" class="btn btn-primary">
-                    Add Task
-                    </button>
-                    <button onclick="location.href='/login'" class="btn btn-primary">
-                    Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-
+        <h1 style="text-align:center; margin-top:3cm"><strong>Post a new task</strong></h1>
+           <br>
     </header>
+
+     
+    <body>
+        <form class="post-form" style="text-align:center;"> 
+            <div class="row">
+               
+                <label for="taskTitle"><h3>Task Title</h3></label>
+                <input type="text" class="form-control" id="taskTitle" placeholder="Enter new task title">
+            
+            </div>
+            <div class="row">
+                
+                <label for="taskSummary"><h3>Task Summary</h3></label>
+                <input type="text" class="form-control" id="taskSummary" placeholder="Put down one line of task summary">
+            
+            </div>
+            <div class="row">
+                
+                <label for="Task Description"><h3>Task Description</h3></label>
+                <textarea class="form-control" rows="5" placeholder="Be as detailed as you want :)"></textarea>
+
+            </div> 
+
+            <button style="margin-top:1cm; margin-bottom:5cm"onclick="addTaskFn()" class="btn btn-primary">
+                    Looks good to me, post! 
+            </button>
+        </form>
+
+
+    </body>
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
         function addTaskFn(){

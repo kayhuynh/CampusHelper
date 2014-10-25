@@ -5,3 +5,10 @@ table{ width: 75%; }
 tr {
 	border: 4px solid #AEAEAE;
 }
+
+.post-form{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 40%;
+}
