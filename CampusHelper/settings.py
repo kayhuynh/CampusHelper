@@ -79,7 +79,7 @@ USE_TZ = True
 
 
 
-STATIC_URL = '/static/'
+STATIC_URL = '/CampusHelperApp/static/'
 
 ##### HEROKU
 """
