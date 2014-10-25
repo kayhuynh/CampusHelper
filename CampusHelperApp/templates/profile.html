@@ -86,15 +86,15 @@
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
         function addTaskFn(){
-            var title = $('#taskname').val();
-            var desc = $('#taskdesc').val();
+            var title = $('#taskTitle').val();
+            var summary = $('#taskSummary').val();
             console.log(title);
-            console.log(desc);
+            console.log(summary);
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + desc + '"' + '}' ,
+                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + summary + '"' + '}' ,
                 success: function(response) {
                     var errorCode = response.errcode;
                     var taskID = response.taskID;
