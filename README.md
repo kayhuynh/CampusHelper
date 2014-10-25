@@ -1,6 +1,9 @@
 CampusHelper
 ============
 
+To run the project:
+first clone a copy from git repo and then call ./manage.py runserver to run it locally.
+
 We plan on having only two more branches, one for front-end and one for back-end.
 
 *** FOR NICK ***
