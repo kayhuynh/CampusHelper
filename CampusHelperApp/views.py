@@ -68,21 +68,9 @@ def alltasks(request):
             user = models.getUserByCookieID(cookieID)
             template = loader.get_template("postBoard/alltasks.html")
             all_tasks = models.Task.objects.all()
+            if "q" in request.GET:
+            	all_tasks = models.Task.objects.filter(title__contains = request.GET[query])
             context = Context({"allTasks": all_tasks, "user": user.username})
-            return HttpResponse(template.render(context))
-        else:
-            return HARDFAIL
-    except (ValueError, KeyError):
-        return HARDFAIL
-
-def alltasksQuery(request, query):
-    try:
-        if request.method == "GET":
-            cookieID = request.session["cookieID"]
-            user = models.getUserByCookieID(cookieID)
-            template = loader.get_template("postBoard/alltasks.html")
-            queryTasks = models.Task.objects.filter(title__contains = query)
-            context = Context({"allTasks": queryTasks, "user": user.username})
             return HttpResponse(template.render(context))
         else:
             return HARDFAIL
@@ -103,6 +91,7 @@ def profile(request):
                 u.setEmail(newdata)
             elif field == USER_DESCRIPTION:
                 u.setDescription(newdata)
+        #if request.method == "GET" and "q" in request.GET:
         if request.method == "GET":
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
@@ -116,22 +105,13 @@ def profile(request):
     except (ValueError, KeyError):
         return HARDFAIL
 
-def profileQuery(request, helper):
-    try:
-        if request.method == "GET":
-            return HttpResponse("profile query get request")
-        else:
-            return HARDFAIL
-    except (ValueError, KeyError):
-        return HARDFAIL
-
-def taskQuery(request, taskID):
+def taskQuery(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
             field = requestHeader["field"]
             newdata = requestHeader["newdata"]
-            cur_task = models.getTask(taskID)
+            cur_task = models.getTask(request.GET["q"])
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             if u.username != cur_task.creator:
