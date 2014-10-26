@@ -32,14 +32,17 @@ class User(models.Model):
 
     def setEmail(self, newEmail):
         self.email = newEmail
+        User.full_clean()
         self.save()
 
     def setPassword(self, newPass):
         self.password = newPass
+        User.full_clean()
         self.save()
 
     def setDescription(self, newDesc):
         self.description = newDesc
+        User.full_clean()
         self.save()
 
 class Task(models.Model):
@@ -59,6 +62,7 @@ class Task(models.Model):
         if self.state == STATE_CREATED:
             self.state = STATE_ACCEPTED
             self.acceptor = acceptor
+    		Task.full_clean()
             self.save()
         else:
             raise ValidationError("wrong state to be marked as accepted")
@@ -66,25 +70,30 @@ class Task(models.Model):
     def markCompleted(self):
         if self.state == STATE_ACCEPTED:
             self.state = STATE_COMPLETED
+            Task.full_clean()
             self.save()
         else:
             raise ValidationError("wrong state to be marked as completed")
 
     def setTitle(self, newTitle):
         self.title = newTitle
+    	Task.full_clean()
         self.save()
 
     def setDescription(self, newDesc):
         self.description = newDesc
+    	Task.full_clean()
         self.save()
 
     def notify(self):
         self.notify = True
+    	Task.full_clean()
         self.save()
 
 def newUser(username, password, email, desc):
     cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
     k = User(username = username, password = password, email = email, description = desc, cookieID = cookieID)
+    User.full_clean()
     k.save()
     return k
 
@@ -96,6 +105,7 @@ def getUserByCookieID(cookieID):
 
 def newTask(creator, title, desc):
     k = Task(creator = creator, title = title, description = desc)
+    Task.full_clean()
     k.save()
     return k
 
