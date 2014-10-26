@@ -24,8 +24,8 @@ STATE_CREATED = 1
 STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
-FAILURE200 = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-FAILURE500 = HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+SOFTFAIL = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json")
+HARDFAIL = HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def root(request):
     try:
@@ -35,19 +35,19 @@ def root(request):
             password = requestHeader["password"]
             u = models.getUser(username)
             if u.password != password:
-                return FAILURE200
+                return SOFTFAIL
             request.session["cookieID"] = u.cookieID
-            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
+            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET":
             template = loader.get_template("index.html")
             context = RequestContext(request)
             return HttpResponse(template.render(context))
         else:
-            return FAILURE500
+            return HARDFAIL
     except (ValidationError, ObjectDoesNotExist):
-        return FAILURE200
+        return SOFTFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def login(request):
     if request.method == "GET":
@@ -55,7 +55,7 @@ def login(request):
         context = RequestContext(request)
         return HttpResponse(template.render(context))
     else:
-        return FAILURE500
+        return HARDFAIL
 
 # Shows a list of all tasks globally 
 def alltasks(request):
@@ -68,18 +68,18 @@ def alltasks(request):
             context = Context({"allTasks": all_tasks, "user": user.username})
             return HttpResponse(template.render(context))
         else:
-            return FAILURE500
+            return HARDFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def alltasksQuery(request, query):
     try:
         if request.method == "GET":
             return HttpResponse("alltasksquery get requests")
         else:
-            return FAILURE500
+            return HARDFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def profile(request):
     try:
@@ -102,20 +102,20 @@ def profile(request):
             context = Context({"user": u.username})
             return HttpResponse(template.render(context))
         else:
-            return FAILURE500
+            return HARDFAIL
     except ValidationError:
-        return FAILURE200
+        return SOFTFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def profileQuery(request, helper):
     try:
         if request.method == "GET":
             return HttpResponse("profile query get request")
         else:
-            return FAILURE500
+            return HARDFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def taskQuery(request, taskID):
     try:
@@ -127,7 +127,7 @@ def taskQuery(request, taskID):
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             if u.username != cur_task.creator:
-                return FAILURE200
+                return SOFTFAIL
             if field == TASK_TITLE:
                 cur_task.setTitle(newdata)
             elif field == TASK_DESCRIPTION:
@@ -138,18 +138,18 @@ def taskQuery(request, taskID):
                 elif newdata == STATE_COMPLETED:
                     cur_task.markCompleted()
                 else:
-                    return FAILURE200
+                    return SOFTFAIL
             else:
-                return FAILURE200
-            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
+                return SOFTFAIL
+            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET":
             return HttpResponse("task Query get request")
         else:
-            return FAILURE500
+            return HARDFAIL
     except (ValidationError):
-        return FAILURE200
+        return SOFTFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def newtask(request):
     try:
@@ -161,15 +161,15 @@ def newtask(request):
             u = models.getUserByCookieID(cookieID)
             creator = u.username
             task = models.newTask(u, title, description)
-            return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json", status = 200)
+            return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json")
         elif request.method == "GET":
             return HttpResponse("new task get request")
         else:
-            return FAILURE500
+            return HARDFAIL
     except (ValidationError):
-        return FAILURE200
+        return SOFTFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def newuser(request):
     try:
@@ -183,11 +183,11 @@ def newuser(request):
             context = RequestContext(request)
             return HttpResponse(template.render(context))
         else:
-            return FAILURE500
+            return HARDFAIL
     except (ValidationError, IntegrityError):
-        return FAILURE200
+        return SOFTFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
 
 def mytasks(request):
     try:
@@ -195,8 +195,8 @@ def mytasks(request):
             u = models.getUserByCookieID(request.session["cookieID"])
             return HttpResponse("mytasks get request")
         else:
-            return FAILURE500
+            return HARDFAIL
     except ObjectDoesNotExist:
-        return FAILURE200
+        return SOFTFAIL
     except (ValueError, KeyError):
-        return FAILURE500
+        return HARDFAIL
