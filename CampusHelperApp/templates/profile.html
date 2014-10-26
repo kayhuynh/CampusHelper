@@ -81,14 +81,14 @@
     <script>
         function addTaskFn(){
             var title = $('#taskTitle').val();
-            var summary = $('#taskSummary').val();
+            var description = $('#taskDescription').val();
             console.log(title);
-            console.log(summary);
+            console.log(description);
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "title" : ' + '"' + taskTitle + '"' + ', "description" : ' + '"' + taskDescription + '"' + '}' ,
+                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + description + '"' + '}' ,
                 success: function(response) {
                     var errorCode = response.errcode;
                     var taskID = response.taskID;
