@@ -24,7 +24,10 @@ STATE_CREATED = 1
 STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
+# the request was in a correct format but it was bad for some reason
 SOFTFAIL = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json")
+
+# the request isn't even in a correct format
 HARDFAIL = HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def root(request):
@@ -57,7 +60,7 @@ def login(request):
     else:
         return HARDFAIL
 
-# Shows a list of all tasks globally 
+# Shows a list of all tasks globally
 def alltasks(request):
     try:
         if request.method == "GET":
@@ -75,7 +78,12 @@ def alltasks(request):
 def alltasksQuery(request, query):
     try:
         if request.method == "GET":
-            return HttpResponse("alltasksquery get requests")
+            cookieID = request.session["cookieID"]
+            user = models.getUserByCookieID(cookieID)
+            template = loader.get_template("postBoard/alltasks.html")
+            queryTasks = models.Task.objects.filter(title__contains = query)
+            context = Context({"allTasks": queryTasks, "user": user.username})
+            return HttpResponse(template.render(context))
         else:
             return HARDFAIL
     except (ValueError, KeyError):
