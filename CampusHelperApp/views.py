@@ -24,6 +24,9 @@ STATE_CREATED = 1
 STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
+failure200 = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+failure500 = HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+
 def root(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
@@ -42,9 +45,9 @@ def root(request):
         else:
             return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
     except (ValidationError, ObjectDoesNotExist):
-        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+        return faliure200
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def login(request):
     if request.method == "GET":
@@ -52,7 +55,7 @@ def login(request):
         context = RequestContext(request)
         return HttpResponse(template.render(context))
     else:
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 # Shows a list of all tasks globally 
 def alltasks(request):
@@ -64,16 +67,16 @@ def alltasks(request):
         context = Context({"allTasks": all_tasks, "user": user.username})
         return HttpResponse(template.render(context))
     else:
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def alltasksQuery(request, query):
     try:
         if request.method == "GET":
             return HttpResponse("alltasksquery get requests")
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return failure500
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def profile(request):
     try:
@@ -93,23 +96,23 @@ def profile(request):
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             template = loader.get_template("profile.html")
-            context = Context({"user" : u.username})
+            context = Context({"user": u.username})
             return HttpResponse(template.render(context))
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return failure500
     except ValidationError:
-        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+        return failure200
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def profileQuery(request, helper):
     try:
         if request.method == "GET":
             return HttpResponse("profile query get request")
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return failure500
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def taskQuery(request, taskID):
     try:
@@ -121,7 +124,7 @@ def taskQuery(request, taskID):
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             if u.username != cur_task.creator:
-                return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+                return failure200
             if field == TASK_TITLE:
                 cur_task.setTitle(newdata)
             elif field == TASK_DESCRIPTION:
@@ -132,18 +135,18 @@ def taskQuery(request, taskID):
                 elif newdata == STATE_COMPLETED:
                     cur_task.markCompleted()
                 else:
-                    return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+                    return failure200
             else:
-                return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+                return failure200
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
         elif request.method == "GET":
             return HttpResponse("task Query get request")
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return failure500
     except (ValidationError):
-        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+        return failure200
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def newtask(request):
     try:
@@ -159,11 +162,11 @@ def newtask(request):
         elif request.method == "GET":
             return HttpResponse("new task get request")
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return failure500
     except (ValidationError):
-        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+        return failure200
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def newuser(request):
     try:
@@ -177,20 +180,20 @@ def newuser(request):
             context = RequestContext(request)
             return HttpResponse(template.render(context))
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return failure500
     except (ValidationError, IntegrityError):
-        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json")
+        return failure200
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
 
 def mytasks(request):
     try:
         if request.method == "GET":
-            return HttpResponse("mytasks get request")
             u = models.getUserByCookieID(request.session["cookieID"])
+            return HttpResponse("mytasks get request")
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return failure500
     except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+        return failure200
     except (ValueError, KeyError):
-        return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+        return failure500
