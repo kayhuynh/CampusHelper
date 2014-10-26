@@ -77,7 +77,7 @@
                 url: "/",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{"username": "' + user + '", "password": "' + pass + '", "email": "temp@example.com", "description" = "tempdescription"}' ,
+                data: '{"username": "' + user + '", "password": "' + pass + '"}' ,
                 success: function(response) {
                     var errorCode = response.errcode;
                     console.log(response);
