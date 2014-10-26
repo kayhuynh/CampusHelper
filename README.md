@@ -2,16 +2,14 @@ CampusHelper
 ============
 
 To run the project:
-first clone a copy from git repo and then call ./manage.py runserver to run it locally.
+first clone a copy from git repo
+then call ./manage.py migrate
+then call ./manage.py runserver to run it locally.
 
-We plan on having only two more branches, one for front-end and one for back-end.
+To test the project:
+run test from coverage: coverage run --source="." manage.py test CampusHelperApp
 
-*** FOR NICK ***
-1) Clone the repository for CampusHelper
-2) Connect your local repo to the remote, so you can push, pull, etc
-3) Give Anand your heroku email, so he can add you as a collaborator as well
-4) Run " heroku git:remote -a campushelper " in order to connect your local git repo to heroku's.
-***
+-----
 In order to push to github:
 	git push origin <branch>
 
