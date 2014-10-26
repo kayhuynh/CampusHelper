@@ -24,11 +24,11 @@ STATE_CREATED = 1
 STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
-# the request was in a correct format but it was bad for some reason
-SOFTFAIL = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json")
+# the request was in a correct format but it was bad for some reason - 403 "forbidden"
+SOFTFAIL = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 403)
 
-# the request isn't even in a correct format
-HARDFAIL = HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+# the request isn't even in a correct format - 400 "bad request"
+HARDFAIL = HttpResponse(json.dumps({}), content_type = "application/json", status = 400)
 
 def root(request):
     try:

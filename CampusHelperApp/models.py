@@ -43,14 +43,14 @@ class User(models.Model):
         self.save()
 
 class Task(models.Model):
-    taskID = models.AutoField(primary_key = True)               # don't specify this yourself (?)
+    taskID = models.AutoField(primary_key = True)
     title = models.TextField(max_length = None)
     description = models.TextField(max_length = None)
     creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
     acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, null = True, default = None)
-    timePosted = models.DateTimeField(auto_now_add = True)      # set the field to the time when it's created
+    timePosted = models.DateTimeField(auto_now_add = True)
     state = models.SmallIntegerField(default = STATE_CREATED)
-    notify = models.BooleanField(default = False)       #   iteration 1?
+    notify = models.BooleanField(default = False)
 
     def __str__(self):
         return "task: " + self.title
