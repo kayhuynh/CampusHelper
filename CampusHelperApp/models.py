@@ -62,7 +62,7 @@ class Task(models.Model):
         if self.state == STATE_CREATED:
             self.state = STATE_ACCEPTED
             self.acceptor = acceptor
-    		Task.full_clean()
+            Task.full_clean()
             self.save()
         else:
             raise ValidationError("wrong state to be marked as accepted")
@@ -77,17 +77,17 @@ class Task(models.Model):
 
     def setTitle(self, newTitle):
         self.title = newTitle
-    	Task.full_clean()
+        Task.full_clean()
         self.save()
 
     def setDescription(self, newDesc):
         self.description = newDesc
-    	Task.full_clean()
+        Task.full_clean()
         self.save()
 
     def notify(self):
         self.notify = True
-    	Task.full_clean()
+        Task.full_clean()
         self.save()
 
 def newUser(username, password, email, desc):
