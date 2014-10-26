@@ -24,8 +24,8 @@ STATE_CREATED = 1
 STATE_ACCEPTED = 2
 STATE_COMPLETED = 3
 
-failure200 = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
-failure500 = HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+FAILURE200 = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+FAILURE500 = HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
 
 def root(request):
     try:
@@ -35,7 +35,7 @@ def root(request):
             password = requestHeader["password"]
             u = models.getUser(username)
             if u.password != password:
-                return HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "application/json", status = 200)
+                return FAILURE200
             request.session["cookieID"] = u.cookieID
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
         elif request.method == "GET":
@@ -43,11 +43,11 @@ def root(request):
             context = RequestContext(request)
             return HttpResponse(template.render(context))
         else:
-            return HttpResponse(json.dumps({}), content_type = "application/json", status = 500)
+            return FAILURE500
     except (ValidationError, ObjectDoesNotExist):
-        return faliure200
+        return FAILURE200
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
 
 def login(request):
     if request.method == "GET":
@@ -55,7 +55,7 @@ def login(request):
         context = RequestContext(request)
         return HttpResponse(template.render(context))
     else:
-        return failure500
+        return FAILURE500
 
 # Shows a list of all tasks globally 
 def alltasks(request):
@@ -67,16 +67,16 @@ def alltasks(request):
         context = Context({"allTasks": all_tasks, "user": user.username})
         return HttpResponse(template.render(context))
     else:
-        return failure500
+        return FAILURE500
 
 def alltasksQuery(request, query):
     try:
         if request.method == "GET":
             return HttpResponse("alltasksquery get requests")
         else:
-            return failure500
+            return FAILURE500
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
 
 def profile(request):
     try:
@@ -99,20 +99,20 @@ def profile(request):
             context = Context({"user": u.username})
             return HttpResponse(template.render(context))
         else:
-            return failure500
+            return FAILURE500
     except ValidationError:
-        return failure200
+        return FAILURE200
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
 
 def profileQuery(request, helper):
     try:
         if request.method == "GET":
             return HttpResponse("profile query get request")
         else:
-            return failure500
+            return FAILURE500
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
 
 def taskQuery(request, taskID):
     try:
@@ -124,7 +124,7 @@ def taskQuery(request, taskID):
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             if u.username != cur_task.creator:
-                return failure200
+                return FAILURE200
             if field == TASK_TITLE:
                 cur_task.setTitle(newdata)
             elif field == TASK_DESCRIPTION:
@@ -135,18 +135,18 @@ def taskQuery(request, taskID):
                 elif newdata == STATE_COMPLETED:
                     cur_task.markCompleted()
                 else:
-                    return failure200
+                    return FAILURE200
             else:
-                return failure200
+                return FAILURE200
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json", status = 200)
         elif request.method == "GET":
             return HttpResponse("task Query get request")
         else:
-            return failure500
+            return FAILURE500
     except (ValidationError):
-        return failure200
+        return FAILURE200
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
 
 def newtask(request):
     try:
@@ -162,11 +162,11 @@ def newtask(request):
         elif request.method == "GET":
             return HttpResponse("new task get request")
         else:
-            return failure500
+            return FAILURE500
     except (ValidationError):
-        return failure200
+        return FAILURE200
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
 
 def newuser(request):
     try:
@@ -180,11 +180,11 @@ def newuser(request):
             context = RequestContext(request)
             return HttpResponse(template.render(context))
         else:
-            return failure500
+            return FAILURE500
     except (ValidationError, IntegrityError):
-        return failure200
+        return FAILURE200
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
 
 def mytasks(request):
     try:
@@ -192,8 +192,8 @@ def mytasks(request):
             u = models.getUserByCookieID(request.session["cookieID"])
             return HttpResponse("mytasks get request")
         else:
-            return failure500
+            return FAILURE500
     except ObjectDoesNotExist:
-        return failure200
+        return FAILURE200
     except (ValueError, KeyError):
-        return failure500
+        return FAILURE500
