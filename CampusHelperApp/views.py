@@ -33,7 +33,7 @@ HARDFAIL = HttpResponse(json.dumps({}), content_type = "application/json", statu
 def root(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            requestHeader = json.loads(request.body)
+            requestHeader = json.loads(bytes.decode(request.body))
             username = requestHeader["username"]
             password = requestHeader["password"]
             u = models.getUser(username)
@@ -92,7 +92,7 @@ def alltasksQuery(request, query):
 def profile(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            requestHeader = json.loads(request.body)
+            requestHeader = json.loads(bytes.decode(request.body))
             field = requestHeader["field"]
             newdata = requestHeader["newdata"]
             cookieID = request.session["cookieID"]
@@ -128,7 +128,7 @@ def profileQuery(request, helper):
 def taskQuery(request, taskID):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            requestHeader = json.loads(request.body)
+            requestHeader = json.loads(bytes.decode(request.body))
             field = requestHeader["field"]
             newdata = requestHeader["newdata"]
             cur_task = models.getTask(taskID)
@@ -162,7 +162,7 @@ def taskQuery(request, taskID):
 def newtask(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            requestHeader = json.loads(request.body)
+            requestHeader = json.loads(bytes.decode(request.body))
             title = requestHeader["title"]
             description = requestHeader["description"]
             cookieID = request.session["cookieID"]

@@ -50,7 +50,7 @@
 
      
     <body>
-        <form class="post-form" style="text-align:center;"> 
+        <form class="post-form" style="text-align:center;">
             <div class="row">
                
                 <label for="taskTitle"><h3>Task Title</h3></label>
@@ -69,6 +69,7 @@
             </button>
         </form>
 
+<!-- this page auto reloads?!?? how to fix? -->
 
     </body>
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
@@ -76,13 +77,11 @@
         function addTaskFn(){
             var title = $('#taskTitle').val();
             var description = $('#taskDescription').val();
-            console.log(title);
-            console.log(description);
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{"title" : "' + title + '", "description" : "' + description + '"}',
+                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + description + '"' + '}' ,
                 success: function(response) {
                     var errorCode = response.errcode;
                     var taskID = response.taskID;
