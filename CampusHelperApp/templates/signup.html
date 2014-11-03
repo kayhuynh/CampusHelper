@@ -75,7 +75,6 @@
             console.log(user)
             var pass1 = $("#passwordField").val();
             var pass2 = $("#passwordVerify").val();
-            console.log(pass1);
             if(pass1 != pass2){
                 alert("Your passwords do not match, please try again.");
             }
@@ -89,7 +88,7 @@
                 success: function(response) {
                     var errorCode = response.errcode;
                     console.log(response);
-                    alert("error Code is: " + errorCode);
+                    gotoLoginPage(user,pass1);
                   },
                 error: function(response) {
                     var errorCode = response.errcode;
@@ -98,6 +97,30 @@
                 }
             });
             }
+        }
+
+        function gotoLoginPage(user,pass){
+            alert("User is: " + user + " and pass is: " + pass);
+            $.ajax({
+                url: "/",
+                type: 'POST',
+                contentType: "application/json",
+                data: '{"username": "' + user + '", "password": "' + pass + '"}' ,
+                success: function(response) {
+                    var errorCode = response.errcode;
+                    console.log(response);
+                    if(errorCode == 1){
+                        window.location.href = "/alltasks";
+                    } else {
+                        alert("FAILED. Error code: " + errorCode);
+                    }
+                  },
+                error: function(response) {
+                    var errorCode = response.errcode;
+                    console.log(response);
+                    alert("FAILED. Error code: " + errorCode);
+                }
+            });
         }
     </script>
 

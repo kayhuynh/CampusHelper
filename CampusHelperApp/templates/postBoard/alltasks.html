@@ -3,22 +3,27 @@
 
 {% block content %}
 <a href="/profile" class="btn btn-info btn-large"><i class="icon-plus"></i> Post New Task</a>
+<a href="/" class="btn btn-info btn-large"><i class = "icon-plus"></i> Logout</a>
 <div class="containter">
         <div id="task_table">
             <table border="0" cellpadding="10" width="100%">
                 <tr>
                     <td>Task Name</td>
+                    <td>Task Category</td>
                     <td>Task Description</td>
                     <td>Posted By</td>
                     <td></td>
+                    <td</td>
                 </tr>
 
             {% for task in allTasks %}
             <tr>
                 <td><p>{{ task.title }}</p></td>
+                <td><p>{{ task.category }}</p></td>
                 <td><p>{{ task.description }}</p></td>
                 <td><p>{{ task.creator.username }}</p></td>
                 <td><a class="button" href=""><p>View Task<p></a></td>
+                <td><a class="button" href=""><p>Edit Task</p></a></td>
             </tr>
             <tr>
                 <td colspan="3"><p>{{ task.description }}</p></td>

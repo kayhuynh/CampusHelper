@@ -49,6 +49,7 @@ class Task(models.Model):
     taskID = models.AutoField(primary_key = True)
     title = models.TextField(max_length = None)
     description = models.TextField(max_length = None)
+    category = models.TextField(max_length = None)
     creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
     acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, null = True, default = None)
     timePosted = models.DateTimeField(auto_now_add = True)
@@ -85,6 +86,11 @@ class Task(models.Model):
         self.full_clean()
         self.save()
 
+    def setCategory(self, newCat):
+        self.category = newCat
+        self.full_clean()
+        self.save()
+
     def notify(self):
         self.notify = True
         self.full_clean()
@@ -103,9 +109,9 @@ def getUser(username):
 def getUserByCookieID(cookieID):
     return User.objects.get(cookieID__exact = cookieID)
 
-def newTask(creator, title, desc):
-    k = Task(creator = creator, title = title, description = desc)
-    k.full_clean()
+def newTask(creator, title, desc, cat):
+    k = Task(creator = creator, title = title, description = desc,category = cat)
+    #k.full_clean()
     k.save()
     return k
 
