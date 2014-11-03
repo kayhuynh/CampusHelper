@@ -8,7 +8,7 @@
             <table border="0" cellpadding="10" width="100%">
                 <tr>
                     <td>Task Name</td>
-                    <td>Task Description</td>
+                    <td>Task Summary</td>
                     <td>Posted By</td>
                     <td></td>
                 </tr>
@@ -16,7 +16,7 @@
             {% for task in allTasks %}
             <tr>
                 <td><p>{{ task.title }}</p></td>
-                <td><p>{{ task.description }}</p></td>
+                <td><p>{{ task.summary }}</p></td>
                 <td><p>{{ task.creator.username }}</p></td>
                 <td><a class="button" href=""><p>View Task<p></a></td>
             </tr>

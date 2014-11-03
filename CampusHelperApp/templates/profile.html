@@ -57,6 +57,13 @@
                 <input type="text" class="form-control" id="taskTitle" placeholder="Enter new task title">
             
             </div>
+
+            <div class="row">
+
+                <label for="taskSummary"><h3>Task Summary</h3></label>
+                <input type="text" class="form-control" id="taskSummary" placeholder="Put down one line of task summary">
+           
+            </div>
             <div class="row">
                 
                 <label for="Task Description"><h3>Task Description</h3></label>
@@ -76,12 +83,13 @@
     <script>
         function addTaskFn(){
             var title = $('#taskTitle').val();
+            var summary = $('#taskSummary').val():
             var description = $('#taskDescription').val();
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + description + '"' + '}' ,
+                data: '{ "title" : ' + '"' + title + '"' + ', "summary:" ' + '"' + summary + '"' + ', "description" : ' + '"' + description + '"' + '}' ,
                 success: function(response) {
                     var errorCode = response.errcode;
                     var taskID = response.taskID;

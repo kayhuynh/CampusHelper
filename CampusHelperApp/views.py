@@ -19,6 +19,7 @@ USER_DESCRIPTION = 3
 TASK_TITLE = 1
 TASK_DESCRIPTION = 2
 TASK_STATE = 3
+TASK_SUMMARY = 4
 
 STATE_CREATED = 1
 STATE_ACCEPTED = 2
@@ -120,6 +121,8 @@ def taskQuery(request):
                 cur_task.setTitle(newdata)
             elif field == TASK_DESCRIPTION:
                 cur_task.setDescription(newdata)
+            elif field == TASK_SUMMARY:
+                cur_task.setSummary(newdata)
             elif field == TASK_STATE:
                 if newdata == STATE_ACCEPTED:
                     cur_task.markAccepted(u)
@@ -145,6 +148,7 @@ def newtask(request):
             requestHeader = json.loads(bytes.decode(request.body))
             title = requestHeader["title"]
             description = requestHeader["description"]
+            summary = requestHeader["summary"]
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             creator = u.username
