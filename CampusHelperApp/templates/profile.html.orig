@@ -43,7 +43,6 @@
 <body>
 
     <!-- Header -->
-<<<<<<< Updated upstream
     <header id="top">
         <h1 style="text-align:center; margin-top:3cm"><strong>Post a new task</strong></h1>
            <br>
@@ -57,41 +56,27 @@
                 <label for="taskTitle"><h3>Task Title</h3></label>
                 <input type="text" class="form-control" id="taskTitle" placeholder="Enter new task title">
             
-=======
-    <header id="top" class="header">
-        <h1 style="text-align:center;margin-left:4cm"><strong>Profile Page</strong></h1>
-        <br>
-        <h2 style="text-align:center;margin-left:4cm">Welcome, {{ user }}</h2>
-
-        <br>
-
-        <div style="text-align:center;">
-            <div class="form-wrap" id="loginform">
-                <h3>Add Task</h3>
-                <div class="form-group">
-                    <strong>Task Title</strong><input type="text" id="taskname" placeholder="Task Title">
-                </div>
-                <div class="form-group">
-                    <strong>Task Category</strong>
-                    <select>
-                        <option value="1">Academic Tutoring</option>
-                        <option value="2">House Moving/Cleaning</option>
-                        <option value="3">Share rides</option>
-                        <option value="4">Other</option>
-                    </select>
-                <div>
-                <div class="form-group">
-                    <strong>Task Description</strong><input type="text" id="taskdesc" placeholder="Task Description">
-                </div>
-                    <button onclick="addTaskFn()" class="btn btn-primary">
-                    Add Task
-                    </button>
-                    <button onclick="location.href='/login'" class="btn btn-primary">
-                    Logout
-                    </button>
-                </div>
->>>>>>> Stashed changes
             </div>
+
+            <div class="row">
+<<<<<<< HEAD
+               
+                <label for="taskTitle"><h3>Task Category</h3></label>
+            </div>
+                <select id="category" class="selectpicker" data-style="btn-primary">
+                      <option>Academic Tutoring</option>
+                      <option>House Moving/Cleaning</option>
+                      <option>Share Rides</option>
+                      <option>Other</option>
+                </select>
+
+=======
+
+                <label for="taskSummary"><h3>Task Summary</h3></label>
+                <input type="text" class="form-control" id="taskSummary" placeholder="Put down one line of task summary">
+           
+            </div>
+>>>>>>> fa4d6c8de0751d974b5cc2963acb966c512fbac2
             <div class="row">
                 
                 <label for="Task Description"><h3>Task Description</h3></label>
@@ -99,7 +84,7 @@
 
             </div> 
 
-            <button style="margin-top:1cm; margin-bottom:5cm"onclick="addTaskFn()" class="btn btn-primary">
+            <button style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
                     Looks good to me, post! 
             </button>
         </form>
@@ -111,18 +96,25 @@
     <script>
         function addTaskFn(){
             var title = $('#taskTitle').val();
+            var summary = $('#taskSummary').val();
             var description = $('#taskDescription').val();
+            var category = $('#category :selected').text();
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + description + '"' + '}' ,
+<<<<<<< HEAD
+                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + description + '"' + ', "category" : ' + '"' + category + '"' + '}' ,
+=======
+                data: '{ "title" : ' + '"' + title + '"' + ', "summary" : ' + '"' + summary + '"' + ', "description" : ' + '"' + description + '"' + '}' ,
+>>>>>>> fa4d6c8de0751d974b5cc2963acb966c512fbac2
                 success: function(response) {
                     var errorCode = response.errcode;
                     var taskID = response.taskID;
                     console.log(response);
                     if(errorCode == 1){
                         alert("Task successfully posted, task ID is: " + taskID);
+                        window.location.href = "/alltasks";
                     };
                   },
                 error: function(response) {

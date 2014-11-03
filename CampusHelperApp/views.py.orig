@@ -148,12 +148,19 @@ def newtask(request):
             requestHeader = json.loads(bytes.decode(request.body))
             title = requestHeader["title"]
             description = requestHeader["description"]
+<<<<<<< HEAD
             category = requestHeader["category"]
-            summary = requestHeader["summary"]
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             creator = u.username
             task = models.newTask(u, title, description, category)
+=======
+            summary = requestHeader["summary"]
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            creator = u.username
+            task = models.newTask(u, title, description, summary)
+>>>>>>> fa4d6c8de0751d974b5cc2963acb966c512fbac2
             return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json")
         elif request.method == "GET":
             return HttpResponse("new task get request")

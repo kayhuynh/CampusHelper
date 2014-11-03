@@ -9,9 +9,12 @@
             <table border="0" cellpadding="10" width="100%">
                 <tr>
                     <td>Task Name</td>
+<<<<<<< HEAD
                     <td>Task Category</td>
                     <td>Task Description</td>
+=======
                     <td>Task Summary</td>
+>>>>>>> fa4d6c8de0751d974b5cc2963acb966c512fbac2
                     <td>Posted By</td>
                     <td></td>
                     <td</td>
@@ -20,9 +23,12 @@
             {% for task in allTasks %}
             <tr>
                 <td><p>{{ task.title }}</p></td>
+<<<<<<< HEAD
                 <td><p>{{ task.category }}</p></td>
                 <td><p>{{ task.description }}</p></td>
+=======
                 <td><p>{{ task.summary }}</p></td>
+>>>>>>> fa4d6c8de0751d974b5cc2963acb966c512fbac2
                 <td><p>{{ task.creator.username }}</p></td>
                 <td><a class="button" href=""><p>View Task<p></a></td>
                 <td><a class="button" href=""><p>Edit Task</p></a></td>
