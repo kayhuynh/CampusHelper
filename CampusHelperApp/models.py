@@ -54,7 +54,9 @@ class User(models.Model):
 class Task(models.Model):
     taskID = models.AutoField(primary_key = True)
     title = models.TextField(max_length = None)
+    summary = models.TextField(max_length = None)
     description = models.TextField(max_length = None)
+    category = models.TextField(max_length = None)
     creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
     acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, null = True, default = None)
     timePosted = models.DateTimeField(auto_now_add = True)
@@ -87,6 +89,11 @@ class Task(models.Model):
     def setTitle(self, newTitle):
         self.title = newTitle
         self.full_clean()
+        self.save()
+
+    def setSummary(self, newSummary):
+        self.summary = newSummary;
+        sef.full_clean()
         self.save()
 
     def setDescription(self, newDesc):

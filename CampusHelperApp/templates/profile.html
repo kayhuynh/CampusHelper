@@ -57,6 +57,24 @@
                 <input type="text" class="form-control" id="taskTitle" placeholder="Enter new task title">
             
             </div>
+
+            <div class="row">
+               
+                <label for="taskTitle"><h3>Task Category</h3></label>
+            </div>
+                <select id="category" class="selectpicker" data-style="btn-primary">
+                      <option>Academic Tutoring</option>
+                      <option>House Moving/Cleaning</option>
+                      <option>Share Rides</option>
+                      <option>Other</option>
+                </select>
+
+            <div class="row">
+
+                <label for="taskSummary"><h3>Task Summary</h3></label>
+                <input type="text" class="form-control" id="taskSummary" placeholder="Put down one line of task summary">
+           
+            </div>
             <div class="row">
                 
                 <label for="Task Description"><h3>Task Description</h3></label>
@@ -64,7 +82,7 @@
 
             </div> 
 
-            <button style="margin-top:1cm; margin-bottom:5cm"onclick="addTaskFn()" class="btn btn-primary">
+            <button style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
                     Looks good to me, post! 
             </button>
         </form>
@@ -76,18 +94,23 @@
     <script>
         function addTaskFn(){
             var title = $('#taskTitle').val();
+            var summary = $('#taskSummary').val();
             var description = $('#taskDescription').val();
+            var category = $('#category :selected').text();
+            var value = 1;
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + description + '"' + '}' ,
+                data: '{ "title" : "' + title + '", "description" : "' + description + '", "category" : "'
+                    + category + '", "summary" : "' + summary + '", "value" : "' + value + '"}' ,
                 success: function(response) {
                     var errorCode = response.errcode;
                     var taskID = response.taskID;
                     console.log(response);
                     if(errorCode == 1){
                         alert("Task successfully posted, task ID is: " + taskID);
+                        window.location.href = "/alltasks";
                     };
                   },
                 error: function(response) {
