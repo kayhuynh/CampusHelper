@@ -16,7 +16,7 @@ class User(models.Model):
     # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
     def __str__(self):
-        return "user: " + self.username
+        return self.username
 
     def markTaskCompleted(self, taskID):
         getTask(taskID).markCompleted()
@@ -58,7 +58,7 @@ class Task(models.Model):
     description = models.TextField(max_length = None)
     category = models.TextField(max_length = None)
     creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
-    acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, null = True, default = None)
+    acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, blank = True, null = True, default = None)
     timePosted = models.DateTimeField(auto_now_add = True)
     state = models.SmallIntegerField(default = STATE_CREATED)
     notify = models.BooleanField(default = False)
@@ -67,7 +67,7 @@ class Task(models.Model):
     category = models.TextField(max_length = None, default = "other")
 
     def __str__(self):
-        return "task: " + self.title
+        return self.title
 
     def markAccepted(self, acceptor):
         if self.state == STATE_CREATED:
