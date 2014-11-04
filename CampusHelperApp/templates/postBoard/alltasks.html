@@ -28,7 +28,12 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="3"><p>{{ task.description }}</p></td>
+                <td colspan="3">
+                    <p>{{ task.description }}</p>
+                    <p>
+                        <a href="/" class="btn btn-info btn-large">accept Task</a>
+                    </p>
+                </td>
             </tr>
             {% endfor %}
             </table>
