@@ -72,13 +72,13 @@ def alltasks(request):
             template = loader.get_template("postBoard/alltasks.html")
             all_tasks = models.Task.objects.filter(state__exact = STATE_CREATED)
             if "showAccepted" in request.GET and request.GET["showAccepted"] == "true":
-            	all_tasks |= models.Task.objects.filter(state__exact = STATE_ACCEPTED)
+                all_tasks |= models.Task.objects.filter(state__exact = STATE_ACCEPTED)
             if "showCompleted" in request.GET and request.GET["showCompleted"] == "true":
-            	all_tasks |= models.Task.objects.filter(state__exact = STATE_COMPLETED)
+                all_tasks |= models.Task.objects.filter(state__exact = STATE_COMPLETED)
             if "q" in request.GET:
-            	all_tasks = all_tasks.filter(title__contains = request.GET["q"])
-           	if "c" in request.GET:
-            	all_tasks = all_tasks.filter(category__exact = request.GET["c"])
+                all_tasks = all_tasks.filter(title__contains = request.GET["q"])
+            if "c" in request.GET:
+                all_tasks = all_tasks.filter(category__exact = request.GET["c"])
             context = Context({"allTasks": all_tasks, "user": user.username})
             return HttpResponse(template.render(context))
         else:
