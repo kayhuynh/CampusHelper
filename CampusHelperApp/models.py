@@ -30,6 +30,12 @@ class User(models.Model):
     def acceptedTasks(self):
         return map(lambda x: x.taskID, self.tasksAccepted.all())
 
+    def completedTasks(self):
+        return map(lambda x: x.taskID, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all()))
+
+    def score(self):
+    	return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all())))
+
     def setEmail(self, newEmail):
         self.email = newEmail
         self.full_clean()
@@ -54,6 +60,9 @@ class Task(models.Model):
     timePosted = models.DateTimeField(auto_now_add = True)
     state = models.SmallIntegerField(default = STATE_CREATED)
     notify = models.BooleanField(default = False)
+    summary = models.TextField(max_length = None)
+    value = models.PositiveSmallIntegerField(default = 0)
+    category = models.TextField(max_length = None, default = "other")
 
     def __str__(self):
         return "task: " + self.title
@@ -85,6 +94,21 @@ class Task(models.Model):
         self.full_clean()
         self.save()
 
+    def setSummary(self, newSummary):
+        self.summary = newSummary
+        self.full_clean()
+        self.save()
+
+    def setValue(self, newValue):
+        self.value = newValue
+        self.full_clean()
+        self.save()
+
+    def setCategory(self, newCategory):
+        self.category = newCategory
+        self.full_clean()
+        self.save()
+
     def notify(self):
         self.notify = True
         self.full_clean()
@@ -103,8 +127,8 @@ def getUser(username):
 def getUserByCookieID(cookieID):
     return User.objects.get(cookieID__exact = cookieID)
 
-def newTask(creator, title, desc):
-    k = Task(creator = creator, title = title, description = desc)
+def newTask(creator, title, desc, summary, value, category):
+    k = Task(creator = creator, title = title, description = desc, summary = summary, value = value, category = category)
     k.full_clean()
     k.save()
     return k
