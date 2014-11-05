@@ -85,6 +85,9 @@
             <button style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
                     Looks good to me, post! 
             </button>
+            <button style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
+                    <a style="color:white;" href="/alltasks">View all available tasks</a>
+            </button>
         </form>
 
 <!-- this page auto reloads?!?? how to fix? -->
@@ -97,11 +100,13 @@
             var summary = $('#taskSummary').val();
             var description = $('#taskDescription').val();
             var category = $('#category :selected').text();
+            var value = 1;
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "title" : ' + '"' + title + '"' + ', "description" : ' + '"' + description + '"' + ', "category" : ' + '"' + category + '"' + '}' ,
+                data: '{ "title" : "' + title + '", "description" : "' + description + '", "category" : "'
+                    + category + '", "summary" : "' + summary + '", "value" : "' + value + '"}' ,
                 success: function(response) {
                     var errorCode = response.errcode;
                     var taskID = response.taskID;
@@ -115,10 +120,12 @@
                     var errorCode = response.errcode;
                     console.log(response);
                     alert("FAILED. Error code: " + errorCode);
+                    window.location.href = "/alltasks";
                 }
             });
             return false;
         }
+
     </script>
 </body>
 

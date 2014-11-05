@@ -11,9 +11,9 @@ class UserTestCase(TestCase):
         nick = User.objects.get(username = 'Nick')
         kevin = User.objects.get(username = 'Kevin')
 
-        newTask(nick, 'Mow the lawn', 'With a pair of scissors')
-        newTask(nick, 'Get armadillo poison', 'We have an infestation')
-        newTask(kevin, 'Deliver pet armadillo', "They're so cute!")
+        newTask(nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1, "test")
+        newTask(nick, 'Get armadillo poison', 'We have an infestation', "summ", 1, "test")
+        newTask(kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1, "test")
 
     def test_has_password(self):
         """The user is created with a password"""
@@ -71,9 +71,9 @@ class TaskTestCase(TestCase):
         nick = User.objects.get(username = 'Nick')
         kevin = User.objects.get(username = 'Kevin')
 
-        newTask(nick, 'Mow the lawn', 'With a pair of scissors')
-        newTask(nick, 'Get armadillo poison', 'We have an infestation')
-        newTask(kevin, 'Deliver pet armadillo', "They're so cute!")
+        newTask(nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1, "test")
+        newTask(nick, 'Get armadillo poison', 'We have an infestation', "summ", 1, "test")
+        newTask(kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1, "test")
 
     def test_markAccepted(self):
         """Task should mark itself accepted"""
@@ -110,7 +110,7 @@ class FunctionalTestCase(TestCase):
     def setUp(self):
         newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
         nick = User.objects.get(username = 'Nick')
-        newTask(nick, 'Water plants', 'With water')
+        newTask(nick, 'Water plants', 'With water', "summ", 1, "test")
 
     def test_login(self):
         c = Client()

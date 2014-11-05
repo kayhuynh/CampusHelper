@@ -21,6 +21,7 @@ TASK_DESCRIPTION = 2
 TASK_STATE = 3
 TASK_SUMMARY = 4
 TASK_CATEGORY = 5
+TASK_VALUE = 6
 
 STATE_CREATED = 1
 STATE_ACCEPTED = 2
@@ -69,9 +70,15 @@ def alltasks(request):
             cookieID = request.session["cookieID"]
             user = models.getUserByCookieID(cookieID)
             template = loader.get_template("postBoard/alltasks.html")
-            all_tasks = models.Task.objects.all()
+            all_tasks = models.Task.objects.filter(state__exact = STATE_CREATED)
+            if "showAccepted" in request.GET and request.GET["showAccepted"] == "true":
+                all_tasks |= models.Task.objects.filter(state__exact = STATE_ACCEPTED)
+            if "showCompleted" in request.GET and request.GET["showCompleted"] == "true":
+                all_tasks |= models.Task.objects.filter(state__exact = STATE_COMPLETED)
             if "q" in request.GET:
-            	all_tasks = models.Task.objects.filter(title__contains = request.GET[query])
+                all_tasks = all_tasks.filter(title__contains = request.GET["q"])
+            if "c" in request.GET:
+                all_tasks = all_tasks.filter(category__exact = request.GET["c"])
             context = Context({"allTasks": all_tasks, "user": user.username})
             return HttpResponse(template.render(context))
         else:
@@ -124,6 +131,10 @@ def taskQuery(request):
                 cur_task.setDescription(newdata)
             elif field == TASK_SUMMARY:
                 cur_task.setSummary(newdata)
+            elif field == TASK_VALUE:
+                cur_task.setValue(newdata)
+            elif field == TASK_CATEGORY:
+                cur_task.setCategory(newdata)
             elif field == TASK_STATE:
                 if newdata == STATE_ACCEPTED:
                     cur_task.markAccepted(u)
@@ -147,15 +158,15 @@ def newtask(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
-            print requestHeader
             title = requestHeader["title"]
             description = requestHeader["description"]
+            value = int(requestHeader["value"])
+            summary = requestHeader["summary"]
             category = requestHeader["category"]
-            #summary = requestHeader["summary"]
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             creator = u.username
-            task = models.newTask(u, title, description, category)
+            task = models.newTask(u, title, description, summary, value, category)
             return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json")
         elif request.method == "GET":
             return HttpResponse("new task get request")

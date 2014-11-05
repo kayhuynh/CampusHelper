@@ -16,7 +16,7 @@ class User(models.Model):
     # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
 
     def __str__(self):
-        return "user: " + self.username
+        return self.username
 
     def markTaskCompleted(self, taskID):
         getTask(taskID).markCompleted()
@@ -29,6 +29,12 @@ class User(models.Model):
 
     def acceptedTasks(self):
         return map(lambda x: x.taskID, self.tasksAccepted.all())
+
+    def completedTasks(self):
+        return map(lambda x: x.taskID, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all()))
+
+    def score(self):
+    	return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all())))
 
     def setEmail(self, newEmail):
         self.email = newEmail
@@ -48,17 +54,18 @@ class User(models.Model):
 class Task(models.Model):
     taskID = models.AutoField(primary_key = True)
     title = models.TextField(max_length = None)
-    summary = models.TextField(max_length = None)
     description = models.TextField(max_length = None)
-    category = models.TextField(max_length = None)
     creator = models.ForeignKey(User, related_name = "tasksCreated", on_delete = models.CASCADE)
-    acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, null = True, default = None)
+    acceptor = models.ForeignKey(User, related_name = "tasksAccepted", on_delete = models.PROTECT, blank = True, null = True, default = None)
     timePosted = models.DateTimeField(auto_now_add = True)
     state = models.SmallIntegerField(default = STATE_CREATED)
     notify = models.BooleanField(default = False)
+    summary = models.TextField(max_length = None)
+    value = models.PositiveSmallIntegerField(default = 0)
+    category = models.TextField(max_length = None, default = "other")
 
     def __str__(self):
-        return "task: " + self.title
+        return self.title
 
     def markAccepted(self, acceptor):
         if self.state == STATE_CREATED:
@@ -92,8 +99,18 @@ class Task(models.Model):
         self.full_clean()
         self.save()
 
-    def setCategory(self, newCat):
-        self.category = newCat
+    def setSummary(self, newSummary):
+        self.summary = newSummary
+        self.full_clean()
+        self.save()
+
+    def setValue(self, newValue):
+        self.value = newValue
+        self.full_clean()
+        self.save()
+
+    def setCategory(self, newCategory):
+        self.category = newCategory
         self.full_clean()
         self.save()
 
@@ -115,8 +132,8 @@ def getUser(username):
 def getUserByCookieID(cookieID):
     return User.objects.get(cookieID__exact = cookieID)
 
-def newTask(creator, title, desc, category):
-    k = Task(creator = creator, title = title, description = desc, category=category)
+def newTask(creator, title, desc, summary, value, category):
+    k = Task(creator = creator, title = title, description = desc, summary = summary, value = value, category = category)
     #k.full_clean()
     k.save()
     return k

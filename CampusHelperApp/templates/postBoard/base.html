@@ -48,8 +48,16 @@
 
 </head>
 <body>
-    <h1> {% block body_title %}User Name's Callaborate{% endblock %}</h1>
-    {% block content %}
-    {% endblock %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1">
+                <h1 style="margin-bottom:50px"> {% block body_title %}User Name's Callaborate{% endblock %}</h1>
+                
+                {% block content %}
+                {% endblock %}
+            </div>
+        
+        </div>
+    </div>
 </body>
 </html>
