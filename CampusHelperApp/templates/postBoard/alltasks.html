@@ -2,9 +2,26 @@
 {% block body_title %} Welcome {{ user }} ! {% endblock %}
 
 {% block content %}
-<div style="margin-bottom:25px">
 <a href="/profile" class="btn btn-info btn-large"><i class="icon-plus"></i> Post New Task</a>
 <a href="/" class="btn btn-info btn-large"><i class = "icon-plus"></i> Logout</a>
+<div style="margin-bottom:25px">
+<br>
+    <div>
+        Filter by category:
+        <select id="category" class="selectpicker" data-style="btn-primary">
+            <option>Academic Tutoring</option>
+            <option>House Moving/Cleaning</option>
+            <option>Share Rides</option>
+            <option>Other</option>
+        </select>
+        <br>
+        <button onclick="filterFn()" class="btn btn-primary">
+            Filter! 
+        </button>
+        <button onclick="window.location.href='/alltasks'" class="btn btn-primary">
+            Show all tasks
+        </button>
+    </div>
 </div>
 <div class="containter">
         <div id="task_table">
@@ -39,6 +56,13 @@
 </div>
 
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script>
+    function filterFn(){
+        var category = $('#category :selected').text();
+        var url = "/alltasks?c=" + category;
+        window.location.href = url;
+    }
+</script>
 <script>
     $(function() {
 
