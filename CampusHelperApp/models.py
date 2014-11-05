@@ -115,9 +115,9 @@ def getUser(username):
 def getUserByCookieID(cookieID):
     return User.objects.get(cookieID__exact = cookieID)
 
-def newTask(creator, title, desc, summary):
-    k = Task(creator = creator, title = title, description = desc, summary=summary)
-    k.full_clean()
+def newTask(creator, title, desc, category):
+    k = Task(creator = creator, title = title, description = desc, category=category)
+    #k.full_clean()
     k.save()
     return k
 

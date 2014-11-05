@@ -20,6 +20,7 @@ TASK_TITLE = 1
 TASK_DESCRIPTION = 2
 TASK_STATE = 3
 TASK_SUMMARY = 4
+TASK_CATEGORY = 5
 
 STATE_CREATED = 1
 STATE_ACCEPTED = 2
@@ -146,10 +147,11 @@ def newtask(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
+            print requestHeader
             title = requestHeader["title"]
             description = requestHeader["description"]
             category = requestHeader["category"]
-            summary = requestHeader["summary"]
+            #summary = requestHeader["summary"]
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             creator = u.username
