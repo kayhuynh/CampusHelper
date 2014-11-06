@@ -59,7 +59,7 @@
                     <input type="password" id="password" placeholder="Password">
                 </div>
             </div>
-            <button onclick="logInFn()" class="btn btn-primary">
+            <button id = "loginButton" onclick="logInFn()" class="btn btn-primary">
                 Log In
             </button>
         </div>
@@ -70,6 +70,12 @@
     <!-- jQuery Version 1.11.0 -->
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
+    	$("#password").keyup(function(event){
+    		if(event.keyCode == 13){
+        		$("#loginButton").click();
+    		}
+		});
+
         function logInFn(){
             var user = $('#username').val();
             var pass = $('#password').val();

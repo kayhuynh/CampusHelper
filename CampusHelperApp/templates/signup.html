@@ -59,7 +59,7 @@
                 <div> 
                     <input type='password' name="Enter Password Again" id="passwordVerify" placeholder="Reenter password">
                 </div>
-                <button onclick="signUpFn()" class="btn btn-primary">
+                <button id = "signupButton" onclick="signUpFn()" class="btn btn-primary">
                     Sign Up
                 </button>
             </div>
@@ -69,6 +69,12 @@
     <!-- jQuery Version 1.11.0 -->
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
+    	$("#passwordVerify").keyup(function(event){
+    		if(event.keyCode == 13){
+        		$("#signupButton").click();
+    		}
+		});
+
         function signUpFn(){
             //first check if the passwords match
             var user = $("#userField").val();
