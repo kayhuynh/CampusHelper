@@ -150,6 +150,6 @@ class FunctionalTestCase(TestCase):
         c = Client()
         nick = User.objects.get(username = 'Nick')
         c.post('', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
-        response = c.post('/newtask', json.dumps({"title": "Do my homework", "description": "I'm really stupid and can't on my own"}), content_type="application/json")
+        response = c.post('/newtask', json.dumps({"title": "Do my homework", "description": "I'm really stupid and can't on my own", "summary": "my cs 169 project needs doing", "value": "2", "category": "Academic Tutoring"}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertTrue('Water' in response.content)
