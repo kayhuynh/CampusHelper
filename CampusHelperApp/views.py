@@ -123,14 +123,22 @@ def task(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
-            field = requestHeader["field"]
+            field = int(requestHeader["field"])
             newdata = requestHeader["newdata"]
             cur_task = models.getTask(request.GET["q"])
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             if u.username != cur_task.creator:
-                return SOFTFAIL
-            if field == TASK_TITLE:
+                if field == TASK_STATE:
+                    if int(newdata) == STATE_ACCEPTED:
+                        cur_task.markAccepted(u)
+                    elif int(newdata) == STATE_COMPLETED:
+                        cur_task.markCompleted()
+                    else:
+                        return SOFTFAIL
+                else:
+                    return SOFTFAIL
+            elif field == TASK_TITLE:
                 cur_task.setTitle(newdata)
             elif field == TASK_DESCRIPTION:
                 cur_task.setDescription(newdata)
@@ -140,13 +148,6 @@ def task(request):
                 cur_task.setValue(newdata)
             elif field == TASK_CATEGORY:
                 cur_task.setCategory(newdata)
-            elif field == TASK_STATE:
-                if newdata == STATE_ACCEPTED:
-                    cur_task.markAccepted(u)
-                elif newdata == STATE_COMPLETED:
-                    cur_task.markCompleted()
-                else:
-                    return SOFTFAIL
             else:
                 return SOFTFAIL
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")

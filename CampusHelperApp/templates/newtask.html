@@ -50,7 +50,7 @@
 
      
     <body>
-        <form class="post-form" style="text-align:center;" action="/alltasks">
+        <form class="post-form" style="text-align:center;">
             <div class="row">
                
                 <label for="taskTitle"><h3>Task Title</h3></label>
@@ -85,7 +85,7 @@
             <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
                     Looks good to me, post! 
             </button>
-            <button style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
+            <button type="button" onclick="window.location.href='/alltasks'" style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
                     View all available tasks
             </button>
         </form>
