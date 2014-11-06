@@ -134,7 +134,7 @@ def getUserByCookieID(cookieID):
 
 def newTask(creator, title, desc, summary, value, category):
     k = Task(creator = creator, title = title, description = desc, summary = summary, value = value, category = category)
-    #k.full_clean()
+    k.full_clean()
     k.save()
     return k
 
