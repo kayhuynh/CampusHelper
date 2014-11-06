@@ -34,7 +34,7 @@ class User(models.Model):
         return map(lambda x: x.taskID, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all()))
 
     def score(self):
-    	return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all())))
+        return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all())))
 
     def setEmail(self, newEmail):
         self.email = newEmail

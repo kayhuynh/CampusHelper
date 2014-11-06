@@ -15,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^newtask$', 'CampusHelperApp.views.newtask'),
     url(r'^newuser$', 'CampusHelperApp.views.newuser'),
     url(r'^mytasks$', 'CampusHelperApp.views.mytasks'),
-    url(r'^login$', 'CampusHelperApp.views.login')
+    url(r'^login$', 'CampusHelperApp.views.login'),
+    url(r'^logout$', 'CampusHelperApp.views.logout')
 )

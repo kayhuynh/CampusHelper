@@ -69,16 +69,15 @@
     <!-- jQuery Version 1.11.0 -->
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
-    	$("#passwordVerify").keyup(function(event){
-    		if(event.keyCode == 13){
-        		$("#signupButton").click();
-    		}
-		});
+        $("#passwordVerify").keyup(function(event){
+            if(event.keyCode == 13){
+                $("#signupButton").click();
+            }
+        });
 
         function signUpFn(){
             //first check if the passwords match
             var user = $("#userField").val();
-            console.log(user)
             var pass1 = $("#passwordField").val();
             var pass2 = $("#passwordVerify").val();
             if(pass1 != pass2){
@@ -97,9 +96,8 @@
                     gotoLoginPage(user,pass1);
                   },
                 error: function(response) {
-                    var errorCode = response.errcode;
                     console.log(response);
-                    alert("FAILED. Error code: " + errorCode);
+                    alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
                 }
             });
             }
@@ -114,16 +112,11 @@
                 success: function(response) {
                     var errorCode = response.errcode;
                     console.log(response);
-                    if(errorCode == 1){
-                        window.location.href = "/alltasks";
-                    } else {
-                        alert("FAILED. Error code: " + errorCode);
-                    }
-                  },
+                    window.location.href = "/alltasks";
+                },
                 error: function(response) {
-                    var errorCode = response.errcode;
                     console.log(response);
-                    alert("FAILED. Error code: " + errorCode);
+                    alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
                 }
             });
         }

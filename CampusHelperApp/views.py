@@ -63,6 +63,11 @@ def login(request):
     else:
         return HARDFAIL
 
+def logout(request):
+    request.session["cookieID"] = 0
+    del request.session["cookieID"]
+    return HttpResponse("logged out!")
+
 # Shows a list of all tasks globally
 def alltasks(request):
     try:
@@ -169,7 +174,11 @@ def newtask(request):
             task = models.newTask(u, title, description, summary, value, category)
             return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json")
         elif request.method == "GET":
-            return HttpResponse("new task get request")
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            template = loader.get_template("newtask.html")
+            context = Context({"user": u.username})
+            return HttpResponse(template.render(context))
         else:
             return HARDFAIL
     except (ValidationError):

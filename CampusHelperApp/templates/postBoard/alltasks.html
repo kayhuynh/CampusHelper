@@ -2,8 +2,10 @@
 {% block body_title %} Welcome {{ user }} ! {% endblock %}
 
 {% block content %}
-<a href="/profile" class="btn btn-info btn-large"><i class="icon-plus"></i> Post New Task</a>
-<a href="/" class="btn btn-info btn-large"><i class = "icon-plus"></i> Logout</a>
+<a href="/newtask" class="btn btn-info btn-large"><i class="icon-plus"></i> Post New Task</a>
+<a href="/profile" class="btn btn-info btn-large"><i class="icon-plus"></i> My Profile</a>
+<a href="/mytasks" class="btn btn-info btn-large"><i class="icon-plus"></i> My Tasks</a>
+<a id="logoutLink" class="btn btn-info btn-large"><i class = "icon-plus"></i> Logout</a>
 <div style="margin-bottom:25px">
 <br>
     <div>
@@ -62,8 +64,21 @@
         var url = "/alltasks?c=" + category;
         window.location.href = url;
     }
-</script>
-<script>
+
+
+    $("#logoutLink").click(function(){
+        $.ajax({
+            url: "/logout",
+            type: 'GET',
+            success: function(response) {
+                window.location.href = "/";
+            }
+        })
+    });
+
+
+
+
     $(function() {
 
           // Initially hide toggleable content
@@ -87,5 +102,3 @@
     });
 </script>
 {% endblock %}
-
-
