@@ -138,8 +138,18 @@ class FunctionalTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '{"errcode": 2}')
 
-    """def test_alltasks(self):
+    def test_alltasks(self):
         c = Client()
+        nick = User.objects.get(username = 'Nick')
+        c.post('', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
         response = c.get('/alltasks')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('Water' in response.content)"""
+        self.assertTrue('Water' in response.content)
+
+    def test_new_task(self):
+        c = Client()
+        nick = User.objects.get(username = 'Nick')
+        c.post('', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
+        response = c.post('/newtask', json.dumps({"title": "Do my homework", "description": "I'm really stupid and can't on my own"}), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('Water' in response.content)
