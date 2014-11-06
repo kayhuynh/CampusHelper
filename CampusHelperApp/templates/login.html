@@ -80,7 +80,7 @@
             var user = $('#username').val();
             var pass = $('#password').val();
             $.ajax({
-                url: "/",
+                url: "/login",
                 type: 'POST',
                 contentType: "application/json",
                 data: '{"username": "' + user + '", "password": "' + pass + '"}' ,

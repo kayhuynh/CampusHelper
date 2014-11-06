@@ -75,7 +75,7 @@
             }
         });
 
-        function signUpFn(){
+        function signUpFn() {
             //first check if the passwords match
             var user = $("#userField").val();
             var pass1 = $("#passwordField").val();
@@ -103,9 +103,9 @@
             }
         }
 
-        function gotoLoginPage(user,pass){
+        function gotoLoginPage(user, pass) {
             $.ajax({
-                url: "/",
+                url: "/login",
                 type: 'POST',
                 contentType: "application/json",
                 data: '{"username": "' + user + '", "password": "' + pass + '"}' ,

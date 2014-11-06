@@ -120,21 +120,21 @@ class FunctionalTestCase(TestCase):
 
     def test_root_get(self):
         c = Client()
-        response = c.get('')
+        response = c.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTrue('Dedicated' in response.content)
 
     def test_root_post_correct(self):
         c = Client()
         nick = User.objects.get(username = 'Nick')
-        response = c.post('', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
+        response = c.post('/login', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '{"errcode": 1}')
 
     def test_root_post_incorrect(self):
         c = Client()
         nick = User.objects.get(username = 'Nick')
-        response = c.post('', json.dumps({"username": nick.username, "password": 'Nickdroolz', "cookieID": nick.cookieID}), content_type="application/json")
+        response = c.post('/login', json.dumps({"username": nick.username, "password": 'Nickdroolz', "cookieID": nick.cookieID}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '{"errcode": 2}')
 

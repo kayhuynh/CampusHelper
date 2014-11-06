@@ -34,6 +34,14 @@ SOFTFAIL = HttpResponse(json.dumps({"errcode": FAILURE}), content_type = "applic
 HARDFAIL = HttpResponse(json.dumps({}), content_type = "application/json", status = 400)
 
 def root(request):
+    if request.method == "GET":
+        template = loader.get_template("index.html")
+        context = RequestContext(request)
+        return HttpResponse(template.render(context))
+    else:
+        return HARDFAIL
+
+def login(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
@@ -45,7 +53,7 @@ def root(request):
             request.session["cookieID"] = u.cookieID
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET":
-            template = loader.get_template("index.html")
+            template = loader.get_template("login.html")
             context = RequestContext(request)
             return HttpResponse(template.render(context))
         else:
@@ -53,14 +61,6 @@ def root(request):
     except (ValidationError, ObjectDoesNotExist):
         return SOFTFAIL
     except (ValueError, KeyError):
-        return HARDFAIL
-
-def login(request):
-    if request.method == "GET":
-        template = loader.get_template("login.html")
-        context = RequestContext(request)
-        return HttpResponse(template.render(context))
-    else:
         return HARDFAIL
 
 def logout(request):
@@ -119,7 +119,7 @@ def profile(request):
     except (ValueError, KeyError):
         return HARDFAIL
 
-def taskQuery(request):
+def task(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
@@ -151,7 +151,7 @@ def taskQuery(request):
                 return SOFTFAIL
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET":
-            return HttpResponse("task Query get request")
+            return HttpResponse("task get request")
         else:
             return HARDFAIL
     except (ValidationError):
