@@ -50,7 +50,7 @@
 
      
     <body>
-        <form class="post-form" style="text-align:center;">
+        <form class="post-form" style="text-align:center;" action="/alltasks">
             <div class="row">
                
                 <label for="taskTitle"><h3>Task Title</h3></label>
@@ -80,17 +80,15 @@
                 <label for="Task Description"><h3>Task Description</h3></label>
                 <textarea class="form-control" rows="5" id="taskDescription" placeholder="Be as detailed as you want :)"></textarea>
 
-            </div> 
+            </div>
 
-            <button style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
+            <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
                     Looks good to me, post! 
             </button>
             <button style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
-                    <a style="color:white;" href="/alltasks">View all available tasks</a>
+                    View all available tasks
             </button>
         </form>
-
-<!-- this page auto reloads?!?? how to fix? -->
 
     </body>
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
@@ -100,7 +98,7 @@
             var summary = $('#taskSummary').val();
             var description = $('#taskDescription').val();
             var category = $('#category :selected').text();
-            var value = 1;
+            var value = 1;        // temporary until you guys implement this
             $.ajax({
                 url: "/newtask",
                 type: 'POST',
@@ -108,19 +106,13 @@
                 data: '{ "title" : "' + title + '", "description" : "' + description + '", "category" : "'
                     + category + '", "summary" : "' + summary + '", "value" : "' + value + '"}' ,
                 success: function(response) {
-                    var errorCode = response.errcode;
                     var taskID = response.taskID;
                     console.log(response);
-                    if (errorCode == 1) {
-                        alert("Task successfully posted, task ID is: " + taskID);
-                        window.location.href = "/alltasks";
-                    };
+                    alert("Task successfully posted, task ID is: " + taskID);
                   },
                 error: function(response) {
-                    var errorCode = response.errcode;
                     console.log(response);
-                    alert("FAILED. Error code: " + errorCode);
-                    window.location.href = "/alltasks";
+                    alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
                 }
             });
             return false;

@@ -61,8 +61,8 @@ class Task(models.Model):
     state = models.SmallIntegerField(default = STATE_CREATED)
     notify = models.BooleanField(default = False)
     summary = models.TextField(max_length = None)
-    value = models.PositiveSmallIntegerField(default = 0)
-    category = models.TextField(max_length = None, default = "other")
+    value = models.PositiveSmallIntegerField()
+    category = models.TextField(max_length = None)
 
     def __str__(self):
         return self.title
