@@ -24,7 +24,7 @@
     <link href="{% static "css/fonts.css" %}" rel="stylesheet">
     <link href="{% static "font-awesome-4.2.0/css/font-awesome.min.css" %}"  rel="stylesheet" type="text/css">
 
-    <title>New Task</title>
+    <title>Post a New Task</title>
 
 
     <!-- Custom Fonts -->
@@ -48,49 +48,42 @@
            <br>
     </header>
 
-     
-    <body>
-        <form class="post-form" style="text-align:center;">
-            <div class="row">
-               
-                <label for="taskTitle"><h3>Task Title</h3></label>
-                <input type="text" class="form-control" id="taskTitle" placeholder="Enter new task title">
-            
-            </div>
+    <form class="post-form" style="text-align:center;">
+        <div class="row">
+            <label for="taskTitle"><h3>Task Title</h3></label>
+            <input type="text" class="form-control" id="taskTitle" placeholder="Enter new task title">
+        </div>
 
-            <div class="row">
-               
-                <label for="taskTitle"><h3>Task Category</h3></label>
-            </div>
-                <select id="category" class="selectpicker" data-style="btn-primary">
-                      <option>Academic Tutoring</option>
-                      <option>House Moving/Cleaning</option>
-                      <option>Share Rides</option>
-                      <option>Other</option>
-                </select>
+        <div class="row">
+            <label for="category"><h3>Task Category</h3></label>
+        </div>
 
-            <div class="row">
+        <select id="category" class="selectpicker" data-style="btn-primary">
+              <option>Academic Tutoring</option>
+              <option>House Moving/Cleaning</option>
+              <option>Share Rides</option>
+              <option>Other</option>
+        </select>
 
-                <label for="taskSummary"><h3>Task Summary</h3></label>
-                <input type="text" class="form-control" id="taskSummary" placeholder="Put down one line of task summary">
-           
-            </div>
-            <div class="row">
-                
-                <label for="Task Description"><h3>Task Description</h3></label>
-                <textarea class="form-control" rows="5" id="taskDescription" placeholder="Be as detailed as you want :)"></textarea>
+        <div class="row">
+            <label for="taskSummary"><h3>Task Summary</h3></label>
+            <input type="text" class="form-control" id="taskSummary" placeholder="Put down one line of task summary">
+        </div>
 
-            </div>
+        <div class="row">
+            <label for="taskDescription"><h3>Task Description</h3></label>
+            <textarea class="form-control" rows="5" id="taskDescription" placeholder="Be as detailed as you want :)"></textarea>
+        </div>
 
-            <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
-                    Looks good to me, post! 
-            </button>
-            <button type="button" onclick="window.location.href='/alltasks'" style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
-                    View all available tasks
-            </button>
-        </form>
+        <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="addTaskFn()" class="btn btn-primary">
+            Looks good to me, post! 
+        </button>
+        <button type="button" onclick="window.location.href='/alltasks'" style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
+            View all available tasks
+        </button>
+    </form>
 
-    </body>
+
     <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
         function addTaskFn(){
@@ -107,9 +100,8 @@
                     + category + '", "summary" : "' + summary + '", "value" : "' + value + '"}' ,
                 success: function(response) {
                     var taskID = response.taskID;
-                    console.log(response);
                     alert("Task successfully posted, task ID is: " + taskID);
-                  },
+                },
                 error: function(response) {
                     console.log(response);
                     alert("FAILED. Code: " + response.status + " Response: " + response.responseText);

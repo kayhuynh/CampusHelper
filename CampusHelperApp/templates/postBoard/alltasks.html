@@ -1,5 +1,5 @@
 {% extends 'postBoard/base.html' %}
-{% block body_title %} Welcome {{ user }} ! {% endblock %}
+{% block body_title %} Welcome {{ user }}! (All Tasks page){% endblock %}
 {% block content %}
 <a href="/newtask" class="btn btn-info btn-large"><i class="icon-plus"></i> Post New Task</a>
 <a href="/profile" class="btn btn-info btn-large"><i class="icon-plus"></i> My Profile</a>
@@ -7,16 +7,16 @@
 <a id="logoutLink" class="btn btn-info btn-large"><i class="icon-plus"></i> Logout</a>
 <div style="margin-bottom:25px">
 <br>
-    <button id="accTrue" onclick="insertParam('showAccepted', 'true')" class="btn btn-primary">
+    <button id="accTrue" onclick="insertParam('showAccepted', true)" class="btn btn-primary">
         Show accepted tasks
     </button>
-    <button id="accFalse" onclick="insertParam('showAccepted', 'false')" class="btn btn-primary">
+    <button id="accFalse" onclick="insertParam('showAccepted', false)" class="btn btn-primary">
         Hide accepted tasks
     </button>
-    <button id="comTrue" onclick="insertParam('showCompleted', 'true')" class="btn btn-primary">
+    <button id="comTrue" onclick="insertParam('showCompleted', true)" class="btn btn-primary">
         Show completed tasks
     </button>
-    <button id="comFalse" onclick="insertParam('showCompleted', 'false')" class="btn btn-primary">
+    <button id="comFalse" onclick="insertParam('showCompleted', false)" class="btn btn-primary">
         Hide completed tasks
     </button>
 <br>
@@ -30,7 +30,7 @@
         </select>
         <br>
         <button onclick="filterFn()" class="btn btn-primary">
-            Filter! 
+            Filter
         </button>
         <button onclick="window.location.href='/alltasks'" class="btn btn-primary">
             Unfilter
@@ -45,7 +45,6 @@
                 <td>Task Category</td>
                 <td>Task Summary</td>
                 <td>Posted By</td>
-                <td></td>
             </tr>
 
         {% for task in allTasks %}
@@ -54,7 +53,6 @@
                 <td><p>{{ task.category }}</p></td>
                 <td><p>{{ task.summary }}</p></td>
                 <td><p>{{ task.creator.username }}</p></td>
-                <td></td>
             </tr>
             <tr>
                 <td colspan="3">
