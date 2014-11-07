@@ -105,6 +105,7 @@ def profile(request):
                 u.setEmail(newdata)
             elif field == USER_DESCRIPTION:
                 u.setDescription(newdata)
+            return HttpResponse(status = 200) #temporary addition by Nick to make test pass, previously no response returned
         #if request.method == "GET" and "q" in request.GET:
         if request.method == "GET":
             cookieID = request.session["cookieID"]
@@ -164,7 +165,6 @@ def task(request):
 def newtask(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            print("hiii")
             requestHeader = json.loads(bytes.decode(request.body))
             title = requestHeader["title"]
             description = requestHeader["description"]
