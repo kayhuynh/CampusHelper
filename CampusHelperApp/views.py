@@ -110,7 +110,8 @@ def profile(request):
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             template = loader.get_template("profile.html")
-            context = Context({"user": u.username})
+            context = Context({"user": u.username, "myCreatedTasks": u.tasksCreated.all(),
+                "myAcceptedTasks": u.tasksAccepted.all()})
             return HttpResponse(template.render(context))
         else:
             return HARDFAIL
