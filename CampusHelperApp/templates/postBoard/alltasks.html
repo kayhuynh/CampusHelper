@@ -7,6 +7,19 @@
 <a id="logoutLink" class="btn btn-info btn-large"><i class = "icon-plus"></i> Logout</a>
 <div style="margin-bottom:25px">
 <br>
+    <button id="accTrue" onclick="insertParam('showAccepted', 'true')" class="btn btn-primary">
+        Show accepted tasks
+    </button>
+    <button id="accFalse" onclick="insertParam('showAccepted', 'false')" class="btn btn-primary">
+        Hide accepted tasks
+    </button>
+    <button id="comTrue" onclick="insertParam('showCompleted', 'true')" class="btn btn-primary">
+        Show completed tasks
+    </button>
+    <button id="comFalse" onclick="insertParam('showCompleted', 'false')" class="btn btn-primary">
+        Hide completed tasks
+    </button>
+<br>
     <div>
         Filter by category:
         <select id="category" class="selectpicker" data-style="btn-primary">
@@ -74,8 +87,7 @@
 
     function filterFn(){
         var category = $('#category :selected').text();
-        var url = "/alltasks?c=" + category;
-        window.location.href = url;
+        insertParam("c", category);
     }
 
     $("#logoutLink").click(function(){
@@ -106,7 +118,70 @@
         });
     }
 
+    //stackoverflow
+    function getUrlParameter(sParam)
+    {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+    }
+
+    //stackoverflow
+    function insertParam(key,value) {
+        key = escape(key); value = escape(value);
+
+        var kvp = document.location.search.substr(1).split('&');
+        if (kvp == '') {
+            document.location.search = '?' + key + '=' + value;
+        }
+        else {
+
+            var i = kvp.length; var x; while (i--) {
+                x = kvp[i].split('=');
+
+                if (x[0] == key) {
+                    x[1] = value;
+                    kvp[i] = x.join('=');
+                    break;
+                }
+            }
+
+            if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
+
+            //this will reload the page, it's likely better to store this until finished
+            document.location.search = kvp.join('&');
+        }
+    }
+
     $(function() {
+        if (typeof getUrlParameter("c") != "undefined") {
+            $("#category").val(decodeURI(getUrlParameter("c")));
+        }
+
+        if (typeof getUrlParameter("showCompleted") != "undefined") {
+            if (decodeURI(getUrlParameter("showCompleted")) == "true") {
+                $("#comTrue").remove()
+            } else {
+                $("#comFalse").remove()
+            }
+        } else {
+            $("#comFalse").remove()
+        }
+
+        if (typeof getUrlParameter("showAccepted") != "undefined") {
+            if (decodeURI(getUrlParameter("showAccepted")) == "true") {
+                $("#accTrue").remove()
+            } else {
+                $("#accFalse").remove()
+            }
+        } else {
+            $("#accFalse").remove()
+        }
 
           // Initially hide toggleable content
         $("td[colspan=3]").find("p").hide();
