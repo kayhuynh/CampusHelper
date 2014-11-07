@@ -13,7 +13,7 @@ class User(models.Model):
     email = models.EmailField(max_length = 254)
     description = models.TextField(max_length = None)
     cookieID = models.BigIntegerField(unique = True)
-    # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
+    # self.tasksCreated.all(), self.tasksAccepted.all() from Task ForeignKeys
 
     def __str__(self):
         return self.username
