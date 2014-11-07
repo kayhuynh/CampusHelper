@@ -1,5 +1,5 @@
 {% extends 'postBoard/base.html' %}
-{% block body_title %} Welcome {{ user }} ! {% endblock %}
+{% block body_title %} Welcome {{ user }}! {% endblock %}
 {% block content %}
 <a href="/newtask" class="btn btn-info btn-large"><i class="icon-plus"></i> Post New Task</a>
 <a href="/alltasks" class="btn btn-info btn-large"><i class="icon-plus"></i> All Tasks</a>
@@ -13,7 +13,6 @@
                 <td>Task Name</td>
                 <td>Task Category</td>
                 <td>Task Summary</td>
-                <td></td>
             </tr>
 
         {% for task in myCreatedTasks %}
@@ -21,7 +20,6 @@
                 <td><p>{{ task.title }}</p></td>
                 <td><p>{{ task.category }}</p></td>
                 <td><p>{{ task.summary }}</p></td>
-                <td></td>
             </tr>
             <tr>
                 <td colspan="3">
