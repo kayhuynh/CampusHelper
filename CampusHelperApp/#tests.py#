@@ -161,3 +161,5 @@ class FunctionalTestCase(TestCase):
         c.post('/login', json.dumps({"username": nick.username, "password": nick.password}), content_type="application/json")
         response = c.post('/newtask', json.dumps({"title": "Do my homework", "description": "I'm really stupid and can't on my own", "value": "1", "summary": "I'll pay anything!", "category": "Academic Tutoring"}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
+
+    def 
