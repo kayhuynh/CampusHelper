@@ -95,7 +95,7 @@ def profile(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
-            field = requestHeader["field"]
+            field = int(requestHeader["field"])
             newdata = requestHeader["newdata"]
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
@@ -105,13 +105,13 @@ def profile(request):
                 u.setEmail(newdata)
             elif field == USER_DESCRIPTION:
                 u.setDescription(newdata)
+            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         #if request.method == "GET" and "q" in request.GET:
         if request.method == "GET":
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             template = loader.get_template("profile.html")
-            context = Context({"user": u.username, "myCreatedTasks": u.tasksCreated.all(),
-                "myAcceptedTasks": u.tasksAccepted.all()})
+            context = Context({"user": u})
             return HttpResponse(template.render(context))
         else:
             return HARDFAIL
@@ -146,7 +146,7 @@ def task(request):
             elif field == TASK_SUMMARY:
                 cur_task.setSummary(newdata)
             elif field == TASK_VALUE:
-                cur_task.setValue(newdata)
+                cur_task.setValue(int(newdata))
             elif field == TASK_CATEGORY:
                 cur_task.setCategory(newdata)
             else:
@@ -164,7 +164,6 @@ def task(request):
 def newtask(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
-            print("hiii")
             requestHeader = json.loads(bytes.decode(request.body))
             title = requestHeader["title"]
             description = requestHeader["description"]
@@ -210,8 +209,12 @@ def newuser(request):
 def mytasks(request):
     try:
         if request.method == "GET":
-            u = models.getUserByCookieID(request.session["cookieID"])
-            return HttpResponse("mytasks get request")
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            template = loader.get_template("mytasks.html")
+            context = Context({"user": u.username, "myCreatedTasks": u.tasksCreated.all(),
+                "myAcceptedTasks": u.tasksAccepted.all()})
+            return HttpResponse(template.render(context))
         else:
             return HARDFAIL
     except ObjectDoesNotExist:
