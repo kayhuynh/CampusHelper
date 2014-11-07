@@ -56,8 +56,14 @@
                 <div>
                     <input type='password' name="Password" id='passwordField' placeholder="password">
                 </div>
-                <div> 
+                <div class="form-group">
                     <input type='password' name="Enter Password Again" id="passwordVerify" placeholder="Reenter password">
+                </div>
+                <div class="form-group">
+                    <input type='text' name="Email" id="email" value="your@email.com">
+                </div>
+                <div>
+                    <textarea class="form-group" rows="5" style="" id="desc">A short description of you</textarea>
                 </div>
                 <button id = "signupButton" onclick="signUpFn()" class="btn btn-primary">
                     Sign Up
@@ -80,6 +86,8 @@
             var user = $("#userField").val();
             var pass1 = $("#passwordField").val();
             var pass2 = $("#passwordVerify").val();
+            var email = $("#email").val();
+            var desc = $("#desc").val();
             if(pass1 != pass2){
                 alert("Your passwords do not match, please try again.");
             }
@@ -89,7 +97,7 @@
                 url: "/newuser",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "username" : ' + '"' + user + '"' + ', "password" : ' + '"' + pass1 + '"' + ', "email" : "test@example.com", "description" : "tempdesc"' + '}',
+                data: '{ "username" : ' + '"' + user + '"' + ', "password" : ' + '"' + pass1 + '"' + ', "email" : "' + email + '", "description" : "' + desc + '"' + '}',
                 success: function(response) {
                     var errorCode = response.errcode;
                     console.log(response);
