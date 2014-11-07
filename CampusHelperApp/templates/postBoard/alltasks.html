@@ -58,7 +58,7 @@
                 <td colspan="3">
                     <p>{{ task.description }}</p>
                     <p>
-                        {% if task.state == 1 %}
+                        {% if task.state == 1 and task.creator.username != user %}
                             <button onclick="acceptTask({{ task.taskID }})" class="btn btn-primary">
                                 Accept Task
                             </button>
