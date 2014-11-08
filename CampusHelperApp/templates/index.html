@@ -44,15 +44,22 @@
 </head>
 
 <body>
-    {% include "navBar.html" %}
     <!-- Header -->
     <header id="top" class="header">
+        <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <ul class="nav navbar-nav">
+                <li class="hidden">
+                        <a href="#page-top"></a>
+                </li>
+                    <a href="/newuser" >Sign Up</a>
+                    <a href="/login" >Login</a>
+            </ul>
+         </div>
+        
         <div class="text-vertical-center">
             <h1>Welcome to <font class="logo" color="00387a">Campus</font><font class="logo" color="ffb819">Helper</font>!</h1>
             <h3>Dedicated to help students collaborate better.</h3>
             <br>
-            <a href="/newuser" class="btn btn-dark btn-lg">Sign Up</a>
-            <a href="/login" class="btn btn-dark btn-lg">Login</a>
             <a href="#services" class="btn btn-dark btn-lg">Our Services</a>
             <a href="#how" class="btn btn-dark btn-lg">How it works</a>
         </div>
