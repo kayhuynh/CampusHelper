@@ -39,7 +39,7 @@
 </div>
 <div class="containter">
     <div id="task_table">
-        <table border="0" cellpadding="10" width="100%">
+        <table class="table table-striped" border="3" cellpadding="10" width="100%">
             <tr>
                 <td>Task Name</td>
                 <td>Task Category</td>
@@ -54,8 +54,8 @@
                 <td><p>{{ task.summary }}</p></td>
                 <td><p>{{ task.creator.username }}</p></td>
             </tr>
-            <tr>
-                <td colspan="3">
+            <tr >
+                <td colspan="4">
                     <p>{{ task.description }}</p>
                     <p>
                         {% if task.state == 1 and task.creator.username != user %}
@@ -187,7 +187,7 @@
         }
 
           // Initially hide toggleable content
-        $("td[colspan=3]").find("p").hide();
+        $("td[colspan=4]").find("p").hide();
 
           // Click handler on entire table
         $("table").click(function(event) {
