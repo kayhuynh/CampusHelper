@@ -65,6 +65,19 @@ hr.small {
     max-width: 100px;
 }
 
+/* signin/register */
+
+#signin {
+    z-index: 1000;
+    position: fixed;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    margin-right: -250px;
+    overflow-y: auto;
+    background: #222;
+}
+
 /* Side Menu */
 
 #sidebar-wrapper {
