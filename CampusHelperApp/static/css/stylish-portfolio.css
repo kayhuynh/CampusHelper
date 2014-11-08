@@ -70,10 +70,10 @@ hr.small {
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
-    right: 0;
+    left: 0;
     width: 250px;
     height: 100%;
-    margin-right: -250px;
+    margin-left: -250px;
     overflow-y: auto;
     background: #222;
     -webkit-transition: all 0.4s ease 0s;
@@ -133,11 +133,11 @@ hr.small {
     z-index: 1;
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
 }
 
 #sidebar-wrapper.active {
-    right: 250px;
+    left: 250px;
     width: 250px;
     -webkit-transition: all 0.4s ease 0s;
     -moz-transition: all 0.4s ease 0s;

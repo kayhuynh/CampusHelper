@@ -19,6 +19,9 @@ class Migration(migrations.Migration):
                 ('description', models.TextField()),
                 ('timePosted', models.DateTimeField(auto_now_add=True)),
                 ('state', models.SmallIntegerField(default=1)),
+                ('summary', models.TextField()),
+                ('value', models.PositiveSmallIntegerField()),
+                ('category', models.TextField()),
             ],
             options={
             },
@@ -31,7 +34,7 @@ class Migration(migrations.Migration):
                 ('password', models.TextField()),
                 ('email', models.EmailField(max_length=254)),
                 ('description', models.TextField()),
-                ('cookieID', models.BigIntegerField(default=2798718085557308818, unique=True)),
+                ('cookieID', models.BigIntegerField(unique=True)),
             ],
             options={
             },
@@ -40,13 +43,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='task',
             name='acceptor',
-            field=models.ForeignKey(related_name=b'tasksAccepted', on_delete=django.db.models.deletion.PROTECT, default=None, to='CampusHelperApp.User', null=True),
+            field=models.ForeignKey(related_name='tasksAccepted', on_delete=django.db.models.deletion.PROTECT, default=None, blank=True, to='CampusHelperApp.User', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='task',
             name='creator',
-            field=models.ForeignKey(related_name=b'tasksCreated', to='CampusHelperApp.User'),
+            field=models.ForeignKey(related_name='tasksCreated', to='CampusHelperApp.User'),
             preserve_default=True,
         ),
     ]

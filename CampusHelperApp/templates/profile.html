@@ -109,10 +109,10 @@
                     url: "/profile",
                     type: 'POST',
                     contentType: "application/json",
+                    async: false,
                     data: '{ "field" : "' + USER_PASSWORD + '", "newdata" : "' + password + '"}' ,
                     success: function(response) {
-                        alert("Updated password");
-                    }
+                    },
                 });
             }
 
@@ -121,13 +121,14 @@
                     url: "/profile",
                     type: 'POST',
                     contentType: "application/json",
+                    async: false,
                     data: '{ "field" : "' + USER_DESCRIPTION + '", "newdata" : "' + desc + '"}' ,
                     success: function(response) {
-                        alert("Updated description");
-                    }
+                    },
                 });
             }
-            window.location.href='/profile';
+
+            window.location.reload(true);
         }
 
     </script>

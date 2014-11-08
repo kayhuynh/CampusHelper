@@ -48,9 +48,10 @@
 
 </head>
 <body>
+     {% include "navBar.html" %}
     <div class="container">
         <div class="row">
-            <div class="col-lg-10 col-lg-offset-1">
+            <div class="col-lg-10 col-lg-offset-2">
                 <h1 style="margin-bottom:50px"> {% block body_title %}User Name's CampusHelper{% endblock %}</h1>
                 
                 {% block content %}
@@ -61,3 +62,18 @@
     </div>
 </body>
 </html>
+
+<!-- Side Navigation Bar js -->
+<script>
+// Closes the sidebar menu
+$("#menu-close").click(function(e) {
+    e.preventDefault();
+    $("#sidebar-wrapper").toggleClass("active");
+});
+// Opens the sidebar menu
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#sidebar-wrapper").toggleClass("active");
+});
+
+</script>
