@@ -66,7 +66,9 @@ def login(request):
 def logout(request):
     request.session["cookieID"] = 0
     del request.session["cookieID"]
-    return HttpResponse("logged out!")
+    template = loader.get_template("index.html")
+    context = Context()
+    return HttpResponse(template.render(context))
 
 # Shows a list of all tasks globally
 def alltasks(request):
