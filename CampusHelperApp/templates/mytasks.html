@@ -5,7 +5,7 @@
 <a href="/alltasks" class="btn btn-info btn-large"><i class="fa fa-search"></i> Explore Tasks</a>
 <!--<a id="logoutLink" class="btn btn-info btn-large"><i class="icon-plus"></i> Logout</a>-->
 <div style="margin-bottom:25px">
-<div class="containter">
+<div class="container1">
     <div id="task_table_created" style="margin-top:25px">
         <h2>My Posted Task</h2>
         <table class="table table-striped" border="3" cellpadding="10" width="100%">
@@ -73,7 +73,7 @@
     </div>
 </div>
 
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <script>
     TASK_TITLE = 1
     TASK_DESCRIPTION = 2
@@ -98,18 +98,18 @@
 
     $(function() {
 
-          // Initially hide toggleable content
+        // Initially hide toggleable content
         $("td[colspan=3]").find("p").hide();
 
-          // Click handler on entire table
+        // Click handler on entire table
         $("table").click(function(event) {
 
-              // No bubbling up
+            // No bubbling up
             event.stopPropagation();
 
             var $target = $(event.target);
 
-              // Open and close the appropriate thing
+            // Open and close the appropriate thing
             if ( $target.closest("td").attr("colspan") > 1 ) {
                 $target.slideUp();
             } else {
