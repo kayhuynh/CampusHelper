@@ -76,7 +76,6 @@ def alltasks(request):
         if request.method == "GET":
             cookieID = request.session["cookieID"]
             user = models.getUserByCookieID(cookieID)
-            template = loader.get_template("postBoard/alltasks.html")
             all_tasks = models.Task.objects.filter(state__exact = STATE_CREATED)
             if "showAccepted" in request.GET and request.GET["showAccepted"] == "true":
                 all_tasks |= models.Task.objects.filter(state__exact = STATE_ACCEPTED)
@@ -87,6 +86,7 @@ def alltasks(request):
             if "c" in request.GET:
                 all_tasks = all_tasks.filter(category__exact = request.GET["c"])
             context = Context({"allTasks": all_tasks, "user": user.username})
+            template = loader.get_template("postBoard/alltasks.html")
             return HttpResponse(template.render(context))
         else:
             return HARDFAIL
@@ -213,7 +213,7 @@ def mytasks(request):
         if request.method == "GET":
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
-            template = loader.get_template("mytasks.html")
+            template = loader.get_template("postBoard/mytasks.html")
             context = Context({"user": u.username, "myCreatedTasks": u.tasksCreated.all(),
                 "myAcceptedTasks": u.tasksAccepted.all()})
             return HttpResponse(template.render(context))

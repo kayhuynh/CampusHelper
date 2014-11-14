@@ -1,15 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 {% load staticfiles %}
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
     <!-- Bootstrap Core CSS -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="{% static "css/bootstrap-extensions.css" %}" rel="stylesheet">
@@ -25,14 +18,42 @@
     <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
-    <!-- jQuery Version 1.11.1 -->
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!-- jQuery Version 2.1.1 -->
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    
+    <!-- Bootstrap Core JavaScript -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
     <title sytle="margin-top:20px">{% block header_title %}List of tasks{% endblock %}</title>
 
 </head>
 <body>
-    {% include "navBar.html" %}
+    <!-- Navigation -->
+    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <nav id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+            <li class="sidebar-brand">
+                <a href="#top">Welcome {{ user }}!</a>
+            </li>
+            <li>
+                <a href="/mytasks">My Task Dashboard</a>
+            </li>
+            <li>
+                <a href="/alltasks">Explore Tasks</a>
+            </li>
+            <li>
+                <a href="/newtask">Post New Task</a>
+            </li>
+            <li>
+                <a href="/profile">My Profile</a>
+            </li>
+            <li>
+                <a href="/logout" id="logoutLink">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
     <div class="container">
         <div class="row">
             <div class="col-lg-10 col-lg-offset-2">

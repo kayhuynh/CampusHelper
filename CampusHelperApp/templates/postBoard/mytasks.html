@@ -1,9 +1,6 @@
 {% extends 'postBoard/base.html' %}
-{% block body_title %}  {{ user }}'s Tasks {% endblock %}
+{% block body_title %} {{ user }}'s Tasks {% endblock %}
 {% block content %}
-<a href="/newtask" class="btn btn-info btn-large"><i class="fa fa-plus"></i> Post New Task</a>
-<a href="/alltasks" class="btn btn-info btn-large"><i class="fa fa-search"></i> Explore Tasks</a>
-<!--<a id="logoutLink" class="btn btn-info btn-large"><i class="icon-plus"></i> Logout</a>-->
 <div style="margin-bottom:25px">
 <div class="container1">
     <div id="task_table_created" style="margin-top:25px">
@@ -13,6 +10,7 @@
                 <td>Task Name</td>
                 <td>Task Category</td>
                 <td>Task Summary</td>
+                <td>Date Posted</td>
             </tr>
 
         {% for task in myCreatedTasks %}
@@ -20,9 +18,10 @@
                 <td><p>{{ task.title }}</p></td>
                 <td><p>{{ task.category }}</p></td>
                 <td><p>{{ task.summary }}</p></td>
+                <td><p>{{ task.timePosted.date.isoformat }}</p></td>
             </tr>
             <tr>
-                <td colspan="3">
+                <td colspan="4">
                     <p>{{ task.description }}</p>
                     <p>
                         {% if task.state == 1 %}
@@ -48,32 +47,32 @@
                 <td>Posted By</td>
             </tr>
 
-        {% for task in myAcceptedTasks %}
-            <tr>
-                <td><p>{{ task.title }}</p></td>
-                <td><p>{{ task.category }}</p></td>
-                <td><p>{{ task.summary }}</p></td>
-                <td><p>{{ task.creator.username }}</p></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <p>{{ task.description }}</p>
-                    <p>
-                        {% if task.state == 2 %}
-                            This task was accepted by {{ task.acceptor.username }}
-                        {% elif task.state == 3 %}
-                            This task was completed by {{ task.acceptor.username }}
-                        {% endif %}
-                    </p>
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
+            {% for task in myAcceptedTasks %}
+                <tr>
+                    <td><p>{{ task.title }}</p></td>
+                    <td><p>{{ task.category }}</p></td>
+                    <td><p>{{ task.summary }}</p></td>
+                    <td><p>{{ task.creator.username }}</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <p>{{ task.description }}</p>
+                        <p>
+                            {% if task.state == 2 %}
+                                This task was accepted by {{ task.acceptor.username }}
+                            {% elif task.state == 3 %}
+                                This task was completed by {{ task.acceptor.username }}
+                            {% endif %}
+                        </p>
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
     </div>
 </div>
 
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <script>
     TASK_TITLE = 1
     TASK_DESCRIPTION = 2

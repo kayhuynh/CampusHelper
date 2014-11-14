@@ -1,6 +1,7 @@
 {% extends 'postBoard/base.html' %}
 {% block body_title %} Welcome {{ user }}! (All Tasks page){% endblock %}
 {% block content %}
+
 <div style="margin-top:25px; margin-bottom:25px">
 <!--
     <button id="accTrue" onclick="insertParam('showAccepted', true)" class="btn btn-primary">
@@ -43,6 +44,7 @@
                 <td>Task Category</td>
                 <td>Task Summary</td>
                 <td>Posted By</td>
+                <td>Date Posted</td>
             </tr>
 
         {% for task in allTasks %}
@@ -51,9 +53,10 @@
                 <td><p>{{ task.category }}</p></td>
                 <td><p>{{ task.summary }}</p></td>
                 <td><p>{{ task.creator.username }}</p></td>
+                <td><p>{{ task.timePosted.date.isoformat }}</p></td>
             </tr>
-            <tr >
-                <td colspan="4">
+            <tr>
+                <td colspan="5">
                     <p>{{ task.description }}</p>
                     <p>
                         {% if task.state == 1 and task.creator.username != user %}
@@ -73,7 +76,6 @@
     </div>
 </div>
 
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <script>
     TASK_TITLE = 1
     TASK_DESCRIPTION = 2
@@ -119,8 +121,7 @@
     }
 
     //stackoverflow
-    function getUrlParameter(sParam)
-    {
+    function getUrlParameter(sParam) {
         var sPageURL = window.location.search.substring(1);
         var sURLVariables = sPageURL.split('&');
         for (var i = 0; i < sURLVariables.length; i++) {
@@ -132,28 +133,25 @@
     }
 
     //stackoverflow
-    function insertParam(key,value) {
-        key = escape(key); value = escape(value);
-
+    function insertParam(key, value) {
+        key = escape(key);
+        value = escape(value);
         var kvp = document.location.search.substr(1).split('&');
         if (kvp == '') {
             document.location.search = '?' + key + '=' + value;
         }
         else {
-
             var i = kvp.length; var x; while (i--) {
                 x = kvp[i].split('=');
-
                 if (x[0] == key) {
                     x[1] = value;
                     kvp[i] = x.join('=');
                     break;
                 }
             }
-
-            if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
-
-            //this will reload the page, it's likely better to store this until finished
+            if (i < 0) {
+               kvp[kvp.length] = [key, value].join('=');
+            }
             document.location.search = kvp.join('&');
         }
     }
