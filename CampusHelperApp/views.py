@@ -108,12 +108,18 @@ def profile(request):
             elif field == USER_DESCRIPTION:
                 u.setDescription(newdata)
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
-        #if request.method == "GET" and "q" in request.GET:
+        if request.method == "GET" and "q" in request.GET:
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            u_queried = models.getUser(request.GET["q"])
+            template = loader.get_template("profile.html")
+            context = Context({"user": u_queried, "mine": True if u == u_queried else False})
+            return HttpResponse(template.render(context))
         if request.method == "GET":
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             template = loader.get_template("profile.html")
-            context = Context({"user": u})
+            context = Context({"user": u, "mine": True})
             return HttpResponse(template.render(context))
         else:
             return HARDFAIL

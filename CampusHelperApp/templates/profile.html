@@ -24,40 +24,56 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
-    <title>My Profile</title>
+    <title>
+        {% if mine %}
+            My Profile
+        {% else %}
+            {{user.username}}'s Profile
+        {% endif %}
+    </title>
 
 </head>
 
 <body>
     <header id="top">
-        <h1 style="text-align:center"><strong>View or Update My Profile</strong></h1>
-           <br>
+        <h1 style="text-align:center"><strong>
+            {% if mine %}
+                View or Update My Profile
+            {% else %}
+                View {{user.username}}'s Profile
+            {% endif %}
+            </strong></h1>
+        <br>
     </header>
 
     <form class="post-form" style="text-align:left">
         <div class="row">
-            <h3>Username:</h3>
+            <h3>Username</h3>
             <input type="text" class="form-control" placeholder="{{ user.username }}" readonly>
         </div>
 
-        <div class="row">
-            <label for="password"><h3>Password</h3></label>
-            <input type="text" class="form-control" id="password" value="{{ user.password }}">
-        </div>
+        {% if mine %}
+            <div class="row">
+                <label for="password"><h3>Password</h3></label>
+                <input type="text" class="form-control" id="password" value="{{ user.password }}" {% if not mine %} readonly {% endif %}>
+            </div>
+        {% endif %}
 
         <div class="row">
             <label for="email"><h3>Email Address</h3></label>
-            <input type="text" class="form-control" id="email" value="{{ user.email }}">
+            <input type="text" class="form-control" id="email" value="{{ user.email }}" {% if not mine %} readonly {% endif %}>
         </div>
 
         <div class="row">
-            <label for="desc"><h3>My Description</h3></label>
-            <textarea class="form-control" rows="5" id="desc">{{ user.description }}</textarea>
+            <label for="desc"><h3>Description</h3></label>
+            <textarea class="form-control" rows="5" id="desc" {% if not mine %} readonly {% endif %}>{{ user.description }}</textarea>
         </div>
 
-        <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateUser()" class="btn btn-primary">
-            Looks good to me, update! 
-        </button>
+        {% if mine %}
+            <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateUser()" class="btn btn-primary">
+                Looks good to me, update! 
+            </button>
+        {% endif %}
         <button type="button" onclick="window.location.href='/mytasks'" style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
             View my tasks
         </button>
