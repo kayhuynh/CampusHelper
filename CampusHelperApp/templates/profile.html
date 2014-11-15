@@ -1,144 +1,107 @@
-<!DOCTYPE html>
-<html>
-{% load staticfiles %}
+{% extends 'postBoard/base.html' %}
+{% block header_title %} 
+    {% if mine %}
+        My Profile
+    {% else %}
+        {{user.username}}'s Profile
+    {% endif %}
+{% endblock %}
+{% block body_title %}
+    {% if mine %}
+        View or Update My Profile
+    {% else %}
+        View {{user.username}}'s Profile
+    {% endif %}
+{% endblock %}
 
-<head>
-    <!-- Bootstrap Core CSS -->
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{% static "css/bootstrap-extensions.css" %}" rel="stylesheet">
+{% block content %}
 
-    <!-- Custom CSS -->
-    <link href="{% static "css/stylish-portfolio.css" %}" rel="stylesheet">
-    <link href="{% static "css/cal.css" %}" rel="stylesheet">
-    <link href="{% static "css/postBoard.css" %}" rel="stylesheet">
+<form class="post-form" style="text-align:left">
+    <div class="row">
+        <h3>Username</h3>
+        <input type="text" class="form-control" placeholder="{{ user.username }}" readonly>
+    </div>
 
-    <!-- Custom Fonts -->
-    <link href="{% static "css/fonts.css" %}" rel="stylesheet">
-    <link href="{% static "font-awesome-4.2.0/css/font-awesome.min.css" %}"  rel="stylesheet" type="text/css">
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-
-    <!-- jQuery Version 2.1.1 -->
-    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-    
-    <!-- Bootstrap Core JavaScript -->
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-
-    <title>
-        {% if mine %}
-            My Profile
-        {% else %}
-            {{user.username}}'s Profile
-        {% endif %}
-    </title>
-
-</head>
-
-<body>
-    <header id="top">
-        <h1 style="text-align:center"><strong>
-            {% if mine %}
-                View or Update My Profile
-            {% else %}
-                View {{user.username}}'s Profile
-            {% endif %}
-            </strong></h1>
-        <br>
-    </header>
-
-    <form class="post-form" style="text-align:left">
+    {% if mine %}
         <div class="row">
-            <h3>Username</h3>
-            <input type="text" class="form-control" placeholder="{{ user.username }}" readonly>
+            <label for="password"><h3>Password</h3></label>
+            <input type="text" class="form-control" id="password" value="{{ user.password }}" {% if not mine %} readonly {% endif %}>
         </div>
+    {% endif %}
 
-        {% if mine %}
-            <div class="row">
-                <label for="password"><h3>Password</h3></label>
-                <input type="text" class="form-control" id="password" value="{{ user.password }}" {% if not mine %} readonly {% endif %}>
-            </div>
-        {% endif %}
+    <div class="row">
+        <label for="email"><h3>Email Address</h3></label>
+        <input type="text" class="form-control" id="email" value="{{ user.email }}" {% if not mine %} readonly {% endif %}>
+    </div>
 
-        <div class="row">
-            <label for="email"><h3>Email Address</h3></label>
-            <input type="text" class="form-control" id="email" value="{{ user.email }}" {% if not mine %} readonly {% endif %}>
-        </div>
+    <div class="row">
+        <label for="desc"><h3>Description</h3></label>
+        <textarea class="form-control" rows="5" id="desc" {% if not mine %} readonly {% endif %}>{{ user.description }}</textarea>
+    </div>
 
-        <div class="row">
-            <label for="desc"><h3>Description</h3></label>
-            <textarea class="form-control" rows="5" id="desc" {% if not mine %} readonly {% endif %}>{{ user.description }}</textarea>
-        </div>
-
-        {% if mine %}
-            <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateUser()" class="btn btn-primary">
-                Looks good to me, update! 
-            </button>
-        {% endif %}
-        <button type="button" onclick="window.location.href='/mytasks'" style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
-            View my tasks
+    {% if mine %}
+        <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateUser()" class="btn btn-primary">
+            Looks good to me, update! 
         </button>
-        <button type="button" onclick="window.location.href='/alltasks'" style="margin-top:1cm; margin-bottom:5cm; text-color:white" class="btn btn-primary">
-            Back to all tasks
-        </button>
-    </form>
+    {% endif %}
+</form>
 
-    <script>
-        USER_PASSWORD = 1
-        USER_EMAIL = 2
-        USER_DESCRIPTION = 3
+{% if mine %}
+<script>
+    USER_PASSWORD = 1
+    USER_EMAIL = 2
+    USER_DESCRIPTION = 3
 
-        function updateUser(){
-            var password = $('#password').val();
-            var email = $('#email').val();
-            var desc = $('#desc').val();
+    function updateUser(){
+        var password = $('#password').val();
+        var email = $('#email').val();
+        var desc = $('#desc').val();
 
-            if (email != "{{ user.email }}") {
-                var ajaxObj = $.ajax({
-                    url: "/profile",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + USER_EMAIL + '", "newdata" : "' + email + '"}' ,
-                    success: function(response) {
-                    },
-                    error: function(response) {
-                        alert("that is not a valid email format!");
-                    }
-                });
-
-                if (ajaxObj.status != 200) {
-                    return false;
+        if (email != "{{ user.email }}") {
+            var ajaxObj = $.ajax({
+                url: "/profile",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{ "field" : "' + USER_EMAIL + '", "newdata" : "' + email + '"}' ,
+                success: function(response) {
+                },
+                error: function(response) {
+                    alert("that is not a valid email format!");
                 }
-            }
+            });
 
-            if (password != "{{ user.password }}") {
-                $.ajax({
-                    url: "/profile",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + USER_PASSWORD + '", "newdata" : "' + password + '"}' ,
-                    success: function(response) {
-                    },
-                });
+            if (ajaxObj.status != 200) {
+                return false;
             }
-
-            if (desc != "{{ user.description }}") {
-                $.ajax({
-                    url: "/profile",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + USER_DESCRIPTION + '", "newdata" : "' + desc + '"}' ,
-                    success: function(response) {
-                    },
-                });
-            }
-
-            window.location.reload(true);
         }
 
-    </script>
-</body>
+        if (password != "{{ user.password }}") {
+            $.ajax({
+                url: "/profile",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{ "field" : "' + USER_PASSWORD + '", "newdata" : "' + password + '"}' ,
+                success: function(response) {
+                },
+            });
+        }
 
-</html>
+        if (desc != "{{ user.description }}") {
+            $.ajax({
+                url: "/profile",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{ "field" : "' + USER_DESCRIPTION + '", "newdata" : "' + desc + '"}' ,
+                success: function(response) {
+                },
+            });
+        }
+
+        window.location.reload(true);
+    }
+</script>
+{% endif %}
+{% endblock %}

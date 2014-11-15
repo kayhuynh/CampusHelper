@@ -3,7 +3,7 @@
 {% block content %}
 
 <div style="margin-top:25px; margin-bottom:25px">
-<!--
+
     <button id="accTrue" onclick="insertParam('showAccepted', true)" class="btn btn-primary">
         Show accepted tasks
     </button>
@@ -16,7 +16,7 @@
     <button id="comFalse" onclick="insertParam('showCompleted', false)" class="btn btn-primary">
         Hide completed tasks
     </button>
--->
+
     <div>
         Filter by category:
         <select id="category" class="selectpicker" data-style="btn-primary">
@@ -36,44 +36,42 @@
         </div>
     </div>
 </div>
-<div class="container1">
-    <div id="task_table">
-        <table class="table table-striped" border="3" cellpadding="10" width="100%">
-            <tr>
-                <td>Task Name</td>
-                <td>Task Category</td>
-                <td>Task Summary</td>
-                <td>Posted By</td>
-                <td>Date Posted</td>
-            </tr>
+<div class="container1" id="task_table">
+    <table class="table table-striped" border="3" cellpadding="10" width="100%">
+        <tr>
+            <td>Task Name</td>
+            <td>Task Category</td>
+            <td>Task Summary</td>
+            <td>Posted By</td>
+            <td>Date Posted</td>
+        </tr>
 
-        {% for task in allTasks %}
-            <tr>
-                <td><p>{{ task.title }}</p></td>
-                <td><p>{{ task.category }}</p></td>
-                <td><p>{{ task.summary }}</p></td>
-                <td><p>{{ task.creator.username }}</p></td>
-                <td><p>{{ task.timePosted.date.isoformat }}</p></td>
-            </tr>
-            <tr>
-                <td colspan="5">
-                    <p>{{ task.description }}</p>
-                    <p>
-                        {% if task.state == 1 and task.creator.username != user %}
-                            <button onclick="acceptTask({{ task.taskID }})" class="btn btn-primary">
-                                Accept Task
-                            </button>
-                        {% elif task.state == 2 %}
-                            This task was accepted by {{ task.acceptor.username }}
-                        {% elif task.state == 3 %}
-                            This task was completed by {{ task.acceptor.username }}
-                        {% endif %}
-                    </p>
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
-    </div>
+    {% for task in allTasks %}
+        <tr>
+            <td><p>{{ task.title }}</p></td>
+            <td><p>{{ task.category }}</p></td>
+            <td><p>{{ task.summary }}</p></td>
+            <td><p><a href="/profile?q={{ task.creator.username }}">{{ task.creator.username }}</a></p></td>
+            <td><p>{{ task.timePosted.date.isoformat }}</p></td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <p>{{ task.description }}</p>
+                <p>
+                    {% if task.state == 1 and task.creator.username != user %}
+                        <button onclick="acceptTask({{ task.taskID }})" class="btn btn-primary">
+                            Accept Task
+                        </button>
+                    {% elif task.state == 2 %}
+                        This task was accepted by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
+                    {% elif task.state == 3 %}
+                        This task was completed by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
+                    {% endif %}
+                </p>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
 </div>
 
 <script>

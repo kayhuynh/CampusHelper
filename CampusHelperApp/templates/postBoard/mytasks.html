@@ -1,8 +1,7 @@
 {% extends 'postBoard/base.html' %}
 {% block body_title %} {{ user }}'s Tasks {% endblock %}
 {% block content %}
-<div style="margin-bottom:25px">
-<div class="container1">
+<div style="margin-bottom:25px" class="container1">
     <div id="task_table_created" style="margin-top:25px">
         <h2>My Posted Task</h2>
         <table class="table table-striped" border="3" cellpadding="10" width="100%">
@@ -27,9 +26,9 @@
                         {% if task.state == 1 %}
                             This task is not accepted yet!
                         {% elif task.state == 2 %}
-                            This task was accepted by {{ task.acceptor.username }}
+                            This task was accepted by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
                         {% elif task.state == 3 %}
-                            This task was completed by {{ task.acceptor.username }}
+                            This task was completed by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
                         {% endif %}
                     </p>
                 </td>
@@ -68,8 +67,7 @@
                     </td>
                 </tr>
             {% endfor %}
-            </table>
-        </div>
+        </table>
     </div>
 </div>
 
