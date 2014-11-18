@@ -29,16 +29,6 @@
     </div>
 
     <div class="row">
-        <label for="taskDesc"><h3>Description</h3></label>
-        <input type="text" class="form-control" id="taskDesc" value="{{ task.description }}" {% if not mine %} readonly {% endif %}>
-    </div>
-
-    <div class="row">
-        <label for="taskSummary"><h3>Summary</h3></label>
-        <input type="text" class="form-control" id="taskSummary" value="{{ task.summary }}" {% if not mine %} readonly {% endif %}>
-    </div>
-
-    <div class="row">
         <label for="taskCategory"><h3>Category</h3></label>
         <select id="taskCategory" class="selectpicker" data-style="btn-primary">
               <option>Academic Tutoring</option>
@@ -49,26 +39,28 @@
     </div>
 
     <div class="row">
+        <label for="taskSummary"><h3>Summary</h3></label>
+        <input type="text" class="form-control" id="taskSummary" value="{{ task.summary }}" {% if not mine %} readonly {% endif %}>
+    </div>
+
+    <div class="row">
+        <label for="taskDesc"><h3>Description</h3></label>
+        <textarea rows="5" class="form-control" id="taskDesc" {% if not mine %} readonly {% endif %}>{{ task.description }}</textarea>
+    </div>
+
+    <div class="row">
         <label for="taskValue"><h3>Value</h3></label>
         <input type="text" class="form-control" id="taskValue" value="{{ task.value }}" {% if not mine %} readonly {% endif %}>
     </div>
 
     <div class="row">
         <h3>State</h3>
-        <input type="text" class="form-control" value="
-            {% if task.state == 1 %}
-                Just Created
-            {% elif task.state == 2 %}
-                Accepted by {{ task.acceptor.username }}
-            {% elif task.state == 3 %}
-                Completed by {{ task.acceptor.username }}
-            {% endif %}
-        " readonly>
+        <input type="text" class="form-control" value="{% if task.state == 1 %}Just Created{% elif task.state == 2 %}Accepted by {{ task.acceptor.username }}{% elif task.state == 3 %}Completed by {{ task.acceptor.username }}{% endif %}" readonly>
     </div>
 
     {% if mine %}
         <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateTask()" class="btn btn-primary">
-            Looks good to me, update! 
+            Looks good to me, update!
         </button>
     {% endif %}
 </form>
