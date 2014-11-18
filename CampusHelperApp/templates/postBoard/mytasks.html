@@ -14,7 +14,7 @@
 
         {% for task in myCreatedTasks %}
             <tr>
-                <td><p>{{ task.title }}</p></td>
+                <td><p><a href="/task?q={{ task.taskID }}">{{ task.title }}</a></p></td>
                 <td><p>{{ task.category }}</p></td>
                 <td><p>{{ task.summary }}</p></td>
                 <td><p>{{ task.timePosted.date.isoformat }}</p></td>

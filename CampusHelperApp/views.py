@@ -64,8 +64,8 @@ def login(request):
         return HARDFAIL
 
 def logout(request):
-    request.session["cookieID"] = 0
-    del request.session["cookieID"]
+    if "cookieID" in request.session:
+        del request.session["cookieID"]
     resp = HttpResponse(status = 307)
     resp["Location"] = "/"
     return resp
@@ -108,14 +108,14 @@ def profile(request):
             elif field == USER_DESCRIPTION:
                 u.setDescription(newdata)
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
-        if request.method == "GET" and "q" in request.GET:
+        elif request.method == "GET" and "q" in request.GET:
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             u_queried = models.getUser(request.GET["q"])
             template = loader.get_template("profile.html")
             context = Context({"user": u_queried, "mine": True if u == u_queried else False})
             return HttpResponse(template.render(context))
-        if request.method == "GET":
+        elif request.method == "GET":
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             template = loader.get_template("profile.html")
@@ -137,7 +137,7 @@ def task(request):
             cur_task = models.getTask(request.GET["q"])
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
-            if u.username != cur_task.creator:
+            if u != cur_task.creator:
                 if field == TASK_STATE:
                     if int(newdata) == STATE_ACCEPTED:
                         cur_task.markAccepted(u)
@@ -160,8 +160,13 @@ def task(request):
             else:
                 return SOFTFAIL
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
-        elif request.method == "GET":
-            return HttpResponse("task get request")
+        elif request.method == "GET" and "q" in request.GET:
+            t = models.getTask(request.GET["q"])
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            template = loader.get_template("task.html")
+            context = Context({"mine": u == t.creator, "task": t})
+            return HttpResponse(template.render(context))
         else:
             return HARDFAIL
     except (ValidationError):

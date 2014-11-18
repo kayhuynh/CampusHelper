@@ -3,14 +3,14 @@
     {% if mine %}
         My Profile
     {% else %}
-        {{user.username}}'s Profile
+        {{ user.username }}'s Profile
     {% endif %}
 {% endblock %}
 {% block body_title %}
     {% if mine %}
         View or Update My Profile
     {% else %}
-        View {{user.username}}'s Profile
+        View {{ user.username }}'s Profile
     {% endif %}
 {% endblock %}
 
@@ -19,7 +19,7 @@
 <form class="post-form" style="text-align:left">
     <div class="row">
         <h3>Username</h3>
-        <input type="text" class="form-control" placeholder="{{ user.username }}" readonly>
+        <input type="text" class="form-control" value="{{ user.username }}" readonly>
     </div>
 
     {% if mine %}
