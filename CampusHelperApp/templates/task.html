@@ -73,88 +73,89 @@
     {% endif %}
 </form>
 
-{% if mine %}
-<script>
-    TASK_TITLE = 1
-    TASK_DESCRIPTION = 2
-    TASK_STATE = 3
-    TASK_SUMMARY = 4
-    TASK_CATEGORY = 5
-    TASK_VALUE = 6
 
+<script>
     $(function() {
         $("#taskCategory").val("{{ task.category }}");
-    })
+    });
 
-    function updateTask(){
-        var taskSummary = $('#taskSummary').val();
-        var taskValue = $('#taskValue').val();
-        var taskCategory = $('#taskCategory').val();
-        var taskDesc = $('#taskDesc').val();
-        var taskTitle = $('#taskTitle').val();
+    {% if mine %}
+        TASK_TITLE = 1
+        TASK_DESCRIPTION = 2
+        TASK_STATE = 3
+        TASK_SUMMARY = 4
+        TASK_CATEGORY = 5
+        TASK_VALUE = 6
 
-        if (taskSummary != "{{ task.summary }}") {
-            $.ajax({
-                url: "/task?q={{ task.taskID }}",
-                type: 'POST',
-                contentType: "application/json",
-                async: false,
-                data: '{ "field" : "' + TASK_SUMMARY + '", "newdata" : "' + taskSummary + '"}' ,
-                success: function(response) {
-                },
-            });
+        function updateTask(){
+            var taskSummary = $('#taskSummary').val();
+            var taskValue = $('#taskValue').val();
+            var taskCategory = $('#taskCategory').val();
+            var taskDesc = $('#taskDesc').val();
+            var taskTitle = $('#taskTitle').val();
+
+            if (taskSummary != "{{ task.summary }}") {
+                $.ajax({
+                    url: "/task?q={{ task.taskID }}",
+                    type: 'POST',
+                    contentType: "application/json",
+                    async: false,
+                    data: '{ "field" : "' + TASK_SUMMARY + '", "newdata" : "' + taskSummary + '"}' ,
+                    success: function(response) {
+                    },
+                });
+            }
+
+            if (taskValue != "{{ task.value }}") {
+                $.ajax({
+                    url: "/task?q={{ task.taskID }}",
+                    type: 'POST',
+                    contentType: "application/json",
+                    async: false,
+                    data: '{ "field" : "' + TASK_VALUE + '", "newdata" : "' + taskValue + '"}' ,
+                    success: function(response) {
+                    },
+                });
+            }
+
+            if (taskDesc != "{{ task.description }}") {
+                $.ajax({
+                    url: "/task?q={{ task.taskID }}",
+                    type: 'POST',
+                    contentType: "application/json",
+                    async: false,
+                    data: '{ "field" : "' + TASK_DESCRIPTION + '", "newdata" : "' + taskDesc + '"}' ,
+                    success: function(response) {
+                    },
+                });
+            }
+
+            if (taskTitle != "{{ task.title }}") {
+                $.ajax({
+                    url: "/task?q={{ task.taskID }}",
+                    type: 'POST',
+                    contentType: "application/json",
+                    async: false,
+                    data: '{ "field" : "' + TASK_TITLE + '", "newdata" : "' + taskTitle + '"}' ,
+                    success: function(response) {
+                    },
+                });
+            }
+
+            if (taskCategory != "{{ task.category }}") {
+                $.ajax({
+                    url: "/task?q={{ task.taskID }}",
+                    type: 'POST',
+                    contentType: "application/json",
+                    async: false,
+                    data: '{ "field" : "' + TASK_CATEGORY + '", "newdata" : "' + taskCategory + '"}' ,
+                    success: function(response) {
+                    },
+                });
+            }
+
+            window.location.reload(true);
         }
-
-        if (taskValue != "{{ task.value }}") {
-            $.ajax({
-                url: "/task?q={{ task.taskID }}",
-                type: 'POST',
-                contentType: "application/json",
-                async: false,
-                data: '{ "field" : "' + TASK_VALUE + '", "newdata" : "' + taskValue + '"}' ,
-                success: function(response) {
-                },
-            });
-        }
-
-        if (taskDesc != "{{ task.description }}") {
-            $.ajax({
-                url: "/task?q={{ task.taskID }}",
-                type: 'POST',
-                contentType: "application/json",
-                async: false,
-                data: '{ "field" : "' + TASK_DESCRIPTION + '", "newdata" : "' + taskDesc + '"}' ,
-                success: function(response) {
-                },
-            });
-        }
-
-        if (taskTitle != "{{ task.title }}") {
-            $.ajax({
-                url: "/task?q={{ task.taskID }}",
-                type: 'POST',
-                contentType: "application/json",
-                async: false,
-                data: '{ "field" : "' + TASK_TITLE + '", "newdata" : "' + taskTitle + '"}' ,
-                success: function(response) {
-                },
-            });
-        }
-
-        if (taskCategory != "{{ task.category }}") {
-            $.ajax({
-                url: "/task?q={{ task.taskID }}",
-                type: 'POST',
-                contentType: "application/json",
-                async: false,
-                data: '{ "field" : "' + TASK_CATEGORY + '", "newdata" : "' + taskCategory + '"}' ,
-                success: function(response) {
-                },
-            });
-        }
-
-        window.location.reload(true);
-    }
+    {% endif %}
 </script>
-{% endif %}
 {% endblock %}
