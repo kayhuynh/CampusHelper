@@ -140,10 +140,12 @@ def task(request):
             u = models.getUserByCookieID(cookieID)
             if field == TASK_STATE:
                 newdata = int(newdata)
-                if u == cur_task.creator and newdata == STATE_COMPLETED:
-                    cur_task.markCompleted()
-                elif u != cur_task.creator and newdata == STATE_ACCEPTED:
+                if newdata == STATE_COMPLETED:
+                    cur_task.markCompleted(u)
+                elif newdata == STATE_ACCEPTED:
                     cur_task.markAccepted(u)
+                elif newdata == STATE_CREATED:
+                    cur_task.unmarkAccepted(u)
                 else:
                     return SOFTFAIL
             elif field == TASK_TITLE:
@@ -153,7 +155,7 @@ def task(request):
             elif field == TASK_SUMMARY:
                 cur_task.setSummary(newdata)
             elif field == TASK_VALUE:
-                cur_task.setValue(int(newdata))
+                cur_task.setValue(int(newdata), u)
             elif field == TASK_CATEGORY:
                 cur_task.setCategory(newdata)
             elif field == TASK_DELETE:
@@ -181,13 +183,12 @@ def newtask(request):
             requestHeader = json.loads(bytes.decode(request.body))
             title = requestHeader["title"]
             description = requestHeader["description"]
-            value = int(requestHeader["value"])
             summary = requestHeader["summary"]
             category = requestHeader["category"]
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
             creator = u.username
-            task = models.newTask(u, title, description, summary, value, category)
+            task = models.newTask(u, title, description, summary, category)
             return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json")
         elif request.method == "GET":
             cookieID = request.session["cookieID"]

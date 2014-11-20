@@ -49,11 +49,6 @@
     </div>
 
     <div class="row">
-        <label for="taskValue"><h3>Value</h3></label>
-        <input type="text" class="form-control" id="taskValue" value="{{ task.value }}" {% if not mine %} readonly {% endif %}>
-    </div>
-
-    <div class="row">
         <h3>State</h3>
         <input type="text" class="form-control" value="{% if task.state == 1 %}Just Created{% elif task.state == 2 %}Accepted by {{ task.acceptor.username }}{% elif task.state == 3 %}Completed by {{ task.acceptor.username }}{% endif %}" readonly>
     </div>
@@ -98,7 +93,6 @@
 
         function updateTask(){
             var taskSummary = $('#taskSummary').val();
-            var taskValue = $('#taskValue').val();
             var taskCategory = $('#taskCategory').val();
             var taskDesc = $('#taskDesc').val();
             var taskTitle = $('#taskTitle').val();
@@ -110,18 +104,6 @@
                     contentType: "application/json",
                     async: false,
                     data: '{ "field" : "' + TASK_SUMMARY + '", "newdata" : "' + taskSummary + '"}' ,
-                    success: function(response) {
-                    },
-                });
-            }
-
-            if (taskValue != "{{ task.value }}") {
-                $.ajax({
-                    url: "/task?q={{ task.taskID }}",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + TASK_VALUE + '", "newdata" : "' + taskValue + '"}' ,
                     success: function(response) {
                     },
                 });

@@ -34,7 +34,7 @@ class User(models.Model):
         return map(lambda x: x.taskID, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all()))
 
     def score(self):
-        return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all())))
+        return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED and x.value != None, self.tasksAccepted.all()))) / (0.0 + len(self.tasksAccepted.all()))
 
     def setEmail(self, newEmail):
         self.email = newEmail
@@ -61,28 +61,37 @@ class Task(models.Model):
     state = models.SmallIntegerField(default = STATE_CREATED)
     notify = models.BooleanField(default = False)
     summary = models.TextField(max_length = None)
-    value = models.PositiveSmallIntegerField()
+    value = models.PositiveSmallIntegerField(blank = True, null = True, default = None)
     category = models.TextField(max_length = None)
 
     def __str__(self):
         return self.title
 
+    def unmarkAccepted(self, acceptor):
+        if self.state == STATE_ACCEPTED and acceptor == self.acceptor:
+            self.state = STATE_CREATED
+            self.acceptor = None
+            self.full_clean()
+            self.save()
+        else:
+            raise ValidationError("failed to be unmarked as accepted")
+
     def markAccepted(self, acceptor):
-        if self.state == STATE_CREATED:
+        if self.state == STATE_CREATED and acceptor != self.creator:
             self.state = STATE_ACCEPTED
             self.acceptor = acceptor
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("wrong state to be marked as accepted")
+            raise ValidationError("failed to be marked as accepted")
 
-    def markCompleted(self):
-        if self.state == STATE_ACCEPTED:
+    def markCompleted(self, creator):
+        if self.state == STATE_ACCEPTED and creator == self.creator:
             self.state = STATE_COMPLETED
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("wrong state to be marked as completed")
+            raise ValidationError("failed to be marked as completed")
 
     def setTitle(self, newTitle):
         self.title = newTitle
@@ -104,10 +113,13 @@ class Task(models.Model):
         self.full_clean()
         self.save()
 
-    def setValue(self, newValue):
-        self.value = newValue
-        self.full_clean()
-        self.save()
+    def setValue(self, newValue, creator):
+        if self.state == STATE_COMPLETED and self.value == None and newValue <= 5 and creator == self.creator:
+            self.value = newValue
+            self.full_clean()
+            self.save()
+        else:
+            raise ValidationError("failed to set a value")
 
     def setCategory(self, newCategory):
         self.category = newCategory
@@ -132,8 +144,8 @@ def getUser(username):
 def getUserByCookieID(cookieID):
     return User.objects.get(cookieID__exact = cookieID)
 
-def newTask(creator, title, desc, summary, value, category):
-    k = Task(creator = creator, title = title, description = desc, summary = summary, value = value, category = category)
+def newTask(creator, title, desc, summary, category):
+    k = Task(creator = creator, title = title, description = desc, summary = summary, category = category)
     k.full_clean()
     k.save()
     return k

@@ -45,13 +45,12 @@
         var summary = $('#taskSummary').val();
         var description = $('#taskDescription').val();
         var category = $('#category :selected').text();
-        var value = 1;        // temporary until you guys implement this
         $.ajax({
             url: "/newtask",
             type: 'POST',
             contentType: "application/json",
             data: '{ "title" : "' + title + '", "description" : "' + description + '", "category" : "'
-                + category + '", "summary" : "' + summary + '", "value" : "' + value + '"}' ,
+                + category + '", "summary" : "' + summary + '"}' ,
             success: function(response) {
                 window.location.href = "/alltasks"
             },
