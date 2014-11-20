@@ -15,12 +15,12 @@
 <form class="post-form" style="text-align:left">
     <div class="row">
         <h3>Creator</h3>
-        <input type="text" class="form-control" placeholder="{{ task.creator.username }}" readonly>
+        <input type="text" class="form-control" value="{{ task.creator.username }}" readonly>
     </div>
 
     <div class="row">
         <h3>Date Posted</h3>
-        <input type="text" class="form-control" placeholder="{{ task.timePosted.date.isoformat }}" readonly>
+        <input type="text" class="form-control" value="{{ task.timePosted.date.isoformat }}" readonly>
     </div>
 
     <div class="row">

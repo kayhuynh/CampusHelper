@@ -59,7 +59,7 @@
                 <p>{{ task.description }}</p>
                 <p>
                     {% if task.state == 1 and task.creator.username != user %}
-                        <button onclick="acceptTask({{ task.taskID }})" class="btn btn-primary">
+                        <button onclick="acceptTask({{ task.taskID }}, '{{ task.creator.username }}')" class="btn btn-primary">
                             Accept Task
                         </button>
                     {% elif task.state == 2 %}
@@ -92,24 +92,14 @@
         insertParam("c", category);
     }
 
-    $("#logoutLink").click(function(){
-        $.ajax({
-            url: "/logout",
-            type: 'GET',
-            success: function(response) {
-                window.location.href = "/";
-            }
-        })
-    });
-
-    function acceptTask(taskID){
+    function acceptTask(taskID, taskCreator){
         $.ajax({
             url: "/task?q=" + taskID,
             type: 'POST',
             contentType: "application/json",
             data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_ACCEPTED + '"}' ,
             success: function(response) {
-                window.location.href = "/alltasks";
+                window.location.href = "/newmessage?t=" + taskID + "&u=" + taskCreator;
             },
             error: function(response) {
                 console.log(response);

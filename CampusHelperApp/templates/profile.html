@@ -22,6 +22,11 @@
         <input type="text" class="form-control" value="{{ user.username }}" readonly>
     </div>
 
+    <div class="row">
+        <h3>Rating</h3>
+        <input type="text" class="form-control" value="{{ user.score }} / 5 Stars" readonly>
+    </div>
+
     {% if mine %}
         <div class="row">
             <label for="password"><h3>Password</h3></label>

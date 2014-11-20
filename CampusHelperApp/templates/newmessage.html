@@ -1,0 +1,48 @@
+{% extends 'postBoard/base.html' %}
+{% block header_title %} Send a New Message {% endblock %}
+{% block body_title %} Send a New Message {% endblock %}
+
+{% block content %}
+
+<form class="post-form" style="text-align:center;">
+    <div class="row">
+        <h3>Recipient</h3>
+        <input id="recv" type="text" class="form-control" value="{{ u }}" readonly>
+    </div>
+
+    <div class="row">
+        <h3>Subject</h3>
+        <input id="task" type="text" class="form-control" value="Task ID {{ t }}" readonly>
+    </div>
+
+    <div class="row">
+        <label for="contents"><h3>Contents</h3></label>
+        <textarea class="form-control" rows="5" id="contents" placeholder="Hi, I just accepted your task! Let's talk about it, etc etc"></textarea>
+    </div>
+
+    <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="sendMsg()" class="btn btn-primary">
+        Looks good to me, send! 
+    </button>
+</form>
+
+<script>
+    function sendMsg(){
+        var contents = $('#contents').val();
+        $.ajax({
+            url: "/newmessage",
+            type: 'POST',
+            contentType: "application/json",
+            data: '{ "receiver" : "{{ u }}", "task" : "{{ t }}", "contents" : "' + contents + '"}' ,
+            success: function(response) {
+                window.location.href = "/alltasks"
+            },
+            error: function(response) {
+                console.log(response);
+                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+            }
+        });
+        return false;
+    }
+</script>
+
+{% endblock %}

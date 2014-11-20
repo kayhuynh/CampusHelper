@@ -1,0 +1,97 @@
+{% extends 'postBoard/base.html' %}
+{% block body_title %} {{ user }}'s Messages {% endblock %}
+{% block content %}
+<div style="margin-bottom:25px" class="container1">
+    <div style="margin-top:25px">
+        <h2>My Unread Messages</h2>
+        <table class="table table-striped" border="3" cellpadding="10" width="100%">
+            <tr>
+                <td>Subject</td>
+                <td>From</td>
+                <td>Date Sent</td>
+            </tr>
+
+        {% for msg in user.unreadMessages %}
+            <tr>
+                <td><p><a href="/task?q={{ msg.task.taskID }}">{{ msg.task.taskID }}</a></p></td>
+                <td><p>{{ msg.sender.username }}</p></td>
+                <td><p>{{ msg.timeSent.date.isoformat }}</p></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <p>{{ msg.contents }}</p>
+                    <p>
+                        <button onclick="markRead({{ msg.messageID }})" class="btn btn-primary">
+                            Mark Read
+                        </button>
+                    </p>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <div style="margin-top:25px">
+        <h2>My Read Messages</h2>
+        <table class="table table-striped" border="3" cellpadding="10" width="100%">
+            <tr>
+                <td>Subject</td>
+                <td>From</td>
+                <td>Date Sent</td>
+            </tr>
+
+        {% for msg in user.readMessages %}
+            <tr>
+                <td><p><a href="/task?q={{ msg.task.taskID }}">{{ msg.task.taskID }}</a></p></td>
+                <td><p>{{ msg.sender.username }}</p></td>
+                <td><p>{{ msg.timeSent.date.isoformat }}</p></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <p>{{ msg.contents }}</p>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script>
+    function markRead(msgID){
+        $.ajax({
+            url: "/mymessages?q=" + msgID,
+            type: 'POST',
+            contentType: "application/json",
+            data: '{}' ,
+            success: function(response) {
+                window.location.href = "/mymessages";
+            },
+            error: function(response) {
+                console.log(response);
+                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+            }
+        });
+    }
+
+    $(function() {
+
+        // Initially hide toggleable content
+        $("td[colspan=3]").find("p").hide();
+
+        // Click handler on entire table
+        $("table").click(function(event) {
+
+            // No bubbling up
+            event.stopPropagation();
+
+            var $target = $(event.target);
+
+            // Open and close the appropriate thing
+            if ( $target.closest("td").attr("colspan") > 1 ) {
+                $target.slideUp();
+            } else {
+                $target.closest("tr").next().find("p").slideToggle();
+            }                    
+        });
+    });
+</script>
+{% endblock %}

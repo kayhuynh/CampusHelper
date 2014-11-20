@@ -71,7 +71,6 @@ def logout(request):
     resp["Location"] = "/"
     return resp
 
-# Shows a list of all tasks globally
 def alltasks(request):
     try:
         if request.method == "GET":
@@ -234,5 +233,46 @@ def mytasks(request):
             return HARDFAIL
     except ObjectDoesNotExist:
         return SOFTFAIL
+    except (ValueError, KeyError):
+        return HARDFAIL
+
+def newmessage(request):
+    try:
+        if request.method == "GET":
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            template = loader.get_template("newmessage.html")
+            t = models.getTask(int(request.GET["t"]))
+            context = Context({"user": u.username, "u": request.GET["u"], "t": t.taskID})
+            return HttpResponse(template.render(context))
+        elif request.method == "POST":
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            d = json.loads(bytes.decode(request.body))
+            receiver = models.getUser(d["receiver"])
+            task = models.getTask(int(d["task"]))
+            m = models.newMessage(u, receiver, task, d["contents"])
+            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
+        else:
+            return HARDFAIL
+    except ObjectDoesNotExist:
+        return SOFTFAIL
+    except (ValueError, KeyError):
+        return HARDFAIL
+
+def mymessages(request):
+    try:
+        if request.method == "GET":
+            cookieID = request.session["cookieID"]
+            user = models.getUserByCookieID(cookieID)
+            context = Context({"user": user})
+            template = loader.get_template("mymessages.html")
+            return HttpResponse(template.render(context))
+        elif request.method == "POST":
+            cookieID = request.session["cookieID"]
+            u = models.getUserByCookieID(cookieID)
+            msg = models.getMessage(int(request.GET["q"]))
+            msg.markRead(u)
+            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
     except (ValueError, KeyError):
         return HARDFAIL

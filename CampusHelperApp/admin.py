@@ -5,3 +5,4 @@ from CampusHelperApp import models
 
 admin.site.register(models.User)
 admin.site.register(models.Task)
+admin.site.register(models.Message)

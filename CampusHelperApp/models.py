@@ -24,6 +24,12 @@ class User(models.Model):
     def acceptTask(self, taskID):
         getTask(taskID).markAccepted(self)
 
+    def unreadMessages(self):
+        return filter(lambda x: not x.read, self.messagesReceived.all())
+
+    def readMessages(self):
+        return filter(lambda x: x.read, self.messagesReceived.all())
+
     def postedTasks(self):
         return map(lambda x: x.taskID, self.tasksCreated.all())
 
@@ -74,7 +80,7 @@ class Task(models.Model):
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("failed to be unmarked as accepted")
+            raise ValidationError("state or acceptor not right")
 
     def markAccepted(self, acceptor):
         if self.state == STATE_CREATED and acceptor != self.creator:
@@ -83,7 +89,7 @@ class Task(models.Model):
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("failed to be marked as accepted")
+            raise ValidationError("state or acceptor not right")
 
     def markCompleted(self, creator):
         if self.state == STATE_ACCEPTED and creator == self.creator:
@@ -91,7 +97,7 @@ class Task(models.Model):
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("failed to be marked as completed")
+            raise ValidationError("state or creator not right")
 
     def setTitle(self, newTitle):
         self.title = newTitle
@@ -119,7 +125,7 @@ class Task(models.Model):
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("failed to set a value")
+            raise ValidationError("value or creator not right")
 
     def setCategory(self, newCategory):
         self.category = newCategory
@@ -130,6 +136,26 @@ class Task(models.Model):
         self.notify = True
         self.full_clean()
         self.save()
+
+class Message(models.Model):
+    messageID = models.AutoField(primary_key = True)
+    contents = models.TextField(max_length = None)
+    task = models.ForeignKey(Task, related_name = "messages", on_delete = models.CASCADE)
+    sender = models.ForeignKey(User, related_name = "messagesSent", on_delete = models.CASCADE)
+    receiver = models.ForeignKey(User, related_name = "messagesReceived", on_delete = models.CASCADE)
+    timeSent = models.DateTimeField(auto_now_add = True)
+    read = models.BooleanField(default = False)
+
+    def __str__(self):
+        return self.contents
+
+    def markRead(self, receiver):
+        if not self.read and receiver == self.receiver:
+            self.read = True
+            self.full_clean()
+            self.save()
+        else:
+            raise ValidationError("readness or receiver not right")
 
 def newUser(username, password, email, desc):
     cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
@@ -152,3 +178,12 @@ def newTask(creator, title, desc, summary, category):
 
 def getTask(taskID):
     return Task.objects.get(taskID__exact = taskID)
+
+def newMessage(sender, receiver, task, contents):
+    k = Message(sender = sender, receiver = receiver, task = task, contents = contents)
+    k.full_clean()
+    k.save()
+    return k
+
+def getMessage(messageID):
+    return Message.objects.get(messageID__exact = messageID)
