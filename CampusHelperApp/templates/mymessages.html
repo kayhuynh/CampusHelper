@@ -21,6 +21,9 @@
                 <td colspan="3">
                     <p>{{ msg.contents }}</p>
                     <p>
+                        <button onclick="window.location.href='/newmessage?t={{ msg.task.taskID }}&u={{ msg.sender.username }}'" class="btn btn-primary">
+                            Reply
+                        </button>
                         <button onclick="markRead({{ msg.messageID }})" class="btn btn-primary">
                             Mark Read
                         </button>
@@ -48,6 +51,11 @@
             <tr>
                 <td colspan="3">
                     <p>{{ msg.contents }}</p>
+                    <p>
+                        <button onclick="window.location.href='/newmessage?t={{ msg.task.taskID }}&u={{ msg.sender.username }}'" class="btn btn-primary">
+                            Reply
+                        </button>
+                    </p>
                 </td>
             </tr>
         {% endfor %}
