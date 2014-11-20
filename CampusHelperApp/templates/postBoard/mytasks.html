@@ -3,7 +3,7 @@
 {% block content %}
 <div style="margin-bottom:25px" class="container1">
     <div id="task_table_created" style="margin-top:25px">
-        <h2>My Posted Task</h2>
+        <h2>My Posted Tasks</h2>
         <table class="table table-striped" border="3" cellpadding="10" width="100%">
             <tr>
                 <td>Task Name</td>
@@ -27,6 +27,9 @@
                             This task is not accepted yet!
                         {% elif task.state == 2 %}
                             This task was accepted by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
+                            <button onclick="completeTask({{ task.taskID }})" class="btn btn-primary">
+                                Mark as Completed
+                            </button>
                         {% elif task.state == 3 %}
                             This task was completed by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
                         {% endif %}
@@ -44,18 +47,19 @@
                 <td>Task Category</td>
                 <td>Task Summary</td>
                 <td>Posted By</td>
+                <td>Date Posted</td>
             </tr>
 
             {% for task in myAcceptedTasks %}
                 <tr>
-                    <td><p>{{ task.title }}</p></td>
+                    <td><p><a href="/task?q={{ task.taskID }}">{{ task.title }}</a></p></td>
                     <td><p>{{ task.category }}</p></td>
                     <td><p>{{ task.summary }}</p></td>
-                    <td><p>{{ task.creator.username }}</p></td>
-                    <td></td>
+                    <td><p><a href="/profile?q={{ task.creator.username }}">{{ task.creator.username }}</a></p></td>
+                    <td><p>{{ task.timePosted.date.isoformat }}</p></td>
                 </tr>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="5">
                         <p>{{ task.description }}</p>
                         <p>
                             {% if task.state == 2 %}
@@ -78,6 +82,7 @@
     TASK_SUMMARY = 4
     TASK_CATEGORY = 5
     TASK_VALUE = 6
+    TASK_DELETE = 7
 
     STATE_CREATED = 1
     STATE_ACCEPTED = 2
@@ -92,6 +97,22 @@
             }
         })
     });
+
+    function completeTask(taskID){
+        $.ajax({
+            url: "/task?q=" + taskID,
+            type: 'POST',
+            contentType: "application/json",
+            data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_COMPLETED + '"}' ,
+            success: function(response) {
+                window.location.href = "/mytasks";
+            },
+            error: function(response) {
+                console.log(response);
+                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+            }
+        });
+    }
 
     $(function() {
 

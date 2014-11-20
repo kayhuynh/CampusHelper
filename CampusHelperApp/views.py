@@ -138,14 +138,12 @@ def task(request):
             cur_task = models.getTask(request.GET["q"])
             cookieID = request.session["cookieID"]
             u = models.getUserByCookieID(cookieID)
-            if u != cur_task.creator:
-                if field == TASK_STATE:
-                    if int(newdata) == STATE_ACCEPTED:
-                        cur_task.markAccepted(u)
-                    elif int(newdata) == STATE_COMPLETED:
-                        cur_task.markCompleted()
-                    else:
-                        return SOFTFAIL
+            if field == TASK_STATE:
+                newdata = int(newdata)
+                if u == cur_task.creator and newdata == STATE_COMPLETED:
+                    cur_task.markCompleted()
+                elif u != cur_task.creator and newdata == STATE_ACCEPTED:
+                    cur_task.markAccepted(u)
                 else:
                     return SOFTFAIL
             elif field == TASK_TITLE:

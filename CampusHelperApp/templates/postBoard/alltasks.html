@@ -81,6 +81,7 @@
     TASK_SUMMARY = 4
     TASK_CATEGORY = 5
     TASK_VALUE = 6
+    TASK_DELETE = 7
 
     STATE_CREATED = 1
     STATE_ACCEPTED = 2
@@ -108,7 +109,6 @@
             contentType: "application/json",
             data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_ACCEPTED + '"}' ,
             success: function(response) {
-                var errorCode = response.errcode;
                 window.location.href = "/alltasks";
             },
             error: function(response) {
@@ -179,18 +179,18 @@
             $("#accFalse").remove()
         }
 
-          // Initially hide toggleable content
+        // Initially hide toggleable content
         $("td[colspan=4]").find("p").hide();
 
-          // Click handler on entire table
+        // Click handler on entire table
         $("table").click(function(event) {
 
-              // No bubbling up
+            // No bubbling up
             event.stopPropagation();
 
             var $target = $(event.target);
 
-              // Open and close the appropriate thing
+            // Open and close the appropriate thing
             if ( $target.closest("td").attr("colspan") > 1 ) {
                 $target.slideUp();
             } else {

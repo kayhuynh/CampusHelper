@@ -53,8 +53,7 @@
             data: '{ "title" : "' + title + '", "description" : "' + description + '", "category" : "'
                 + category + '", "summary" : "' + summary + '", "value" : "' + value + '"}' ,
             success: function(response) {
-                var taskID = response.taskID;
-                alert("Task successfully posted, task ID is: " + taskID);
+                window.location.href = "/alltasks"
             },
             error: function(response) {
                 console.log(response);
