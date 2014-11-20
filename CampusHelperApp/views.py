@@ -22,6 +22,7 @@ TASK_STATE = 3
 TASK_SUMMARY = 4
 TASK_CATEGORY = 5
 TASK_VALUE = 6
+TASK_DELETE = 7
 
 STATE_CREATED = 1
 STATE_ACCEPTED = 2
@@ -157,6 +158,8 @@ def task(request):
                 cur_task.setValue(int(newdata))
             elif field == TASK_CATEGORY:
                 cur_task.setCategory(newdata)
+            elif field == TASK_DELETE:
+                cur_task.delete()
             else:
                 return SOFTFAIL
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")

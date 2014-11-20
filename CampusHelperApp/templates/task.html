@@ -62,6 +62,9 @@
         <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateTask()" class="btn btn-primary">
             Looks good to me, update!
         </button>
+        <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="deleteTask()" class="btn btn-primary">
+            Delete Task!
+        </button>
     {% endif %}
 </form>
 
@@ -78,6 +81,20 @@
         TASK_SUMMARY = 4
         TASK_CATEGORY = 5
         TASK_VALUE = 6
+        TASK_DELETE = 7
+
+        function deleteTask(){
+            $.ajax({
+                url: "/task?q={{ task.taskID }}",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{ "field" : "' + TASK_DELETE + '", "newdata" : "dummy"}' ,
+                success: function(response) {
+                    window.location.href = "/alltasks";
+                },
+            });
+        }
 
         function updateTask(){
             var taskSummary = $('#taskSummary').val();
