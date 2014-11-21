@@ -22,9 +22,12 @@
         <input type="text" class="form-control" value="{{ user.username }}" readonly>
     </div>
 
+
     <div class="row">
         <h3>Rating</h3>
-        <input type="text" class="form-control" value="{{ user.score }} / 5 Stars" readonly>
+        <input type="text" class="form-control" value="
+        {% if user.score == None %} No rating yet! {% else %} {{ user.score }} / 5 Stars {% endif %}
+        " readonly>
     </div>
 
     {% if mine %}

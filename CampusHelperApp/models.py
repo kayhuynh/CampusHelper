@@ -13,7 +13,6 @@ class User(models.Model):
     email = models.EmailField(max_length = 254)
     description = models.TextField(max_length = None)
     cookieID = models.BigIntegerField(unique = True)
-    # self.tasksCreated.all(), self.tasksAccepted.all() from Task ForeignKeys
 
     def __str__(self):
         return self.username
@@ -40,7 +39,13 @@ class User(models.Model):
         return map(lambda x: x.taskID, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all()))
 
     def score(self):
-        return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED and x.value != None, self.tasksAccepted.all()))) / (0.0 + len(self.tasksAccepted.all()))
+        scoredTasks = map(lambda x: x.value, \
+            filter(lambda x: x.state == STATE_COMPLETED and x.value != None, \
+                self.tasksAccepted.all()))
+        if len(scoredTasks) == 0:
+            return None
+        else:
+            return sum(scoredTasks) / (0.0 + len(scoredTasks))
 
     def setEmail(self, newEmail):
         self.email = newEmail
