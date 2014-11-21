@@ -9,6 +9,8 @@ from django.core.mail import send_mail
 from CampusHelperApp import models
 
 import json
+import string
+import random
 
 SUCCESS = 1
 FAILURE = 2
@@ -208,7 +210,8 @@ def newuser(request):
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             d = json.loads(bytes.decode(request.body))
             email = d["email"]
-            #STILL NEED TO GENERATE RANDOM VERIFICATION CODE
+            #random verification code
+            verifyCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))   
             send_mail('Your Verification code','Here is your verification code: asdf23',"anand@example.com",[email,"anand.lakshminarayan@gmail.com"])
             u = models.newUser(d["username"], d["password"], d["email"], d["description"])
             request.session["cookieID"] = u.cookieID
