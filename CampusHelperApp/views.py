@@ -211,8 +211,9 @@ def newuser(request):
             d = json.loads(bytes.decode(request.body))
             email = d["email"]
             #random verification code
-            verifyCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))   
-            send_mail('Your Verification code','Here is your verification code: asdf23',"anand@example.com",[email,"anand.lakshminarayan@gmail.com"])
+            verifyCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
+            message = 'Here is your verification code: ' + str(verifyCode)
+            send_mail('Your Verification code',message,"anand@example.com",[email])
             u = models.newUser(d["username"], d["password"], d["email"], d["description"])
             request.session["cookieID"] = u.cookieID
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
