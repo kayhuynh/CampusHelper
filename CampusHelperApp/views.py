@@ -3,9 +3,9 @@ from django.http import HttpResponse
 from django.template import RequestContext, loader, Context, Template
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.mail import send_mail
 from django.db import IntegrityError
 
-from django.core.mail import send_mail
 from CampusHelperApp import models
 
 import json
@@ -14,6 +14,9 @@ import random
 
 SUCCESS = 1
 FAILURE = 2
+
+VERIFIED = 1
+UNVERIFIED = 2
 
 USER_PASSWORD = 1
 USER_EMAIL = 2
@@ -55,7 +58,10 @@ def login(request):
             if u.password != password:
                 return SOFTFAIL
             request.session["cookieID"] = u.cookieID
-            return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
+            if u.verified():
+                return HttpResponse(json.dumps({"errcode": SUCCESS, "verified": VERIFIED}), content_type = "application/json")
+            else:
+                return HttpResponse(json.dumps({"errcode": SUCCESS, "verified": UNVERIFIED}), content_type = "application/json")
         elif request.method == "GET":
             template = loader.get_template("login.html")
             context = RequestContext(request)
@@ -76,9 +82,11 @@ def logout(request):
 
 def alltasks(request):
     try:
-        if request.method == "GET":
-            cookieID = request.session["cookieID"]
-            user = models.getUserByCookieID(cookieID)
+        cookieID = request.session["cookieID"]
+        u = models.getUserByCookieID(cookieID)
+        if not u.verified():
+            return SOFTFAIL
+        elif request.method == "GET":
             all_tasks = models.Task.objects.filter(state__exact = STATE_CREATED)
             if "showAccepted" in request.GET and request.GET["showAccepted"] == "true":
                 all_tasks |= models.Task.objects.filter(state__exact = STATE_ACCEPTED)
@@ -88,7 +96,7 @@ def alltasks(request):
                 all_tasks = all_tasks.filter(title__contains = request.GET["q"])
             if "c" in request.GET:
                 all_tasks = all_tasks.filter(category__exact = request.GET["c"])
-            context = Context({"allTasks": all_tasks, "user": user.username})
+            context = Context({"allTasks": all_tasks, "user": u.username})
             template = loader.get_template("postBoard/alltasks.html")
             return HttpResponse(template.render(context))
         else:
@@ -98,12 +106,14 @@ def alltasks(request):
 
 def profile(request):
     try:
-        if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+        cookieID = request.session["cookieID"]
+        u = models.getUserByCookieID(cookieID)
+        if not u.verified():
+            return SOFTFAIL
+        elif request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
             field = int(requestHeader["field"])
             newdata = requestHeader["newdata"]
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             if field == USER_PASSWORD:
                 u.setPassword(newdata)
             if field == USER_EMAIL:
@@ -112,15 +122,11 @@ def profile(request):
                 u.setDescription(newdata)
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET" and "q" in request.GET:
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             u_queried = models.getUser(request.GET["q"])
             template = loader.get_template("profile.html")
             context = Context({"user": u_queried, "mine": True if u == u_queried else False})
             return HttpResponse(template.render(context))
         elif request.method == "GET":
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             template = loader.get_template("profile.html")
             context = Context({"user": u, "mine": True})
             return HttpResponse(template.render(context))
@@ -133,13 +139,15 @@ def profile(request):
 
 def task(request):
     try:
-        if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+        cookieID = request.session["cookieID"]
+        u = models.getUserByCookieID(cookieID)
+        if not u.verified():
+            return SOFTFAIL
+        elif request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
             field = int(requestHeader["field"])
             newdata = requestHeader["newdata"]
             cur_task = models.getTask(request.GET["q"])
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             if field == TASK_STATE:
                 newdata = int(newdata)
                 if newdata == STATE_COMPLETED:
@@ -167,8 +175,6 @@ def task(request):
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET" and "q" in request.GET:
             t = models.getTask(request.GET["q"])
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             template = loader.get_template("task.html")
             context = Context({"mine": u == t.creator, "task": t})
             return HttpResponse(template.render(context))
@@ -181,20 +187,20 @@ def task(request):
 
 def newtask(request):
     try:
-        if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
+        cookieID = request.session["cookieID"]
+        u = models.getUserByCookieID(cookieID)
+        if not u.verified():
+            return SOFTFAIL
+        elif request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             requestHeader = json.loads(bytes.decode(request.body))
             title = requestHeader["title"]
             description = requestHeader["description"]
             summary = requestHeader["summary"]
             category = requestHeader["category"]
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             creator = u.username
             task = models.newTask(u, title, description, summary, category)
             return HttpResponse(json.dumps({"errcode": SUCCESS, "taskID": task.taskID}), content_type = "application/json")
         elif request.method == "GET":
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             template = loader.get_template("newtask.html")
             context = Context({"user": u.username})
             return HttpResponse(template.render(context))
@@ -209,12 +215,10 @@ def newuser(request):
     try:
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             d = json.loads(bytes.decode(request.body))
-            email = d["email"]
-            #random verification code
-            verifyCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
-            message = 'Here is your verification code: ' + str(verifyCode)
-            send_mail('Your Verification code',message,"anand@example.com",[email])
-            u = models.newUser(d["username"], d["password"], d["email"], d["description"])
+            verifyCode = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
+            message = "Here is your verification code: " + verifyCode
+            send_mail("CampusHelper Verification", message, "ch.verif@gmail.com", [d["email"]])
+            u = models.newUser(d["username"], d["password"], d["email"], d["description"], verifyCode)
             request.session["cookieID"] = u.cookieID
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET":
@@ -230,9 +234,11 @@ def newuser(request):
 
 def mytasks(request):
     try:
-        if request.method == "GET":
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
+        cookieID = request.session["cookieID"]
+        u = models.getUserByCookieID(cookieID)
+        if not u.verified():
+            return SOFTFAIL
+        elif request.method == "GET":
             template = loader.get_template("postBoard/mytasks.html")
             context = Context({"user": u.username, "myCreatedTasks": u.tasksCreated.all(),
                 "myAcceptedTasks": u.tasksAccepted.all()})
@@ -246,16 +252,16 @@ def mytasks(request):
 
 def newmessage(request):
     try:
-        if request.method == "GET":
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
+        cookieID = request.session["cookieID"]
+        u = models.getUserByCookieID(cookieID)
+        if not u.verified():
+            return SOFTFAIL
+        elif request.method == "GET":
             template = loader.get_template("newmessage.html")
             t = models.getTask(int(request.GET["t"]))
             context = Context({"user": u.username, "u": request.GET["u"], "t": t.taskID})
             return HttpResponse(template.render(context))
         elif request.method == "POST":
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             d = json.loads(bytes.decode(request.body))
             receiver = models.getUser(d["receiver"])
             task = models.getTask(int(d["task"]))
@@ -270,27 +276,39 @@ def newmessage(request):
 
 def mymessages(request):
     try:
-        if request.method == "GET":
-            cookieID = request.session["cookieID"]
-            user = models.getUserByCookieID(cookieID)
-            context = Context({"user": user})
+        cookieID = request.session["cookieID"]
+        u = models.getUserByCookieID(cookieID)
+        if not u.verified():
+            return SOFTFAIL
+        elif request.method == "GET":
+            context = Context({"user": u})
             template = loader.get_template("mymessages.html")
             return HttpResponse(template.render(context))
         elif request.method == "POST":
-            cookieID = request.session["cookieID"]
-            u = models.getUserByCookieID(cookieID)
             msg = models.getMessage(int(request.GET["q"]))
             msg.markRead(u)
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
+        else:
+            return HARDFAIL
     except (ValueError, KeyError):
         return HARDFAIL
 
-def sendemail(request):
+def verifyemail(request):
     try:
         cookieID = request.session["cookieID"]
-        d = json.loads(bytes.decode(request.body))
-        code = d["code"]
-        print code
-        return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
+        u = models.getUserByCookieID(cookieID)
+        if request.method == "GET":
+            context = Context({"user": u})
+            template = loader.get_template("verifyemail.html")
+            return HttpResponse(template.render(context))
+        elif request.method == "POST":
+            d = json.loads(bytes.decode(request.body))
+            verifcode = d["verifcode"]
+            if u.checkCode(verifcode):
+                return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
+            else:
+                return SOFTFAIL
+        else:
+            return HARDFAIL
     except (ValueError, KeyError):
         return HARDFAIL

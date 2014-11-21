@@ -17,5 +17,5 @@ urlpatterns = patterns('',
     url(r'^logout$', 'CampusHelperApp.views.logout'),
     url(r'^newmessage$', 'CampusHelperApp.views.newmessage'),
     url(r'^mymessages$', 'CampusHelperApp.views.mymessages'),
-    url(r'^sendemail$', 'CampusHelperApp.views.sendemail')
+    url(r'^verifyemail$', 'CampusHelperApp.views.verifyemail')
 )

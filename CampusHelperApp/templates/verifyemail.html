@@ -23,7 +23,7 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
-    <title>Login to CampusHelper</title>
+    <title>Verify your Email to CampusHelper</title>
 
 </head>
 
@@ -32,47 +32,35 @@
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h1>Login</h1>
+            <h1>Input Verification Code</h1>
             <br>
             <div class="form-wrap" id="loginform">
                 <div class="form-group">
-                    <input type="text" id="username" placeholder="Username">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Password">
+                    <input type="text" id="verifCode" placeholder="Check your Email!">
                 </div>
             </div>
-            <button id = "loginButton" onclick="logInFn()" class="btn btn-primary">
-                Log In
+            <button id = "checkbutton" onclick="checkFn()" class="btn btn-primary">
+                Check
             </button>
         </div>
     </header>
 
     <script>
-        VERIFIED = 1
-        UNVERIFIED = 2
-
-        $("#password").keyup(function(event){
+        $("#verifCode").keyup(function(event){
             if(event.keyCode == 13){
-                $("#loginButton").click();
+                $("#checkButton").click();
             }
         });
 
-        function logInFn(){
-            var user = $('#username').val();
-            var pass = $('#password').val();
+        function checkFn(){
+            var verifCode = $('#verifCode').val();
             $.ajax({
-                url: "/login",
+                url: "/verifyemail",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{"username": "' + user + '", "password": "' + pass + '"}' ,
+                data: '{"verifcode": "' + verifCode + '"}' ,
                 success: function(response) {
-                    var verified = response.verified;
-                    if (verified == VERIFIED) {
-                        window.location.href = "/alltasks";
-                    } else {
-                        window.location.href = "/verifyemail";
-                    }
+                    window.location.href = "/alltasks";
                 },
                 error: function(response) {
                     console.log(response);

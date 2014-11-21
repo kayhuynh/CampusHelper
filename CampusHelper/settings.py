@@ -1,6 +1,4 @@
 """
-Django settings for CampusHelper project.
-
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
 
@@ -79,8 +77,8 @@ USE_TZ = True
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = ''            #GMAIL username
-EMAIL_HOST_PASSWORD = ''        #GMAIL password here
+EMAIL_HOST_USER = 'ch.verif'                        #GMAIL username
+EMAIL_HOST_PASSWORD = ''        #GMAIL password
 
 STATIC_URL = '/CampusHelperApp/static/'
 

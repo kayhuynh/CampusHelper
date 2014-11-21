@@ -12,6 +12,7 @@ class User(models.Model):
     password = models.TextField(max_length = None)
     email = models.EmailField(max_length = 254)
     description = models.TextField(max_length = None)
+    verifyCode = models.CharField(max_length = 5, blank = True, null = True)
     cookieID = models.BigIntegerField(unique = True)
 
     def __str__(self):
@@ -61,6 +62,18 @@ class User(models.Model):
         self.description = newDesc
         self.full_clean()
         self.save()
+
+    def checkCode(self, verifyCode):
+        if verifyCode == self.verifyCode:
+            self.verifyCode = None
+            self.full_clean()
+            self.save()
+            return True
+        else:
+            return False
+
+    def verified(self):
+        return self.verifyCode == None
 
 class Task(models.Model):
     taskID = models.AutoField(primary_key = True)
@@ -162,9 +175,9 @@ class Message(models.Model):
         else:
             raise ValidationError("readness or receiver not right")
 
-def newUser(username, password, email, desc):
+def newUser(username, password, email, desc, verifyCode):
     cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
-    k = User(username = username, password = password, email = email, description = desc, cookieID = cookieID)
+    k = User(username = username, password = password, email = email, description = desc, cookieID = cookieID, verifyCode = verifyCode)
     k.full_clean()
     k.save()
     return k
