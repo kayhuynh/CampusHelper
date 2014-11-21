@@ -1,3 +1,112 @@
-user profile placeholder
+{% extends 'postBoard/base.html' %}
+{% block header_title %} 
+    {% if mine %}
+        My Profile
+    {% else %}
+        {{ user.username }}'s Profile
+    {% endif %}
+{% endblock %}
+{% block body_title %}
+    {% if mine %}
+        View or Update My Profile
+    {% else %}
+        View {{ user.username }}'s Profile
+    {% endif %}
+{% endblock %}
 
-(I moved the stuff over to newtask.html)
+{% block content %}
+
+<form class="post-form" style="text-align:left">
+    <div class="row">
+        <h3>Username</h3>
+        <input type="text" class="form-control" value="{{ user.username }}" readonly>
+    </div>
+
+    <div class="row">
+        <h3>Rating</h3>
+        <input type="text" class="form-control" value="{{ user.score }} / 5 Stars" readonly>
+    </div>
+
+    {% if mine %}
+        <div class="row">
+            <label for="password"><h3>Password</h3></label>
+            <input type="text" class="form-control" id="password" value="{{ user.password }}" {% if not mine %} readonly {% endif %}>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <label for="email"><h3>Email Address</h3></label>
+        <input type="text" class="form-control" id="email" value="{{ user.email }}" {% if not mine %} readonly {% endif %}>
+    </div>
+
+    <div class="row">
+        <label for="desc"><h3>Description</h3></label>
+        <textarea class="form-control" rows="5" id="desc" {% if not mine %} readonly {% endif %}>{{ user.description }}</textarea>
+    </div>
+
+    {% if mine %}
+        <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateUser()" class="btn btn-primary">
+            Looks good to me, update! 
+        </button>
+    {% endif %}
+</form>
+
+{% if mine %}
+<script>
+    USER_PASSWORD = 1
+    USER_EMAIL = 2
+    USER_DESCRIPTION = 3
+
+    function updateUser(){
+        var password = $('#password').val();
+        var email = $('#email').val();
+        var desc = $('#desc').val();
+
+        if (email != "{{ user.email }}") {
+            var ajaxObj = $.ajax({
+                url: "/profile",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{ "field" : "' + USER_EMAIL + '", "newdata" : "' + email + '"}' ,
+                success: function(response) {
+                },
+                error: function(response) {
+                    alert("that is not a valid email format!");
+                }
+            });
+
+            if (ajaxObj.status != 200) {
+                return false;
+            }
+        }
+
+        if (password != "{{ user.password }}") {
+            $.ajax({
+                url: "/profile",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{ "field" : "' + USER_PASSWORD + '", "newdata" : "' + password + '"}' ,
+                success: function(response) {
+                },
+            });
+        }
+
+        if (desc != "{{ user.description }}") {
+            $.ajax({
+                url: "/profile",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{ "field" : "' + USER_DESCRIPTION + '", "newdata" : "' + desc + '"}' ,
+                success: function(response) {
+                },
+            });
+        }
+
+        window.location.reload(true);
+    }
+</script>
+{% endif %}
+{% endblock %}

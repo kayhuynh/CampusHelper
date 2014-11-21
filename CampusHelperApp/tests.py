@@ -7,7 +7,7 @@ import json
 class UserTestCase(TestCase):
     def setUp(self):
         newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
-        newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is KEvin')
+        newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is Kevin')
         nick = User.objects.get(username = 'Nick')
         kevin = User.objects.get(username = 'Kevin')
 
@@ -66,14 +66,12 @@ class UserTestCase(TestCase):
 
 class TaskTestCase(TestCase):
     def setUp(self):
-        newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
-        newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is KEvin')
-        nick = User.objects.get(username = 'Nick')
-        kevin = User.objects.get(username = 'Kevin')
+        self.nick = newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
+        self.kevin = newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is KEvin')
 
-        newTask(nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1, "test")
-        newTask(nick, 'Get armadillo poison', 'We have an infestation', "summ", 1, "test")
-        newTask(kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1, "test")
+        self.mow = newTask(self.nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1, "test")
+        self.poison = newTask(self.nick, 'Get armadillo poison', 'We have an infestation', "summ", 1, "test")
+        self.pet = newTask(self.kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1, "test")
 
     def test_markAccepted(self):
         """Task should mark itself accepted"""
@@ -108,11 +106,10 @@ class TaskTestCase(TestCase):
 class FunctionalTestCase(TestCase):
 
     def setUp(self):
-        newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
-        nick = User.objects.get(username = 'Nick')
-        newTask(nick, 'Water plants', 'With water', "summ", 1, "test")
+        self.nick = newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
+        self.water = newTask(self.nick, 'Water plants', 'With water', "summ", 1, "test")
 
-    def test_login(self):
+    def test_login_get(self):
         c = Client()
         response = c.get('/login')
         self.assertEqual(response.status_code, 200)
@@ -124,32 +121,86 @@ class FunctionalTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('Dedicated' in response.content)
 
-    def test_root_post_correct(self):
+    def test_login_post_correct(self):
         c = Client()
         nick = User.objects.get(username = 'Nick')
         response = c.post('/login', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '{"errcode": 1}')
 
-    def test_root_post_incorrect(self):
+    def test_login_post_incorrect(self):
         c = Client()
         nick = User.objects.get(username = 'Nick')
         response = c.post('/login', json.dumps({"username": nick.username, "password": 'Nickdroolz', "cookieID": nick.cookieID}), content_type="application/json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(response.content, '{"errcode": 2}')
 
     def test_alltasks(self):
         c = Client()
         nick = User.objects.get(username = 'Nick')
-        c.post('', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
+        c.post('/login', json.dumps({"username": nick.username, "password": nick.password}), content_type="application/json")
         response = c.get('/alltasks')
+        
         self.assertEqual(response.status_code, 200)
         self.assertTrue('Water' in response.content)
 
-    def test_new_task(self):
+    def test_new_task_post(self):
         c = Client()
         nick = User.objects.get(username = 'Nick')
-        c.post('', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
-        response = c.post('/newtask', json.dumps({"title": "Do my homework", "description": "I'm really stupid and can't on my own", "summary": "my cs 169 project needs doing", "value": "2", "category": "Academic Tutoring"}), content_type="application/json")
+        c.post('/login', json.dumps({"username": nick.username, "password": nick.password}), content_type="application/json")
+        response = c.post('/newtask', json.dumps({"title": "Do my homework", "description": "I'm really stupid and can't on my own", "value": "1", "summary": "I'll pay anything!", "category": "Academic Tutoring"}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('Water' in response.content)
+        self.assertTrue('taskID' in response.content)
+
+    def test_new_task_get(self):
+        c = Client()
+        nick = User.objects.get(username = 'Nick')
+        c.post('/login', json.dumps({"username": nick.username, "password": nick.password}), content_type="application/json")
+        response = c.post('/newtask', json.dumps({"title": "Do my homework", "description": "I'm really stupid and can't on my own", "value": "1", "summary": "I'll pay anything!", "category": "Academic Tutoring"}), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_logout(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        self.assertTrue("cookieID" in c.session)
+        c.get('/logout')
+        self.assertTrue("cookieID" not in c.session)
+
+    def test_mytasks(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.get('/mytasks')
+        self.assertEqual(response.status_code, 200)
+
+    def test_profile_get(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.get('/profile')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('Nick' in response.content)
+
+    def test_profile_post(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.post('/profile', json.dumps({"field": 1, "newdata": "ilovenick"}), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_newtask_get(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.get('/newtask')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("Post a new task" in response.content)
+
+    def test_newuser_post(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.post('/newuser', json.dumps({"username": "Lorde", "password": "I am Lorde", "email": "Lorde@berkeley.edu", "description": "Lorde Lorde Lorde"}), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('{"errcode": 1}' in response.content)
+
+    def test_newuser_get(self):
+        c = Client()
+        response = c.get('/newuser')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("Signup" in response.content)

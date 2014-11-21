@@ -1,0 +1,182 @@
+{% extends 'postBoard/base.html' %}
+{% block body_title %} {{ user }}'s Tasks {% endblock %}
+{% block content %}
+<div style="margin-bottom:25px" class="container1">
+    <div id="task_table_created" style="margin-top:25px">
+        <h2>My Posted Tasks</h2>
+        <table class="table table-striped" border="3" cellpadding="10" width="100%">
+            <tr>
+                <td>Task Name</td>
+                <td>Task Category</td>
+                <td>Task Summary</td>
+                <td>Date Posted</td>
+            </tr>
+
+        {% for task in myCreatedTasks %}
+            <tr>
+                <td><p><a href="/task?q={{ task.taskID }}">{{ task.title }}</a></p></td>
+                <td><p>{{ task.category }}</p></td>
+                <td><p>{{ task.summary }}</p></td>
+                <td><p>{{ task.timePosted.date.isoformat }}</p></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <p>{{ task.description }}</p>
+                    <p>
+                        {% if task.state == 1 %}
+                            This task is not accepted yet!
+                        {% elif task.state == 2 %}
+                            This task was accepted by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
+                            <button onclick="completeTask({{ task.taskID }})" class="btn btn-primary">
+                                Mark as Completed
+                            </button>
+                        {% elif task.state == 3 %}
+                            This task was completed by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
+                            <br>
+                            {% if task.value == None %}
+                            Rate them:
+                            <select id="rating{{ task.taskID }}" class="selectpicker" data-style="btn-primary">
+                                <option>5</option>
+                                <option>4</option>
+                                <option>3</option>
+                                <option>2</option>
+                                <option>1</option>
+                                <option>0</option>
+                            </select>
+                            <button onclick="rateTask({{ task.taskID }})" class="btn btn-primary">
+                                Rate!
+                            </button>
+                            {% else %}
+                            You gave them {{ task.value }} stars
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <div id="task_table_accepted" style="margin-top:25px">
+        <h2>My Accepted Tasks</h2>
+        <table class="table table-striped" border="3" cellpadding="10" width="100%">
+            <tr>
+                <td>Task Name</td>
+                <td>Task Category</td>
+                <td>Task Summary</td>
+                <td>Posted By</td>
+                <td>Date Posted</td>
+            </tr>
+
+            {% for task in myAcceptedTasks %}
+                <tr>
+                    <td><p><a href="/task?q={{ task.taskID }}">{{ task.title }}</a></p></td>
+                    <td><p>{{ task.category }}</p></td>
+                    <td><p>{{ task.summary }}</p></td>
+                    <td><p><a href="/profile?q={{ task.creator.username }}">{{ task.creator.username }}</a></p></td>
+                    <td><p>{{ task.timePosted.date.isoformat }}</p></td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <p>{{ task.description }}</p>
+                        <p>
+                            {% if task.state == 2 %}
+                                You accepted this task
+                                <button onclick="unacceptTask({{ task.taskID }})" class="btn btn-primary">
+                                    Unaccept Task
+                                </button>
+                            {% elif task.state == 3 %}
+                                You completed this task
+                            {% endif %}
+                        </p>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script>
+    TASK_TITLE = 1
+    TASK_DESCRIPTION = 2
+    TASK_STATE = 3
+    TASK_SUMMARY = 4
+    TASK_CATEGORY = 5
+    TASK_VALUE = 6
+    TASK_DELETE = 7
+
+    STATE_CREATED = 1
+    STATE_ACCEPTED = 2
+    STATE_COMPLETED = 3
+
+    function completeTask(taskID){
+        $.ajax({
+            url: "/task?q=" + taskID,
+            type: 'POST',
+            contentType: "application/json",
+            data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_COMPLETED + '"}' ,
+            success: function(response) {
+                window.location.href = "/mytasks";
+            },
+            error: function(response) {
+                console.log(response);
+                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+            }
+        });
+    }
+
+    function rateTask(taskID){
+        var rating = $('#rating' + taskID + ' :selected').text();
+        $.ajax({
+            url: "/task?q=" + taskID,
+            type: 'POST',
+            contentType: "application/json",
+            data: '{"field": "' + TASK_VALUE + '", "newdata": "' + rating + '"}' ,
+            success: function(response) {
+                window.location.href = "/mytasks";
+            },
+            error: function(response) {
+                console.log(response);
+                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+            }
+        });
+    }
+
+    function unacceptTask(taskID){
+        $.ajax({
+            url: "/task?q=" + taskID,
+            type: 'POST',
+            contentType: "application/json",
+            data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_CREATED + '"}' ,
+            success: function(response) {
+                window.location.href = "/mytasks";
+            },
+            error: function(response) {
+                console.log(response);
+                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+            }
+        });
+    }
+
+    $(function() {
+
+        // Initially hide toggleable content
+        $("td[colspan=3]").find("p").hide();
+
+        // Click handler on entire table
+        $("table").click(function(event) {
+
+            // No bubbling up
+            event.stopPropagation();
+
+            var $target = $(event.target);
+
+            // Open and close the appropriate thing
+            if ( $target.closest("td").attr("colspan") > 1 ) {
+                $target.slideUp();
+            } else {
+                $target.closest("tr").next().find("p").slideToggle();
+            }                    
+        });
+    });
+</script>
+{% endblock %}

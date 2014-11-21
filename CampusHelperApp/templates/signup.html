@@ -1,17 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 {% load staticfiles %}
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
     <!-- Bootstrap Core CSS -->
-    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="{% static "css/bootstrap-extensions.css" %}" rel="stylesheet">
 
     <!-- Custom CSS -->
@@ -21,25 +14,16 @@
     <!-- Custom Fonts -->
     <link href="{% static "css/fonts.css" %}" rel="stylesheet">
     <link href="{% static "font-awesome-4.2.0/css/font-awesome.min.css" %}"  rel="stylesheet" type="text/css">
-
-    <title></title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="css/stylish-portfolio.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <!-- jQuery Version 2.1.1 -->
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <title>Sign Up for CampusHelper</title>
 
 </head>
 
@@ -48,7 +32,7 @@
     <!-- Header --> 
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h1>Signup For <font class="logo" color="00387a">CAL</font><font class="logo" color="ffb819">aborate</font>!</h1>
+            <h1>Signup For <font class="logo" color="00387a">Campus</font><font class="logo" color="ffb819">Helper</font>!</h1>
             <div class="form-wrap" id="loginform">
                 <div class="form-group">
                     <input type='text' name='Username' id='userField' placeholder="username">
@@ -56,18 +40,25 @@
                 <div>
                     <input type='password' name="Password" id='passwordField' placeholder="password">
                 </div>
-                <div> 
+                <div class="form-group">
                     <input type='password' name="Enter Password Again" id="passwordVerify" placeholder="Reenter password">
                 </div>
-                <button id = "signupButton" onclick="signUpFn()" class="btn btn-primary">
-                    Sign Up
-                </button>
+                <div class="form-group">
+                    <input type='email' name="Email" id="email" placeholder="Enter your email here">
+                </div>
+                <div>
+                    <textarea class="form-group" rows="5" style="" placeholder="A short description of you"></textarea>
+                </div>
+                <div>
+                    <button id = "signupButton" onclick="signUpFn()" class="btn btn-primary">
+                        Sign Up
+                    </button>
+                </div>
+
             </div>
         </div>
     </header>
 
-    <!-- jQuery Version 1.11.0 -->
-    <script src="{% static "js/jquery-1.11.0.js" %}"></script>
     <script>
         $("#passwordVerify").keyup(function(event){
             if(event.keyCode == 13){
@@ -76,30 +67,41 @@
         });
 
         function signUpFn() {
-            //first check if the passwords match
             var user = $("#userField").val();
             var pass1 = $("#passwordField").val();
             var pass2 = $("#passwordVerify").val();
-            if(pass1 != pass2){
+            var email = $("#email").val();
+            var desc = $("#desc").val();
+            if (pass1 != pass2) {
                 alert("Your passwords do not match, please try again.");
-            }
-            else {
-                //passwords match. make the post request to create a user.
+            } else {
                 $.ajax({
                 url: "/newuser",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{ "username" : ' + '"' + user + '"' + ', "password" : ' + '"' + pass1 + '"' + ', "email" : "test@example.com", "description" : "tempdesc"' + '}',
+                data: '{ "username" : ' + '"' + user + '"' + ', "password" : ' + '"' + pass1 + '"' + ', "email" : "' + email + '", "description" : "' + desc + '"' + '}',
                 success: function(response) {
-                    var errorCode = response.errcode;
-                    console.log(response);
-                    gotoLoginPage(user,pass1);
-                  },
+                    var code = prompt("Please enter the verification code sent in your email here:");
+                    $.ajax({
+                        url: "/sendemail",
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: '{ "code" : ' + '"' + code + '"' + '}',
+                        success: function(response) {
+                            //verification code succeeded!
+                            gotoLoginPage(user, pass1);
+                        },
+                        error: function(response) {
+                            alert("invalid verification code")
+                        }
+                    })
+                    
+                },
                 error: function(response) {
                     console.log(response);
                     alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
                 }
-            });
+                });
             }
         }
 
@@ -110,8 +112,6 @@
                 contentType: "application/json",
                 data: '{"username": "' + user + '", "password": "' + pass + '"}' ,
                 success: function(response) {
-                    var errorCode = response.errcode;
-                    console.log(response);
                     window.location.href = "/alltasks";
                 },
                 error: function(response) {
@@ -121,9 +121,6 @@
             });
         }
     </script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "js/bootstrap.min.js" %}"></script>
 
 </body>
 

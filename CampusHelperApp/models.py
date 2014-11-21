@@ -13,7 +13,7 @@ class User(models.Model):
     email = models.EmailField(max_length = 254)
     description = models.TextField(max_length = None)
     cookieID = models.BigIntegerField(unique = True)
-    # self.tasksCreated, self.tasksAccepted from Task ForeignKeys
+    # self.tasksCreated.all(), self.tasksAccepted.all() from Task ForeignKeys
 
     def __str__(self):
         return self.username
@@ -23,6 +23,12 @@ class User(models.Model):
 
     def acceptTask(self, taskID):
         getTask(taskID).markAccepted(self)
+
+    def unreadMessages(self):
+        return filter(lambda x: not x.read, self.messagesReceived.all())
+
+    def readMessages(self):
+        return filter(lambda x: x.read, self.messagesReceived.all())
 
     def postedTasks(self):
         return map(lambda x: x.taskID, self.tasksCreated.all())
@@ -34,7 +40,7 @@ class User(models.Model):
         return map(lambda x: x.taskID, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all()))
 
     def score(self):
-        return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED, self.tasksAccepted.all())))
+        return sum(map(lambda x: x.value, filter(lambda x: x.state == STATE_COMPLETED and x.value != None, self.tasksAccepted.all()))) / (0.0 + len(self.tasksAccepted.all()))
 
     def setEmail(self, newEmail):
         self.email = newEmail
@@ -61,28 +67,37 @@ class Task(models.Model):
     state = models.SmallIntegerField(default = STATE_CREATED)
     notify = models.BooleanField(default = False)
     summary = models.TextField(max_length = None)
-    value = models.PositiveSmallIntegerField()
+    value = models.PositiveSmallIntegerField(blank = True, null = True, default = None)
     category = models.TextField(max_length = None)
 
     def __str__(self):
         return self.title
 
+    def unmarkAccepted(self, acceptor):
+        if self.state == STATE_ACCEPTED and acceptor == self.acceptor:
+            self.state = STATE_CREATED
+            self.acceptor = None
+            self.full_clean()
+            self.save()
+        else:
+            raise ValidationError("state or acceptor not right")
+
     def markAccepted(self, acceptor):
-        if self.state == STATE_CREATED:
+        if self.state == STATE_CREATED and acceptor != self.creator:
             self.state = STATE_ACCEPTED
             self.acceptor = acceptor
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("wrong state to be marked as accepted")
+            raise ValidationError("state or acceptor not right")
 
-    def markCompleted(self):
-        if self.state == STATE_ACCEPTED:
+    def markCompleted(self, creator):
+        if self.state == STATE_ACCEPTED and creator == self.creator:
             self.state = STATE_COMPLETED
             self.full_clean()
             self.save()
         else:
-            raise ValidationError("wrong state to be marked as completed")
+            raise ValidationError("state or creator not right")
 
     def setTitle(self, newTitle):
         self.title = newTitle
@@ -104,10 +119,13 @@ class Task(models.Model):
         self.full_clean()
         self.save()
 
-    def setValue(self, newValue):
-        self.value = newValue
-        self.full_clean()
-        self.save()
+    def setValue(self, newValue, creator):
+        if self.state == STATE_COMPLETED and self.value == None and newValue <= 5 and creator == self.creator:
+            self.value = newValue
+            self.full_clean()
+            self.save()
+        else:
+            raise ValidationError("value or creator not right")
 
     def setCategory(self, newCategory):
         self.category = newCategory
@@ -118,6 +136,26 @@ class Task(models.Model):
         self.notify = True
         self.full_clean()
         self.save()
+
+class Message(models.Model):
+    messageID = models.AutoField(primary_key = True)
+    contents = models.TextField(max_length = None)
+    task = models.ForeignKey(Task, related_name = "messages", on_delete = models.CASCADE)
+    sender = models.ForeignKey(User, related_name = "messagesSent", on_delete = models.CASCADE)
+    receiver = models.ForeignKey(User, related_name = "messagesReceived", on_delete = models.CASCADE)
+    timeSent = models.DateTimeField(auto_now_add = True)
+    read = models.BooleanField(default = False)
+
+    def __str__(self):
+        return self.contents
+
+    def markRead(self, receiver):
+        if not self.read and receiver == self.receiver:
+            self.read = True
+            self.full_clean()
+            self.save()
+        else:
+            raise ValidationError("readness or receiver not right")
 
 def newUser(username, password, email, desc):
     cookieID = random.randint(-(2 ** 63), (2 ** 63) - 1)
@@ -132,11 +170,20 @@ def getUser(username):
 def getUserByCookieID(cookieID):
     return User.objects.get(cookieID__exact = cookieID)
 
-def newTask(creator, title, desc, summary, value, category):
-    k = Task(creator = creator, title = title, description = desc, summary = summary, value = value, category = category)
+def newTask(creator, title, desc, summary, category):
+    k = Task(creator = creator, title = title, description = desc, summary = summary, category = category)
     k.full_clean()
     k.save()
     return k
 
 def getTask(taskID):
     return Task.objects.get(taskID__exact = taskID)
+
+def newMessage(sender, receiver, task, contents):
+    k = Message(sender = sender, receiver = receiver, task = task, contents = contents)
+    k.full_clean()
+    k.save()
+    return k
+
+def getMessage(messageID):
+    return Message.objects.get(messageID__exact = messageID)

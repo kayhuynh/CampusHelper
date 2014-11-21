@@ -75,6 +75,12 @@ USE_L10N = True
 USE_TZ = True
 
 
+#code for sending email
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''            #GMAIL username
+EMAIL_HOST_PASSWORD = ''        #GMAIL password here
 
 STATIC_URL = '/CampusHelperApp/static/'
 
@@ -94,7 +100,7 @@ ALLOWED_HOSTS = ['*']
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/CampusHelperApp/static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
