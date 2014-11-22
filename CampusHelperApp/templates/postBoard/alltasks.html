@@ -37,6 +37,30 @@
     </div>
 </div>
 <div class="container1" id="task_table">
+    <table id="example" class="table table-striped" border="3" cellpadding="10" width="100%">
+        <thead>
+            <tr>
+                <td>Task Name</td>
+                <td>Task Category</td>
+                <td>Task Summary</td>
+                <td>Posted By</td>
+                <td>Date Posted</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for task in allTasks %}
+                 <tr>
+                    <td><p><a href="/task?q={{ task.taskID }}">{{ task.title }}</a></p></td>
+                    <td><p>{{ task.category }}</p></td>
+                    <td><p>{{ task.summary }}</p></td>
+                    <td><p><a href="/profile?q={{ task.creator.username }}">{{ task.creator.username }}</a></p></td>
+                    <td><p>{{ task.timePosted.date.isoformat }}</p></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!--
     <table class="table table-striped" border="3" cellpadding="10" width="100%">
         <tr>
             <td>Task Name</td>
@@ -45,6 +69,10 @@
             <td>Posted By</td>
             <td>Date Posted</td>
         </tr>
+
+        <tbody>
+
+        </tbody>
 
     {% for task in allTasks %}
         <tr>
@@ -72,7 +100,19 @@
         </tr>
     {% endfor %}
     </table>
+-->
 </div>
+
+<!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+      
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable();
+    } );
+</script>
 
 <script>
     TASK_TITLE = 1
@@ -144,6 +184,8 @@
         }
     }
 
+
+
     $(function() {
         if (typeof getUrlParameter("c") != "undefined") {
             $("#category").val(decodeURI(getUrlParameter("c")));
@@ -169,24 +211,24 @@
             $("#accFalse").remove()
         }
 
-        // Initially hide toggleable content
-        $("td[colspan=4]").find("p").hide();
+        // // Initially hide toggleable content
+        // $("td[colspan=5]").find("p").hide();
 
-        // Click handler on entire table
-        $("table").click(function(event) {
+        // // Click handler on entire table
+        // $("table").click(function(event) {
 
-            // No bubbling up
-            event.stopPropagation();
+        //     // No bubbling up
+        //     event.stopPropagation();
 
-            var $target = $(event.target);
+        //     var $target = $(event.target);
 
-            // Open and close the appropriate thing
-            if ( $target.closest("td").attr("colspan") > 1 ) {
-                $target.slideUp();
-            } else {
-                $target.closest("tr").next().find("p").slideToggle();
-            }                    
-        });
+        //     // Open and close the appropriate thing
+        //     if ( $target.closest("td").attr("colspan") > 1 ) {
+        //         $target.slideUp();
+        //     } else {
+        //         $target.closest("tr").next().find("p").slideToggle();
+        //     }                    
+        // });
     });
 </script>
 {% endblock %}
