@@ -53,6 +53,7 @@
         <input type="text" class="form-control" value="{% if task.state == 1 %}Just Created{% elif task.state == 2 %}Accepted by {{ task.acceptor.username }}{% elif task.state == 3 %}Completed by {{ task.acceptor.username }}{% endif %}" readonly>
     </div>
 
+    <div style="margin-top:15px; margin-bottom:25px">
     {% if mine %}
         <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="updateTask()" class="btn btn-primary">
             Looks good to me, update!
@@ -60,7 +61,19 @@
         <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="deleteTask()" class="btn btn-primary">
             Delete Task!
         </button>
+    {% else %}
+        {% if task.state == 1 and task.creator.username != user %}
+            <button onclick="acceptTask({{ task.taskID }}, '{{ task.creator.username }}')" class="btn btn-primary">
+                Accept Task
+            </button>
+        {% elif task.state == 2 %}
+            This task was accepted by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
+        {% elif task.state == 3 %}
+            This task was completed by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
+        {% endif %}
+
     {% endif %}
+    </div>
 </form>
 
 
@@ -69,7 +82,7 @@
         $("#taskCategory").val("{{ task.category }}");
     });
 
-    {% if mine %}
+    
         TASK_TITLE = 1
         TASK_DESCRIPTION = 2
         TASK_STATE = 3
@@ -77,6 +90,11 @@
         TASK_CATEGORY = 5
         TASK_VALUE = 6
         TASK_DELETE = 7
+
+         STATE_CREATED = 1
+        STATE_ACCEPTED = 2
+        STATE_COMPLETED = 3
+
 
         function deleteTask(){
             $.ajax({
@@ -90,6 +108,23 @@
                 },
             });
         }
+
+        function acceptTask(taskID, taskCreator){
+            $.ajax({
+                url: "/task?q=" + taskID,
+                type: 'POST',
+                contentType: "application/json",
+                data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_ACCEPTED + '"}' ,
+                success: function(response) {
+                    window.location.href = "/newmessage?t=" + taskID + "&u=" + taskCreator;
+                },
+                error: function(response) {
+                    console.log(response);
+                    alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+                }
+            });
+        }
+
 
         function updateTask(){
             var taskSummary = $('#taskSummary').val();
@@ -147,6 +182,5 @@
 
             window.location.reload(true);
         }
-    {% endif %}
 </script>
 {% endblock %}
