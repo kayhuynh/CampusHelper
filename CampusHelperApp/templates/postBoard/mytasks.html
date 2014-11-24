@@ -81,7 +81,6 @@
                         <td><p>
                             {% if task.state == 2 %}
                                 Accepted
-
                                 <button onclick="unacceptTask({{ task.taskID }})" class="btn btn-primary">
                                     Unaccept Task
                                 </button>
@@ -95,27 +94,17 @@
         </table>
     </div>
 </div>
-
-<!-- jQuery -->
-    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
       
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
 <script>
     $(document).ready(function() {
         $('#example').DataTable();
-    } );
-</script>
+    });
 
-<script>
-$(':radio').change(
-  function(){
-    $('.choice').text( this.value + ' stars' );
-  } 
-)
-</script>
+    $(':radio').change(
+        function(){
+            $('.choice').text(this.value + ' stars');
+    });
 
-<script>
     TASK_TITLE = 1
     TASK_DESCRIPTION = 2
     TASK_STATE = 3
@@ -176,27 +165,5 @@ $(':radio').change(
             }
         });
     }
-
-    // $(function() {
-
-    //     // Initially hide toggleable content
-    //     $("td[colspan=3]").find("p").hide();
-
-    //     // Click handler on entire table
-    //     $("table").click(function(event) {
-
-    //         // No bubbling up
-    //         event.stopPropagation();
-
-    //         var $target = $(event.target);
-
-    //         // Open and close the appropriate thing
-    //         if ( $target.closest("td").attr("colspan") > 1 ) {
-    //             $target.slideUp();
-    //         } else {
-    //             $target.closest("tr").next().find("p").slideToggle();
-    //         }                    
-    //     });
-    // });
 </script>
 {% endblock %}

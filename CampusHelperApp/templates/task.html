@@ -63,7 +63,7 @@
         </button>
     {% else %}
         {% if task.state == 1 and task.creator.username != user %}
-            <button onclick="acceptTask({{ task.taskID }}, '{{ task.creator.username }}')" class="btn btn-primary">
+            <button type="button" style="margin-top:1cm; margin-bottom:5cm" onclick="acceptTask({{ task.taskID }}, '{{ task.creator.username }}')" class="btn btn-primary">
                 Accept Task
             </button>
         {% elif task.state == 2 %}
@@ -71,7 +71,6 @@
         {% elif task.state == 3 %}
             This task was completed by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
         {% endif %}
-
     {% endif %}
     </div>
 </form>
@@ -82,105 +81,103 @@
         $("#taskCategory").val("{{ task.category }}");
     });
 
-    
-        TASK_TITLE = 1
-        TASK_DESCRIPTION = 2
-        TASK_STATE = 3
-        TASK_SUMMARY = 4
-        TASK_CATEGORY = 5
-        TASK_VALUE = 6
-        TASK_DELETE = 7
+    TASK_TITLE = 1
+    TASK_DESCRIPTION = 2
+    TASK_STATE = 3
+    TASK_SUMMARY = 4
+    TASK_CATEGORY = 5
+    TASK_VALUE = 6
+    TASK_DELETE = 7
 
-         STATE_CREATED = 1
-        STATE_ACCEPTED = 2
-        STATE_COMPLETED = 3
+    STATE_CREATED = 1
+    STATE_ACCEPTED = 2
+    STATE_COMPLETED = 3
 
+    function deleteTask(){
+        $.ajax({
+            url: "/task?q={{ task.taskID }}",
+            type: 'POST',
+            contentType: "application/json",
+            async: false,
+            data: '{"field" : "' + TASK_DELETE + '", "newdata" : "dummy"}' ,
+            success: function(response) {
+                window.location.href = "/alltasks";
+            },
+        });
+    }
 
-        function deleteTask(){
+    function acceptTask(taskID, taskCreator){
+        $.ajax({
+            url: "/task?q=" + taskID,
+            type: 'POST',
+            contentType: "application/json",
+            async: false,
+            data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_ACCEPTED + '"}' ,
+            success: function(response) {
+                window.location.href = "/newmessage?t=" + taskID + "&u=" + taskCreator;
+            },
+            error: function(response) {
+                console.log(response);
+                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+            }
+        });
+    }
+
+    function updateTask(){
+        var taskSummary = $('#taskSummary').val();
+        var taskCategory = $('#taskCategory').val();
+        var taskDesc = $('#taskDesc').val();
+        var taskTitle = $('#taskTitle').val();
+
+        if (taskSummary != "{{ task.summary }}") {
             $.ajax({
                 url: "/task?q={{ task.taskID }}",
                 type: 'POST',
                 contentType: "application/json",
                 async: false,
-                data: '{ "field" : "' + TASK_DELETE + '", "newdata" : "dummy"}' ,
+                data: '{"field" : "' + TASK_SUMMARY + '", "newdata" : "' + taskSummary + '"}' ,
                 success: function(response) {
-                    window.location.href = "/alltasks";
                 },
             });
         }
 
-        function acceptTask(taskID, taskCreator){
+        if (taskDesc != "{{ task.description }}") {
             $.ajax({
-                url: "/task?q=" + taskID,
+                url: "/task?q={{ task.taskID }}",
                 type: 'POST',
                 contentType: "application/json",
-                data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_ACCEPTED + '"}' ,
+                async: false,
+                data: '{"field" : "' + TASK_DESCRIPTION + '", "newdata" : "' + taskDesc + '"}' ,
                 success: function(response) {
-                    window.location.href = "/newmessage?t=" + taskID + "&u=" + taskCreator;
                 },
-                error: function(response) {
-                    console.log(response);
-                    alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
-                }
             });
         }
 
-
-        function updateTask(){
-            var taskSummary = $('#taskSummary').val();
-            var taskCategory = $('#taskCategory').val();
-            var taskDesc = $('#taskDesc').val();
-            var taskTitle = $('#taskTitle').val();
-
-            if (taskSummary != "{{ task.summary }}") {
-                $.ajax({
-                    url: "/task?q={{ task.taskID }}",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + TASK_SUMMARY + '", "newdata" : "' + taskSummary + '"}' ,
-                    success: function(response) {
-                    },
-                });
-            }
-
-            if (taskDesc != "{{ task.description }}") {
-                $.ajax({
-                    url: "/task?q={{ task.taskID }}",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + TASK_DESCRIPTION + '", "newdata" : "' + taskDesc + '"}' ,
-                    success: function(response) {
-                    },
-                });
-            }
-
-            if (taskTitle != "{{ task.title }}") {
-                $.ajax({
-                    url: "/task?q={{ task.taskID }}",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + TASK_TITLE + '", "newdata" : "' + taskTitle + '"}' ,
-                    success: function(response) {
-                    },
-                });
-            }
-
-            if (taskCategory != "{{ task.category }}") {
-                $.ajax({
-                    url: "/task?q={{ task.taskID }}",
-                    type: 'POST',
-                    contentType: "application/json",
-                    async: false,
-                    data: '{ "field" : "' + TASK_CATEGORY + '", "newdata" : "' + taskCategory + '"}' ,
-                    success: function(response) {
-                    },
-                });
-            }
-
-            window.location.reload(true);
+        if (taskTitle != "{{ task.title }}") {
+            $.ajax({
+                url: "/task?q={{ task.taskID }}",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{"field" : "' + TASK_TITLE + '", "newdata" : "' + taskTitle + '"}' ,
+                success: function(response) {
+                },
+            });
         }
+
+        if (taskCategory != "{{ task.category }}") {
+            $.ajax({
+                url: "/task?q={{ task.taskID }}",
+                type: 'POST',
+                contentType: "application/json",
+                async: false,
+                data: '{"field" : "' + TASK_CATEGORY + '", "newdata" : "' + taskCategory + '"}' ,
+                success: function(response) {
+                },
+            });
+        }
+
+        window.location.reload(true);
+    }
 </script>
 {% endblock %}

@@ -3,9 +3,12 @@
 {% load staticfiles %}
 
 <head>
-    <!-- Bootstrap Core CSS -->
+    <!-- Bootstrap CSS -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="{% static "css/bootstrap-extensions.css" %}" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{% static "css/stylish-portfolio.css" %}" rel="stylesheet">
@@ -13,29 +16,22 @@
     <link href="{% static "css/postBoard.css" %}" rel="stylesheet">
     <link href="{% static "css/star.css" %}" rel="stylesheet">
 
-
     <!-- Custom Fonts -->
     <link href="{% static "css/fonts.css" %}" rel="stylesheet">
-    <link href="{% static "font-awesome-4.2.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="{% static "font-awesome-4.2.0/css/font-awesome.min.css" %}" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet">
 
-    <!-- jQuery Version 2.1.1 -->
+    <!-- jQuery -->
     <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
     
-    <!-- Bootstrap Core JavaScript -->
+    <!-- Bootstrap JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
-    <title sytle="margin-top:20px">{% block header_title %}List of tasks{% endblock %}</title>
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
-      
-    <!-- jQuery -->
-    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-      
     <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+    <script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+
+    <title sytle="margin-top:20px">{% block header_title %}List of tasks{% endblock %}</title>
 
 </head>
 <body>
@@ -83,14 +79,14 @@
 
 <!-- Side Navigation Bar js -->
 <script>
-// Closes the sidebar menu
-$("#menu-close").click(function(e) {
-    e.preventDefault();
-    $("#sidebar-wrapper").toggleClass("active");
-});
-// Opens the sidebar menu
-$("#menu-toggle").click(function(e) {
-    e.preventDefault();
-    $("#sidebar-wrapper").toggleClass("active");
-});
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
 </script>

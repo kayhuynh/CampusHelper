@@ -34,7 +34,7 @@
             contentType: "application/json",
             data: '{ "receiver" : "{{ u }}", "task" : "{{ t }}", "contents" : "' + contents + '"}' ,
             success: function(response) {
-                window.location.href = "/alltasks"
+                window.location.href = "/mymessages"
             },
             error: function(response) {
                 console.log(response);

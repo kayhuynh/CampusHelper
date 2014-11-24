@@ -60,61 +60,13 @@
             {% endfor %}
         </tbody>
     </table>
-    <!--
-    <table class="table table-striped" border="3" cellpadding="10" width="100%">
-        <tr>
-            <td>Task Name</td>
-            <td>Task Category</td>
-            <td>Task Summary</td>
-            <td>Posted By</td>
-            <td>Date Posted</td>
-        </tr>
-
-        <tbody>
-
-        </tbody>
-
-    {% for task in allTasks %}
-        <tr>
-            <td><p><a href="/task?q={{ task.taskID }}">{{ task.title }}</a></p></td>
-            <td><p>{{ task.category }}</p></td>
-            <td><p>{{ task.summary }}</p></td>
-            <td><p><a href="/profile?q={{ task.creator.username }}">{{ task.creator.username }}</a></p></td>
-            <td><p>{{ task.timePosted.date.isoformat }}</p></td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <p>{{ task.description }}</p>
-                <p>
-                    {% if task.state == 1 and task.creator.username != user %}
-                        <button onclick="acceptTask({{ task.taskID }}, '{{ task.creator.username }}')" class="btn btn-primary">
-                            Accept Task
-                        </button>
-                    {% elif task.state == 2 %}
-                        This task was accepted by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
-                    {% elif task.state == 3 %}
-                        This task was completed by <a href="/profile?q={{ task.acceptor.username }}">{{ task.acceptor.username }}</a>
-                    {% endif %}
-                </p>
-            </td>
-        </tr>
-    {% endfor %}
-    </table>
--->
 </div>
 
-<!-- jQuery -->
-    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-      
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
 <script>
     $(document).ready(function() {
         $('#example').DataTable();
-    } );
-</script>
+    });
 
-<script>
     TASK_TITLE = 1
     TASK_DESCRIPTION = 2
     TASK_STATE = 3
@@ -130,22 +82,6 @@
     function filterFn(){
         var category = $('#category :selected').text();
         insertParam("c", category);
-    }
-
-    function acceptTask(taskID, taskCreator){
-        $.ajax({
-            url: "/task?q=" + taskID,
-            type: 'POST',
-            contentType: "application/json",
-            data: '{"field": "' + TASK_STATE + '", "newdata": "' + STATE_ACCEPTED + '"}' ,
-            success: function(response) {
-                window.location.href = "/newmessage?t=" + taskID + "&u=" + taskCreator;
-            },
-            error: function(response) {
-                console.log(response);
-                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
-            }
-        });
     }
 
     //stackoverflow
@@ -184,8 +120,6 @@
         }
     }
 
-
-
     $(function() {
         if (typeof getUrlParameter("c") != "undefined") {
             $("#category").val(decodeURI(getUrlParameter("c")));
@@ -210,25 +144,6 @@
         } else {
             $("#accFalse").remove()
         }
-
-        // // Initially hide toggleable content
-        // $("td[colspan=5]").find("p").hide();
-
-        // // Click handler on entire table
-        // $("table").click(function(event) {
-
-        //     // No bubbling up
-        //     event.stopPropagation();
-
-        //     var $target = $(event.target);
-
-        //     // Open and close the appropriate thing
-        //     if ( $target.closest("td").attr("colspan") > 1 ) {
-        //         $target.slideUp();
-        //     } else {
-        //         $target.closest("tr").next().find("p").slideToggle();
-        //     }                    
-        // });
     });
 </script>
 {% endblock %}
