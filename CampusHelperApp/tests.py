@@ -277,7 +277,12 @@ class FunctionalTestCase(TestCase):
     def test_verifyemail_post_softfail(self):
         c = Client()
         c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
-        self.nick.verifyCode
         response = c.post('/verifyemail', json.dumps({"verifcode": 1}), content_type="application/json")
         self.assertEqual(response.status_code, 403)
-        
+
+    def test_task_invalid_state(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.post('/task?q='+str(self.water.taskID), json.dumps({"field": 3, "newdata": STATE_CREATED}), content_type="application/json")
+        self.assertEqual(response.status_code, 403)
+                          
