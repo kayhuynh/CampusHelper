@@ -1,19 +1,19 @@
 from django.test import TestCase
 from django.test import Client
-from CampusHelperApp.models import User, Task, newUser, newTask, STATE_CREATED, STATE_ACCEPTED, STATE_COMPLETED
+from CampusHelperApp.models import User, Task, Message, newUser, newTask, newMessage, STATE_CREATED, STATE_ACCEPTED, STATE_COMPLETED
 
 import json
 
 class UserTestCase(TestCase):
     def setUp(self):
-        newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
-        newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is Kevin')
-        nick = User.objects.get(username = 'Nick')
+        newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick', None)
+        newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is Kevin', None)
+        self.nick = User.objects.get(username = 'Nick')
         kevin = User.objects.get(username = 'Kevin')
 
-        newTask(nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1, "test")
-        newTask(nick, 'Get armadillo poison', 'We have an infestation', "summ", 1, "test")
-        newTask(kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1, "test")
+        newTask(self.nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1)
+        newTask(self.nick, 'Get armadillo poison', 'We have an infestation', "summ", 1)
+        newTask(kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1)
 
     def test_has_password(self):
         """The user is created with a password"""
@@ -63,15 +63,20 @@ class UserTestCase(TestCase):
         kevin.setDescription('Best ta evar')
         self.assertEqual(kevin.description, 'Best ta evar')
 
+    def test_checkCode(self):
+        self.nick.verifyCode = 1
+        self.assertTrue(self.nick.checkCode(1))
+        self.assertFalse(self.nick.checkCode(1))
+
 
 class TaskTestCase(TestCase):
     def setUp(self):
-        self.nick = newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
-        self.kevin = newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is KEvin')
+        self.nick = newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick', None)
+        self.kevin = newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is KEvin', None)
 
-        self.mow = newTask(self.nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1, "test")
-        self.poison = newTask(self.nick, 'Get armadillo poison', 'We have an infestation', "summ", 1, "test")
-        self.pet = newTask(self.kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1, "test")
+        self.mow = newTask(self.nick, 'Mow the lawn', 'With a pair of scissors', "summ", 1)
+        self.poison = newTask(self.nick, 'Get armadillo poison', 'We have an infestation', "summ", 1)
+        self.pet = newTask(self.kevin, 'Deliver pet armadillo', "They're so cute!", "summ", 1)
 
     def test_markAccepted(self):
         """Task should mark itself accepted"""
@@ -85,7 +90,7 @@ class TaskTestCase(TestCase):
         poison = Task.objects.get(title = 'Get armadillo poison')
         kevin = User.objects.get(username = 'Kevin')
         poison.markAccepted(kevin)
-        poison.markCompleted()
+        poison.markCompleted(self.nick)
         self.assertEqual(poison.state, STATE_COMPLETED)
 
     def test_setTitle(self):
@@ -103,11 +108,45 @@ class TaskTestCase(TestCase):
         deliver.notify()
         self.assertEqual(deliver.notify, True)
 
+    def test_unmarkAccepted(self):
+        self.mow.markAccepted(self.kevin)
+        self.assertEqual(self.mow.state, STATE_ACCEPTED)
+        self.mow.unmarkAccepted(self.kevin)
+        self.assertEqual(self.mow.state, STATE_CREATED)
+
+    def test_setSummary(self):
+        self.mow.setSummary('With hedge trimmers')
+        self.assertEqual(self.mow.summary, 'With hedge trimmers')
+    
+    def test_setValue(self):
+        self.mow.markAccepted(self.kevin)
+        self.mow.markCompleted(self.nick)
+        self.mow.setValue(4, self.nick)
+        self.assertEqual(self.mow.value, 4)
+
+    def test_setCategory(self):
+        self.pet.setCategory("Delivery")
+        self.assertEqual(self.pet.category, "Delivery")
+
+class MessageTestCase(TestCase):
+    def setUp(self):
+        self.nick = newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick', None)
+        self.kevin = newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is Kevin', None)
+        self.poison = newTask(self.nick, 'Get armadillo poison', 'We have an infestation', "summ", 1)
+        self.message = newMessage(self.kevin, self.nick, self.poison, "Don't do that, I like armadillos :(")
+
+    def test_markRead(self):
+        self.message.markRead(self.nick)
+        self.assertTrue(self.message.read)
+        
+
 class FunctionalTestCase(TestCase):
 
     def setUp(self):
-        self.nick = newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick')
-        self.water = newTask(self.nick, 'Water plants', 'With water', "summ", 1, "test")
+        self.nick = newUser('Nick', 'nickrulez', 'nick@nick.com', 'This is Nick', None)
+        self.kevin = newUser('Kevin', 'kevinrulez', 'kevin@kevin.com', 'This is Kevin', None)
+        self.water = newTask(self.nick, 'Water plants', 'With water', "summ", 1)
+        self.message = newMessage(self.kevin, self.nick, self.water, "I'll do it")
 
     def test_login_get(self):
         c = Client()
@@ -126,7 +165,7 @@ class FunctionalTestCase(TestCase):
         nick = User.objects.get(username = 'Nick')
         response = c.post('/login', json.dumps({"username": nick.username, "password": nick.password, "cookieID": nick.cookieID}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '{"errcode": 1}')
+        self.assertEqual(response.content, '{"verified": 1, "errcode": 1}')
 
     def test_login_post_incorrect(self):
         c = Client()
@@ -190,7 +229,7 @@ class FunctionalTestCase(TestCase):
         c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
         response = c.get('/newtask')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue("Post a new task" in response.content)
+        self.assertTrue("Post a New Task" in response.content)
 
     def test_newuser_post(self):
         c = Client()
@@ -203,4 +242,42 @@ class FunctionalTestCase(TestCase):
         c = Client()
         response = c.get('/newuser')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue("Signup" in response.content)
+        self.assertTrue("Sign Up" in response.content)
+
+    def test_task_get(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.get('/task?q='+str(self.water.taskID))
+        self.assertEqual(response.status_code, 200)
+    
+    def test_newmessage_post(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.post('/newmessage', json.dumps({"receiver": self.kevin.username, "task": self.water.taskID, "contents": 'k'}), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_mymessages_get(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.get('/mymessages')
+        self.assertEqual(response.status_code, 200)
+    
+    def test_mymessages_post(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.post('/mymessages?q='+str(self.message.messageID))
+        self.assertEqual(response.status_code, 200)
+
+    def test_verifyemail_get(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        response = c.get('/verifyemail')
+        self.assertEqual(response.status_code, 200)
+
+    def test_verifyemail_post_softfail(self):
+        c = Client()
+        c.post('/login', json.dumps({"username": self.nick.username, "password": self.nick.password}), content_type="application/json")
+        self.nick.verifyCode
+        response = c.post('/verifyemail', json.dumps({"verifcode": 1}), content_type="application/json")
+        self.assertEqual(response.status_code, 403)
+        

@@ -4,32 +4,22 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost:8000/" />
-<title>filter</title>
+<title>changeProfile</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">filter</td></tr>
+<tr><td rowspan="1" colspan="3">changeProfile</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/alltasks</td>
+	<td>/profile</td>
 	<td></td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=category</td>
-	<td>label=House Moving/Cleaning</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>css=button.btn.btn-primary</td>
-	<td></td>
-</tr>
-<tr>
-	<td>select</td>
-	<td>id=category</td>
-	<td>label=Academic Tutoring</td>
+	<td>type</td>
+	<td>id=desc</td>
+	<td>Defined</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -38,8 +28,8 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='task_table']/table/tbody/tr[2]/td[3]/p</td>
-	<td>It's a good Task</td>
+	<td>id=desc</td>
+	<td>Defined</td>
 </tr>
 
 </tbody></table>

@@ -19,7 +19,7 @@ class User(models.Model):
         return self.username
 
     def markTaskCompleted(self, taskID):
-        getTask(taskID).markCompleted()
+        getTask(taskID).markCompleted(self)
 
     def acceptTask(self, taskID):
         getTask(taskID).markAccepted(self)

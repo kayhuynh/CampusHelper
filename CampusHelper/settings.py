@@ -77,7 +77,7 @@ USE_TZ = True
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'ch.verif'                        #GMAIL username
+EMAIL_HOST_USER = 'ch.auth'                        #GMAIL username
 EMAIL_HOST_PASSWORD = ''        #GMAIL password
 
 STATIC_URL = '/CampusHelperApp/static/'
