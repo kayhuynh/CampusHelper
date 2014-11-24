@@ -26,7 +26,7 @@ class User(models.Model):
 
     def unreadMessages(self):
         return filter(lambda x: not x.read, self.messagesReceived.all())
-
+        
     def readMessages(self):
         return filter(lambda x: x.read, self.messagesReceived.all())
 

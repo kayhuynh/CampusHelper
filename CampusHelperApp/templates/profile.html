@@ -13,7 +13,6 @@
         View {{ user.username }}'s Profile
     {% endif %}
 {% endblock %}
-
 {% block content %}
 
 <form class="post-form" style="text-align:left">
@@ -33,7 +32,7 @@
     {% if mine %}
         <div class="row">
             <label for="password"><h3>Password</h3></label>
-            <input type="text" class="form-control" id="password" value="{{ user.password }}" {% if not mine %} readonly {% endif %}>
+            <input type="password" class="form-control" id="password" value="{{ user.password }}" {% if not mine %} readonly {% endif %}>
         </div>
     {% endif %}
 
