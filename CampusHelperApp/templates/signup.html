@@ -47,7 +47,7 @@
                     <input type='email' name="Email" id="email" placeholder="Enter your email here">
                 </div>
                 <div>
-                    <textarea class="form-group" rows="5" style="" placeholder="A short description of you"></textarea>
+                    <textarea id = "desc" class="form-group" rows="5" style="" placeholder="A short description of you"></textarea>
                 </div>
                 <div>
                     <button id = "signupButton" onclick="signUpFn()" class="btn btn-primary">
@@ -63,13 +63,16 @@
         VERIFIED = 1
         UNVERIFIED = 2
 
-        $("#passwordVerify").keyup(function(event){
+        KEYUP = function(event){
             if(event.keyCode == 13){
                 $("#signupButton").click();
             }
-        });
+        }
+        $("#passwordVerify").keyup(KEYUP);
 
         function signUpFn() {
+            $("#passwordVerify").unbind("keyup", KEYUP);
+            $("#signupButton").attr('disabled', true);
             var user = $("#userField").val();
             var pass1 = $("#passwordField").val();
             var pass2 = $("#passwordVerify").val();
@@ -77,6 +80,8 @@
             var desc = $("#desc").val();
             if (pass1 != pass2) {
                 alert("Your passwords do not match, please try again.");
+                $("#signupButton").attr('disabled', false);
+                setTimeout(function(){$("#passwordVerify").keyup(KEYUP)}, 222);
             } else {
                 $.ajax({
                 url: "/newuser",
@@ -87,8 +92,10 @@
                     gotoLoginPage(user, pass1);
                 },
                 error: function(response) {
-                    console.log(response);
-                    alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+                    console.log("FAILED. Code: " + response.status + " Response: " + response.responseText);
+                    alert("Failed! username already taken, or email is wrong")
+                    $("#signupButton").attr('disabled', false);
+                    setTimeout(function(){$("#passwordVerify").keyup(KEYUP)}, 222);
                 }
                 });
             }
@@ -101,8 +108,7 @@
                 contentType: "application/json",
                 data: '{"username": "' + user + '", "password": "' + pass + '"}' ,
                 success: function(response) {
-                    var verified = response.verified;
-                    if (verified == VERIFIED) {
+                    if (response.verified == VERIFIED) {
                         window.location.href = "/alltasks";
                     } else {
                         window.location.href = "/verifyemail";

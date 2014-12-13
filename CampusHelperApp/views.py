@@ -97,7 +97,7 @@ def alltasks(request):
             if "c" in request.GET:
                 all_tasks = all_tasks.filter(category__exact = request.GET["c"])
             context = Context({"allTasks": all_tasks, "user": u.username})
-            template = loader.get_template("postBoard/alltasks.html")
+            template = loader.get_template("alltasks.html")
             return HttpResponse(template.render(context))
         else:
             return HARDFAIL
@@ -216,10 +216,10 @@ def newuser(request):
         if request.method == "POST" and "application/json" in request.META["CONTENT_TYPE"]:
             d = json.loads(bytes.decode(request.body))
             verifyCode = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
-            message = "Here is your verification code: " + verifyCode
-            send_mail("CampusHelper Verification", message, "ch.verif@gmail.com", [d["email"]])
             u = models.newUser(d["username"], d["password"], d["email"], d["description"], verifyCode)
             request.session["cookieID"] = u.cookieID
+            message = "Here is your verification code: " + verifyCode
+            send_mail("CampusHelper Verification", message, "ch.verif@gmail.com", [d["email"]])
             return HttpResponse(json.dumps({"errcode": SUCCESS}), content_type = "application/json")
         elif request.method == "GET":
             template = loader.get_template("signup.html")
@@ -239,7 +239,7 @@ def mytasks(request):
         if not u.verified():
             return SOFTFAIL
         elif request.method == "GET":
-            template = loader.get_template("postBoard/mytasks.html")
+            template = loader.get_template("mytasks.html")
             context = Context({"user": u.username, "myCreatedTasks": u.tasksCreated.all(),
                 "myAcceptedTasks": u.tasksAccepted.all()})
             return HttpResponse(template.render(context))

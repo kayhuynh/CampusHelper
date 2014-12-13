@@ -39,32 +39,38 @@
                     <input type="text" id="verifCode" placeholder="Check your Email!">
                 </div>
             </div>
-            <button id = "checkbutton" onclick="checkFn()" class="btn btn-primary">
+            <button id = "checkButton" onclick="checkFn()" class="btn btn-primary">
                 Check
             </button>
         </div>
     </header>
 
     <script>
-        $("#verifCode").keyup(function(event){
+        KEYUP = function(event){
             if(event.keyCode == 13){
                 $("#checkButton").click();
             }
-        });
+        }
+        $("#verifCode").keyup(KEYUP);
 
         function checkFn(){
+            $("#verifCode").unbind("keyup", KEYUP);
+            $("#checkButton").attr('disabled', true);
             var verifCode = $('#verifCode').val();
             $.ajax({
                 url: "/verifyemail",
                 type: 'POST',
                 contentType: "application/json",
                 data: '{"verifcode": "' + verifCode + '"}' ,
+                async: false,
                 success: function(response) {
                     window.location.href = "/alltasks";
                 },
                 error: function(response) {
-                    console.log(response);
-                    alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+                    console.log("FAILED. Code: " + response.status + " Response: " + response.responseText);
+                    alert("Failed! verification code incorrect!")
+                    $("#checkButton").attr('disabled', false);
+                    setTimeout(function(){$("#verifCode").keyup(KEYUP)}, 222);
                 }
             });
         }

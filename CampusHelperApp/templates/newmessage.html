@@ -37,8 +37,8 @@
                 window.location.href = "/mymessages"
             },
             error: function(response) {
-                console.log(response);
-                alert("FAILED. Code: " + response.status + " Response: " + response.responseText);
+                console.log("FAILED. Code: " + response.status + " Response: " + response.responseText);
+                alert("You didn't type anything!")
             }
         });
         return false;
